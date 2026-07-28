@@ -8,10 +8,13 @@ const DEFAULT_SUBTITLE =
 const props = defineProps<{
   title: string;
   subtitle: string;
+  image: string;
 }>();
 
 const title = computed(() => props.title ?? DEFAULT_TITLE);
 const subtitle = computed(() => props.subtitle ?? DEFAULT_SUBTITLE);
+
+const imageSrc = `${import.meta.env.BASE_URL}${props.image.replace(/^\//, "")}`;
 </script>
 
 <template>
@@ -29,7 +32,7 @@ const subtitle = computed(() => props.subtitle ?? DEFAULT_SUBTITLE);
       </p>
     </div>
     <img
-      src="@/assets/floods.jpg"
+      :src="imageSrc"
       alt="Story Map Hero"
       class="absolute inset-0 h-full w-full object-cover opacity-50"
     />

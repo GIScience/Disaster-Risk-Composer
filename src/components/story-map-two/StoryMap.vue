@@ -21,6 +21,7 @@ const { activeId, scrollTo } = useScrollSpy(
     <StoryMapHero
       :title="sm.hero.title"
       :subtitle="sm.hero.subtitle"
+      :image="sm.hero.image"
     />
     <div
       class="flex flex-col gap-8 lg:flex-row lg:gap-2 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
