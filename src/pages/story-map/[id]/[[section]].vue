@@ -41,6 +41,27 @@ const pageTitle = computed(
 
 <template>
   <PageLayout :title="pageTitle">
+    <template #header-actions>
+      <button
+        @click="router.push('/story-map')"
+        class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-red border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
+      >
+        <svg
+          class="h-3.5 w-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back
+      </button>
+    </template>
     <StoryMap v-if="config" :config="config" />
   </PageLayout>
 </template>

@@ -36,7 +36,7 @@ const storyMaps = Object.entries(modules)
         class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_top,_rgba(202,35,51,0.14),_transparent_70%)]"
       />
       <div
-        class="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8"
+        class="mx-auto max-w-3xl px-4 py-16 text-center flex flex-col justify-center sm:px-6 sm:py-20 min-h-[calc(100vh-60rem)] lg:px-8"
       >
         <h1
           class="mt-5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"

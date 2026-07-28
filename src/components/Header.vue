@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import logo from "@/assets/risk-assessment-lens-logo.png";
 import { useRiskMapStore } from "@/store/riskMapStore";
@@ -17,6 +17,9 @@ const props = withDefaults(
     homeLink: "/",
   },
 );
+
+const route = useRoute();
+const router = useRouter();
 
 const { selectedCountry, selectedDisaster, riskViewMode } =
   storeToRefs(useRiskMapStore());
@@ -57,7 +60,7 @@ const homeTarget = computed(() => {
       </RouterLink>
       <slot name="actions">
         <button
-          @click="$router.back()"
+          @click="router.push('/')"
           class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-red border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
         >
           <svg
