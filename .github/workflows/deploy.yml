@@ -1,4 +1,4 @@
-name: Deploy Hazard Risk Composer
+name: Deploy Disaster Risk Composer
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
       - name: Build (Dev)
         run: |
           npm install
-          npx vite build --base=/Hazard-Risk-Composer/dev/
+          npx vite build --base=/Disaster-Risk-Composer/dev/
 
       - name: Save dev build
         run: cp -r dist dist-dev
