@@ -14,6 +14,7 @@ import {
   type RiskViewMode,
 } from "../enums/dimensions";
 import { useRiskMapStore } from "../store/riskMapStore";
+import type { WeightCsvEntry } from "../utils/weightCsv";
 
 export type { RiskViewMode };
 
@@ -28,6 +29,9 @@ export interface CustomUploadPayload {
   rows: Record<string, any>[];
   assignments: Record<string, CustomIndicatorDimension | "skip">;
   mode?: UploadMode;
+  // Parsed "variable_name,category,weight" weight file, keyed by variable_name. Required for
+  // "replace" uploads since that mode has no prior weights to fall back on - see UploadModal.vue.
+  weights?: Record<string, WeightCsvEntry>;
 }
 
 const CUSTOM_UPLOAD_MATCH_THRESHOLD = 0.9;
@@ -103,6 +107,7 @@ export function useRiskLogic() {
     dimensionColumns,
     selectedCountryName,
     existingPcodes,
+    customIndicatorsReplaced,
   } = storeToRefs(store);
 
   if (!store.initialized) {
@@ -274,12 +279,17 @@ export function useRiskLogic() {
     dimension: CustomIndicatorDimension,
     hazardPrefix: string,
     usedNames: Set<string>,
+    mode: UploadMode,
   ) {
     const base = sanitizeIndicatorName(rawColumn);
+    // In "replace" mode the uploaded file becomes the entire indicator set, so there's nothing
+    // native left to distinguish "custom" columns from - drop the "custom" infix and name them
+    // like native indicators. "append" uploads sit alongside native columns, so they keep it.
+    const customInfix = mode === "replace" ? "" : "custom_";
     const prefix =
       dimension === DimensionPrefix.EXPOSURE
-        ? `exp_${hazardPrefix}_custom_`
-        : `${sanitizeIndicatorName(dimension)}_custom_`;
+        ? `exp_${hazardPrefix}_${customInfix}`
+        : `${sanitizeIndicatorName(dimension)}_${customInfix}`;
 
     let candidate = `${prefix}${base}`;
     let suffix = 1;
@@ -376,7 +386,7 @@ export function useRiskLogic() {
     for (const [rawColumn, dimension] of columnAssignments) {
       columnNameMap.set(
         rawColumn,
-        buildCustomColumnName(rawColumn, dimension, hazardPrefix, usedNames),
+        buildCustomColumnName(rawColumn, dimension, hazardPrefix, usedNames, mode),
       );
     }
 
@@ -393,11 +403,19 @@ export function useRiskLogic() {
 
     const newWeights: Record<string, number> =
       mode === "append" ? { ...indicatorWeights.value } : {};
-    for (const newColumn of columnNameMap.values()) {
-      newWeights[newColumn] = 1.0;
+    for (const [rawColumn, dimension] of columnAssignments) {
+      const newColumn = columnNameMap.get(rawColumn)!;
+      const rawName = sanitizeIndicatorName(rawColumn);
+      const weightEntry = payload.weights?.[rawName];
+      newWeights[newColumn] =
+        weightEntry && weightEntry.category === dimension
+          ? weightEntry.weight
+          : 1.0;
     }
     indicatorWeights.value = newWeights;
     loadAndCalculateWithWeights(newWeights);
+
+    if (mode === "replace") customIndicatorsReplaced.value = true;
 
     if (options.persist !== false && lastLoadedCountry.value) {
       persistCustomUpload(lastLoadedCountry.value, { ...payload, mode });
@@ -515,6 +533,7 @@ export function useRiskLogic() {
     uploadError,
     countries,
     dimensions,
+    customIndicatorsReplaced,
 
     // Getters
     riskViewLabel,

@@ -43,6 +43,7 @@ const {
   keepCustomData,
   discardCustomData,
   goHome,
+  customIndicatorsReplaced,
 } = useRiskLogic();
 
 const { customDimensionKeys } = useIndicatorColumns(
@@ -50,6 +51,7 @@ const { customDimensionKeys } = useIndicatorColumns(
     data: lastLoadedData,
     selectedDisaster,
     pcodeField,
+    customIndicatorsReplaced,
   }),
 );
 
@@ -220,6 +222,7 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
                 :selected-country="selectedCountry"
                 :indicator-weights="indicatorWeights"
                 :pcode-field="pcodeField"
+                :custom-indicators-replaced="customIndicatorsReplaced"
                 @update:indicatorWeights="indicatorWeights = $event"
                 @region-hover="highlightedPcode = $event"
               />

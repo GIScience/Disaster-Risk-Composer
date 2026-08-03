@@ -31,6 +31,10 @@ export const useRiskMapStore = defineStore("riskMap", {
     showUploadModal: false as boolean,
     showCustomDataInfo: false as boolean,
     pendingCustomDataCountry: null as string | null,
+    // True once a "replace" custom upload has been applied for the current country - at that
+    // point every indicator is user-supplied, so there's nothing native left to distinguish
+    // "Custom:" labels from. Stays true through any subsequent "append" uploads on top of it.
+    customIndicatorsReplaced: false as boolean,
     riskViewMode: "total" as string,
     dimensions: [...BASE_RISK_DIMENSIONS] as RiskDimensionConfig[],
     selectedCountryPcodeFieldMap: [] as Array<string>,
@@ -130,6 +134,9 @@ export const useRiskMapStore = defineStore("riskMap", {
     setPendingCustomDataCountry(value: string | null) {
       this.pendingCustomDataCountry = value;
     },
+    setCustomIndicatorsReplaced(value: boolean) {
+      this.customIndicatorsReplaced = value;
+    },
     setRiskViewMode(value: string) {
       this.riskViewMode = value;
     },
@@ -145,6 +152,7 @@ export const useRiskMapStore = defineStore("riskMap", {
       this.uploadError = null;
       this.showCustomDataInfo = false;
       this.pendingCustomDataCountry = null;
+      this.customIndicatorsReplaced = false;
       this.showAnalysis = true;
     },
 
@@ -162,6 +170,7 @@ export const useRiskMapStore = defineStore("riskMap", {
       this.indicatorWeights = {};
       this.riskViewMode = "total";
       this.uploadError = null;
+      this.customIndicatorsReplaced = false;
       this.showAnalysis = true;
     },
   },

@@ -42,13 +42,12 @@ function getTooltipInfo(col: string): string {
       </p>
       <v-btn
         @click="riskMapStore.setShowUploadModal(true)"
-        variant="tonal"
-        color="slate-700"
+        variant="flat"
+        color="heigit-red"
         size="small"
-        aria-label="upload custom data"
-        prepend-icon="mdi-upload"
         title="Upload a CSV of custom indicators for this country"
-        class="shrink-0 text-none gap-1.5 px-2 font-weight-bold"
+        class="shrink-0 text-white text-none gap-1.5 px-2 font-bold"
+        aria-label="upload custom data"
       >
         Upload Custom Data
       </v-btn>

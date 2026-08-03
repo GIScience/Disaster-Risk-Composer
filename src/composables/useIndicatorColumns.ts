@@ -9,6 +9,9 @@ interface IndicatorColumnsProps {
   data: any[];
   selectedDisaster: string;
   pcodeField: string;
+  // True once a "replace" custom upload is active - every indicator is user-supplied at that
+  // point, so the "Custom:" label no longer distinguishes anything and is dropped.
+  customIndicatorsReplaced?: boolean;
 }
 
 export interface IndicatorSubGroup {
@@ -136,7 +139,31 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
     if (col.includes("_custom_")) {
       const parts = col.split("_custom_");
       const raw = parts[1] || col;
-      return `Custom: ${raw.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}`;
+      const label = raw.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      return props.customIndicatorsReplaced ? label : `Custom: ${label}`;
+    }
+
+    // A "replace" upload names its columns like native indicators (dimension prefix, no
+    // "custom" infix - see buildCustomColumnName), so strip that prefix here the same way the
+    // "_custom_" branch above does, to keep showing just the raw indicator name.
+    if (props.customIndicatorsReplaced) {
+      const expPrefix = `exp_${hazardPrefix.value}_`;
+      let raw: string | null = null;
+      if (hazardPrefix.value && col.startsWith(expPrefix)) {
+        raw = col.slice(expPrefix.length);
+      } else if (col.startsWith("vul_")) {
+        raw = col.slice(4);
+      } else if (col.startsWith("cop_")) {
+        raw = col.slice(4);
+      } else {
+        const customDim = customDimensionKeys.value.find((p) =>
+          col.startsWith(`${p}_`),
+        );
+        if (customDim) raw = col.slice(customDim.length + 1);
+      }
+      if (raw) {
+        return raw.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      }
     }
 
     return col.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());

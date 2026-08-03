@@ -17,6 +17,7 @@ const props = defineProps<{
   pcodeField: string;
   indicatorWeights: Record<string, number>;
   isMobile?: boolean;
+  customIndicatorsReplaced?: boolean;
 }>();
 
 const emit = defineEmits<{

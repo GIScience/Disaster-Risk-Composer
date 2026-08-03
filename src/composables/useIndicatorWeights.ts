@@ -1,6 +1,7 @@
 import { ref, watch, type ComputedRef } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { generateFilename } from "@/utils/filenameGenerator";
+import { parseWeightsCSVText } from "@/utils/weightCsv";
 
 interface IndicatorWeightsProps {
   indicatorWeights: Record<string, number>;
@@ -152,41 +153,8 @@ export function useIndicatorWeights(
 
     reader.onload = (e) => {
       const text = e.target?.result as string;
-      const lines = text
-        .split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l);
-      if (lines.length < 2) return;
-
-      const headers = lines[0].split(",").map((h) => h.trim());
-      const nameIdx = headers.indexOf("variable_name");
-      const catIdx = headers.indexOf("category");
-      const weightIdx = headers.indexOf("weight");
-      const actIdx = headers.indexOf("activated");
-      if (nameIdx === -1 || catIdx === -1 || weightIdx === -1) return;
-
-      const csvData: Record<
-        string,
-        { category: string; weight: number; activated: boolean | null }
-      > = {};
-      for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(",").map((p) => p.trim());
-        if (parts.length <= Math.max(nameIdx, catIdx, weightIdx)) continue;
-        const rawName = parts[nameIdx];
-        const category = parts[catIdx];
-        const weight = parseFloat(parts[weightIdx]);
-        const activated =
-          actIdx !== -1 && parts.length > actIdx
-            ? parts[actIdx].toUpperCase() === "TRUE"
-            : null;
-        if (rawName && category && !isNaN(weight)) {
-          csvData[rawName] = {
-            category,
-            weight: Math.min(5, Math.max(0, weight)),
-            activated,
-          };
-        }
-      }
+      const csvData = parseWeightsCSVText(text);
+      if (Object.keys(csvData).length === 0) return;
 
       const newWeights = { ...localWeights.value };
       const newDisabled = new Set(disabledIndicators.value);
