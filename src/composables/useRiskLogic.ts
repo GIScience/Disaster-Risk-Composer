@@ -14,7 +14,7 @@ import {
   type RiskViewMode,
 } from "../enums/dimensions";
 import { useRiskMapStore } from "../store/riskMapStore";
-import type { WeightCsvEntry } from "../utils/weightCsv";
+import { stripDimensionPrefix, type WeightCsvEntry } from "../utils/weightCsv";
 
 export type { RiskViewMode };
 
@@ -285,7 +285,14 @@ export function useRiskLogic() {
     // In "replace" mode the uploaded file becomes the entire indicator set, so there's nothing
     // native left to distinguish "custom" columns from - drop the "custom" infix and name them
     // like native indicators. "append" uploads sit alongside native columns, so they keep it.
-    const customInfix = mode === "replace" ? "" : "custom_";
+    // A multi-file "replace" upload passes mode "append" for every file after the first (see
+    // UploadModal.vue's handleUpload) so only the first strips the native columns once - but
+    // customIndicatorsReplaced is already true by then, so check it too or those later files'
+    // columns would wrongly keep the "custom_" infix baked into their name permanently (it
+    // leaks into the downloaded weights CSV's variable_name, unlike the "Custom:" UI label
+    // which formatColName strips based on the same flag).
+    const customInfix =
+      mode === "replace" || customIndicatorsReplaced.value ? "" : "custom_";
     const prefix =
       dimension === DimensionPrefix.EXPOSURE
         ? `exp_${hazardPrefix}_${customInfix}`
@@ -406,7 +413,14 @@ export function useRiskLogic() {
     for (const [rawColumn, dimension] of columnAssignments) {
       const newColumn = columnNameMap.get(rawColumn)!;
       const rawName = sanitizeIndicatorName(rawColumn);
-      const weightEntry = payload.weights?.[rawName];
+      // Matches validateIndicatorWeightMatch's lookup in UploadModal.vue - an uploaded
+      // indicator column can already carry its dimension prefix (e.g. "vul_female_pop"), which
+      // the weight file's "variable_name" won't include, so strip it the same way before
+      // looking the weight up here too. Without this the pre-upload match-rate check (which
+      // does strip) can pass while the actual weight lookup (previously unstripped) missed
+      // every entry and silently fell back to the 1.0 default.
+      const lookupName = stripDimensionPrefix(rawName, dimension);
+      const weightEntry = payload.weights?.[lookupName];
       newWeights[newColumn] =
         weightEntry && weightEntry.category === dimension
           ? weightEntry.weight

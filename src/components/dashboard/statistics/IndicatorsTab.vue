@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { TooltipInfoList } from "@/config";
+import ConfirmDialog from "@/components/dashboard/modals/ConfirmDialog.vue";
 
 const riskMapStore = useRiskMapStore();
 
@@ -14,7 +16,19 @@ defineProps<{
   isGroupActive: (columns: string[]) => boolean;
   toggleGroup: (columns: string[]) => void;
   formatColName: (col: string) => string;
+  hasCustomUpload: boolean;
 }>();
+
+const emit = defineEmits<{
+  (e: "reset-custom-data"): void;
+}>();
+
+const showResetConfirm = ref(false);
+
+function confirmReset() {
+  showResetConfirm.value = false;
+  emit("reset-custom-data");
+}
 
 function getTooltipInfo(col: string): string {
   const matchedKey = Object.keys(TooltipInfoList)
@@ -33,6 +47,30 @@ function getTooltipInfo(col: string): string {
   <section
     class="w-full h-full flex flex-col p-4 min-h-0 overflow-y-auto custom-scrollbar"
   >
+    <div v-if="hasCustomUpload" class="mb-3">
+      <v-btn
+        @click="showResetConfirm = true"
+        variant="outlined"
+        color="heigit-red"
+        size="small"
+        title="Discard uploaded custom indicators and restore HeiGIT default data"
+        class="text-none gap-1.5 px-2 font-bold"
+        aria-label="reset to HeiGIT default data"
+        prepend-icon="mdi-restore"
+      >
+        Reset to HeiGIT Default
+      </v-btn>
+      <ConfirmDialog
+        v-if="showResetConfirm"
+        title="Reset to HeiGIT default data?"
+        message="This discards your uploaded custom indicator(s) and weights for this country and restores the HeiGIT default data. This can't be undone."
+        confirm-label="Reset to Default"
+        cancel-label="Keep custom data"
+        icon="mdi-restore-alert"
+        @cancel="showResetConfirm = false"
+        @confirm="confirmReset"
+      />
+    </div>
     <div
       class="flex flex-wrap lg:flex-nowrap items-start justify-between gap-3 mb-4"
     >

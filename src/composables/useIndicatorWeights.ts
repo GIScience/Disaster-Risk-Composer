@@ -31,14 +31,20 @@ export function useIndicatorWeights(
     ...props.indicatorWeights,
   });
 
+  // Resync local state whenever the parent's weight set changes shape (e.g. a "replace" upload
+  // swaps in a whole new set of indicator columns, with weights read from an uploaded weight
+  // file) - a same-shape change is our own setWeight/toggle call echoing back down and must not
+  // clobber in-progress local edits, so only a change in which columns exist triggers a resync.
   watch(
     () => props.indicatorWeights,
     (newVal) => {
-      if (
-        Object.keys(newVal).length === 0 &&
-        Object.keys(localWeights.value).length > 0
-      ) {
-        localWeights.value = {};
+      const newKeys = Object.keys(newVal);
+      const localKeys = Object.keys(localWeights.value);
+      const structurallyChanged =
+        newKeys.length !== localKeys.length ||
+        newKeys.some((k) => !(k in localWeights.value));
+      if (structurallyChanged) {
+        localWeights.value = { ...newVal };
       }
     },
     { deep: true },

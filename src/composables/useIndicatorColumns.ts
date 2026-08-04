@@ -139,7 +139,9 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
     if (col.includes("_custom_")) {
       const parts = col.split("_custom_");
       const raw = parts[1] || col;
-      const label = raw.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const label = raw
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
       return props.customIndicatorsReplaced ? label : `Custom: ${label}`;
     }
 
@@ -192,7 +194,10 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
         if (k === componentCols.value.exp) return true;
 
         // Hide sub-indicators that do not match the short selected hazard (cyc, flo, dr, etc.)
-        if (k.startsWith("exp_") && !k.startsWith(`exp_${hazardPrefix.value}`)) {
+        if (
+          k.startsWith("exp_") &&
+          !k.startsWith(`exp_${hazardPrefix.value}`)
+        ) {
           return false;
         }
         return true;
@@ -205,17 +210,20 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
 
   const expCols = computed(() =>
     indicatorCols.value.filter(
-      (c) => c !== componentCols.value.exp && c.startsWith("exp") && c !== "exp",
+      (c) =>
+        c !== componentCols.value.exp && c.startsWith("exp") && c !== "exp",
     ),
   );
   const vulCols = computed(() =>
     indicatorCols.value.filter(
-      (c) => c !== componentCols.value.vul && c.startsWith("vul") && c !== "vul",
+      (c) =>
+        c !== componentCols.value.vul && c.startsWith("vul") && c !== "vul",
     ),
   );
   const copCols = computed(() =>
     indicatorCols.value.filter(
-      (c) => c !== componentCols.value.cop && c.startsWith("cop") && c !== "cop",
+      (c) =>
+        c !== componentCols.value.cop && c.startsWith("cop") && c !== "cop",
     ),
   );
 
@@ -238,8 +246,16 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
   const indicatorDimensionGroups = computed<DimensionGroup[]>(() => {
     const base = [
       { key: DimensionPrefix.EXPOSURE, label: "Exposure", cols: expCols.value },
-      { key: DimensionPrefix.VULNERABILITY, label: "Vulnerability", cols: vulCols.value },
-      { key: DimensionPrefix.COPING_CAPACITY, label: "Lack of Coping Capacity", cols: copCols.value },
+      {
+        key: DimensionPrefix.VULNERABILITY,
+        label: "Vulnerability",
+        cols: vulCols.value,
+      },
+      {
+        key: DimensionPrefix.COPING_CAPACITY,
+        label: "Lack of Coping Capacity",
+        cols: copCols.value,
+      },
     ];
     const custom = customDimensionKeys.value.map((key) => ({
       key,

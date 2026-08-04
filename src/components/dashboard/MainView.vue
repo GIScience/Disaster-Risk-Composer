@@ -182,17 +182,17 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
           viewMode === 'HOME'
             ? 'w-0'
             : showAnalysis
-              ? 'w-full md:w-1/2'
+              ? 'w-full md:w-1/2 lg:w-2/4'
               : 'w-0 pointer-events-none',
         ]"
       >
         <div
-          class="flex-1 flex flex-col overflow-hidden p-8 h-full min-w-[320px]"
+          class="flex-1 flex flex-col overflow-hidden p-6 h-full min-w-[320px]"
         >
           <div class="max-w-3xl w-full mx-auto flex flex-col h-full space-y-4">
             <header class="shrink-0">
               <h2
-                class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2"
+                class="text-2xl font-extrabold text-slate-900 tracking-tight mb-2"
               >
                 Analysis
               </h2>
@@ -225,6 +225,7 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
                 :custom-indicators-replaced="customIndicatorsReplaced"
                 @update:indicatorWeights="indicatorWeights = $event"
                 @region-hover="highlightedPcode = $event"
+                @reset-custom-data="discardCustomData"
               />
               <div
                 v-else

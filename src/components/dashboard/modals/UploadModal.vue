@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
-import { loadCSVData } from "@/utils/duckdb";
+import { ref, reactive, computed, watch } from "vue";
+import { parseIndicatorCSV } from "@/utils/csv";
 import {
   sanitizeIndicatorName,
   type CustomIndicatorDimension,
@@ -67,7 +67,7 @@ const UPLOAD_MODE_OPTIONS: {
     icon: "mdi-swap-horizontal",
     title: "Replace entire indicator data",
     description:
-      "Your file becomes the full indicator set. Risk is calculated from whichever dimensions you assign columns to.",
+      "Your file(s) become the full indicator set. Risk is calculated from whichever dimensions you assign columns to.",
   },
 ];
 
@@ -78,11 +78,6 @@ const BASE_DIMENSION_OPTIONS = BASE_DIMENSION_PREFIXES.map(
   }),
 );
 
-// Bare dimension names ("exp"/"vul"/"cop") and dimension+hazard combos ("exp_flood",
-// "cop_flo", "exp_cyclone", ...) are reserved for the app's own computed composite columns
-// (e.g. exp_flo is the exposure score for flood) - they are never real sub-indicators, so a
-// CSV column with one of these exact names is ignored rather than offered for assignment.
-// Built from the dimensions/hazards this app currently recognizes (dimensions.ts, hazards.ts).
 const RESERVED_UPLOAD_COLUMN_NAMES = new Set<string>([
   ...DIMENSION_PREFIX_VALUES,
   ...DIMENSION_PREFIX_VALUES.flatMap((dim) =>
@@ -120,15 +115,19 @@ const uploadMode = ref<UploadMode>("append");
 const indicatorInput = ref<HTMLInputElement | null>(null);
 const weightInput = ref<HTMLInputElement | null>(null);
 
-const selectedFile = ref<File | null>(null);
-const isDragging = ref(false);
-const isParsing = ref(false);
-const parseError = ref<string | null>(null);
+interface IndicatorFileEntry {
+  id: string;
+  file: File;
+  isParsing: boolean;
+  parseError: string | null;
+  rows: Record<string, any>[];
+  columns: string[];
+  pcodeColumn: string | null;
+  assignments: Record<string, CustomIndicatorDimension | "skip">;
+}
 
-const parsedRows = ref<Record<string, any>[]>([]);
-const parsedColumns = ref<string[]>([]);
-const pcodeColumn = ref<string | null>(null);
-const assignments = ref<Record<string, CustomIndicatorDimension | "skip">>({});
+const isDragging = ref(false);
+const indicatorFiles = ref<IndicatorFileEntry[]>([]);
 
 const selectedWeightFile = ref<File | null>(null);
 const isDraggingWeight = ref(false);
@@ -140,42 +139,59 @@ const existingPcodeSet = computed(
   () => new Set(props.existingPcodes.map(String)),
 );
 
-const matchCount = computed(() => {
-  if (!pcodeColumn.value) return 0;
-  return parsedRows.value.filter((r) =>
-    existingPcodeSet.value.has(String(r[pcodeColumn.value!])),
+function matchCountFor(entry: IndicatorFileEntry): number {
+  if (!entry.pcodeColumn) return 0;
+  return entry.rows.filter((r) =>
+    existingPcodeSet.value.has(String(r[entry.pcodeColumn!])),
   ).length;
+}
+
+function matchRateFor(entry: IndicatorFileEntry): number {
+  return entry.rows.length > 0 ? matchCountFor(entry) / entry.rows.length : 0;
+}
+
+function matchIsSufficientFor(entry: IndicatorFileEntry): boolean {
+  return entry.pcodeColumn !== null && matchRateFor(entry) >= MATCH_THRESHOLD;
+}
+
+const indicatorFilesReady = computed(
+  () =>
+    indicatorFiles.value.length > 0 &&
+    indicatorFiles.value.every(
+      (f) => !f.isParsing && f.rows.length > 0 && f.pcodeColumn !== null,
+    ),
+);
+
+const allMatchIsSufficient = computed(
+  () =>
+    indicatorFiles.value.length > 0 &&
+    indicatorFiles.value.every((f) => matchIsSufficientFor(f)),
+);
+
+const allAssignedDimensions = computed(() => {
+  const dims = new Set<string>();
+  for (const entry of indicatorFiles.value) {
+    for (const v of Object.values(entry.assignments)) {
+      if (v !== "skip") dims.add(v);
+    }
+  }
+  return dims;
 });
 
-const matchRate = computed(() =>
-  parsedRows.value.length > 0 ? matchCount.value / parsedRows.value.length : 0,
+const missingRequiredDimensions = computed(() =>
+  BASE_DIMENSION_OPTIONS.filter(
+    (opt) => !allAssignedDimensions.value.has(opt.value),
+  ),
 );
-const matchIsSufficient = computed(
-  () => pcodeColumn.value !== null && matchRate.value >= MATCH_THRESHOLD,
-);
-
-const assignableColumns = computed(() =>
-  parsedColumns.value.filter((c) => c !== pcodeColumn.value),
-);
-
-const missingRequiredDimensions = computed(() => {
-  const assignedDims = new Set(
-    Object.values(assignments.value).filter((v) => v !== "skip"),
-  );
-  return BASE_DIMENSION_OPTIONS.filter((opt) => !assignedDims.has(opt.value));
-});
 
 const hasAllRequiredDimensions = computed(
   () => missingRequiredDimensions.value.length === 0,
 );
 
-const hasAtLeastOneAssignment = computed(() =>
-  Object.values(assignments.value).some((v) => v !== "skip"),
+const hasAtLeastOneAssignment = computed(
+  () => allAssignedDimensions.value.size > 0,
 );
 
-// "replace" wipes out any weights the user previously set (mergeCustomIndicators has nothing to
-// carry forward in that mode), so a weight file is required to know how to weight the new
-// indicator set rather than silently falling back to 1.0 for everything.
 const weightFileRequired = computed(() => uploadMode.value === "replace");
 
 const weightFileProvided = computed(
@@ -183,23 +199,16 @@ const weightFileProvided = computed(
     !!selectedWeightFile.value && Object.keys(weightCsvData.value).length > 0,
 );
 
-const indicatorFileReady = computed(
-  () => parsedRows.value.length > 0 && pcodeColumn.value !== null,
-);
-
-// Every assignable column in the file, keyed by its column name and - if detectDimensionForColumn
-// already recognized a dimension prefix in it - that dimension. This runs in step 1, before the
-// user has manually assigned anything: a column whose dimension isn't known yet is passed through
-// with category null, which validateIndicatorWeightMatch matches by name alone (ignoring
-// category), since there's no assigned dimension to check it against.
 const earlyIndicatorKeysForMatch = computed(() =>
-  assignableColumns.value.map((col) => {
-    const dim = assignments.value[col];
-    return {
-      name: sanitizeIndicatorName(col),
-      category: dim && dim !== "skip" ? dim : null,
-    };
-  }),
+  indicatorFiles.value.flatMap((entry) =>
+    entry.columns.map((col) => {
+      const dim = entry.assignments[col];
+      return {
+        name: sanitizeIndicatorName(col),
+        category: dim && dim !== "skip" ? dim : null,
+      };
+    }),
+  ),
 );
 
 const earlyWeightMatchResult = computed(() =>
@@ -221,8 +230,8 @@ const earlyWeightMatchIsSufficient = computed(
 // user to reach the manual column-assignment step.
 const canContinue = computed(
   () =>
-    indicatorFileReady.value &&
-    matchIsSufficient.value &&
+    indicatorFilesReady.value &&
+    allMatchIsSufficient.value &&
     (!weightFileRequired.value ||
       (weightFileProvided.value && earlyWeightMatchIsSufficient.value)),
 );
@@ -233,12 +242,14 @@ const canContinue = computed(
 // dimension in step 2, so - unlike earlyIndicatorKeysForMatch - only counts columns actually
 // assigned to a dimension and checks their category strictly.
 const indicatorKeysForValidation = computed(() =>
-  Object.entries(assignments.value)
-    .filter(([, dim]) => dim !== "skip")
-    .map(([col, dim]) => ({
-      name: sanitizeIndicatorName(col),
-      category: dim as string,
-    })),
+  indicatorFiles.value.flatMap((entry) =>
+    Object.entries(entry.assignments)
+      .filter(([, dim]) => dim !== "skip")
+      .map(([col, dim]) => ({
+        name: sanitizeIndicatorName(col),
+        category: dim as string,
+      })),
+  ),
 );
 
 const weightMatchResult = computed(() =>
@@ -255,18 +266,13 @@ const weightMatchIsSufficient = computed(
       weightMatchResult.value.matchRate >= MATCH_THRESHOLD),
 );
 
-// Neither mode requires covering every base dimension - risk is calculated from whichever
-// dimensions actually have assigned columns. At least one assigned column is still required so
-// there's something to upload.
 const canUpload = computed(
   () =>
-    matchIsSufficient.value &&
+    allMatchIsSufficient.value &&
     hasAtLeastOneAssignment.value &&
     weightMatchIsSufficient.value,
 );
 
-// Switching to "append" makes the weight file meaningless, so drop it instead of keeping a stale
-// file around that would be silently ignored.
 watch(uploadMode, (mode) => {
   if (mode === "append") clearWeightFile();
 });
@@ -301,28 +307,22 @@ function detectDimensionForColumn(
   return match?.value ?? "skip";
 }
 
-function resetIndicatorData() {
-  parsedRows.value = [];
-  parsedColumns.value = [];
-  pcodeColumn.value = null;
-  assignments.value = {};
+function makeFileEntryId(file: File): string {
+  return `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2)}`;
 }
 
-async function parseFile(file: File) {
-  isParsing.value = true;
-  parseError.value = null;
-  resetIndicatorData();
+async function parseEntry(entry: IndicatorFileEntry) {
   try {
-    const rows = await loadCSVData(file);
+    const rows = await parseIndicatorCSV(entry.file);
     if (!rows.length) {
-      parseError.value =
+      entry.parseError =
         "This CSV has no rows. Add your data and upload again.";
       return;
     }
     const columns = Object.keys(rows[0]);
     const detected = detectPcodeColumn(columns);
     if (!detected) {
-      parseError.value = `No PCODE column found. Add a column named "${props.pcodeField}" or "PCODE".`;
+      entry.parseError = `No PCODE column found. Add a column named "${props.pcodeField}" or "PCODE".`;
       return;
     }
 
@@ -331,47 +331,80 @@ async function parseFile(file: File) {
     );
     const dataColumns = selectableColumns.filter((c) => c !== detected);
     if (dataColumns.length === 0) {
-      parseError.value =
+      entry.parseError =
         "This CSV only has the PCODE column. Add at least one data column to upload.";
       return;
     }
 
-    parsedRows.value = rows;
-    parsedColumns.value = selectableColumns;
-    pcodeColumn.value = detected;
-    assignments.value = Object.fromEntries(
+    entry.rows = rows;
+    entry.columns = dataColumns;
+    entry.pcodeColumn = detected;
+    entry.assignments = Object.fromEntries(
       dataColumns.map((c) => [c, detectDimensionForColumn(c)]),
     );
   } catch (err) {
     console.error("Failed to parse CSV", err);
-    parseError.value = "Could not read this file. Upload a valid CSV.";
+    entry.parseError = "Could not read this file. Upload a valid CSV.";
   } finally {
-    isParsing.value = false;
+    entry.isParsing = false;
   }
 }
 
-function pickIndicatorFile(file: File) {
-  selectedFile.value = file;
-  parseFile(file);
+function parseIndicatorFile(file: File) {
+  const entry: IndicatorFileEntry = reactive({
+    id: makeFileEntryId(file),
+    file,
+    isParsing: true,
+    parseError: null,
+    rows: [],
+    columns: [],
+    pcodeColumn: null,
+    assignments: {},
+  });
+  indicatorFiles.value.push(entry);
+  parseEntry(entry);
 }
 
 function handleDrop(event: DragEvent) {
   isDragging.value = false;
-  const file = event.dataTransfer?.files?.[0];
-  if (file) pickIndicatorFile(file);
+  const files = Array.from(event.dataTransfer?.files ?? []);
+  files.forEach(parseIndicatorFile);
 }
 
 function handleFileInput(event: Event) {
   const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (file) pickIndicatorFile(file);
+  const files = Array.from(input.files ?? []);
+  files.forEach(parseIndicatorFile);
   input.value = "";
 }
 
-function clearIndicatorFile() {
-  selectedFile.value = null;
-  parseError.value = null;
-  resetIndicatorData();
+function removeIndicatorFile(id: string) {
+  indicatorFiles.value = indicatorFiles.value.filter((f) => f.id !== id);
+  collapsedFileIds.value.delete(id);
+}
+
+// Step 2's per-file column list is collapsible so a batch of several files (each potentially with
+// many columns) doesn't turn into one long unbroken scroll - collapsed by default has no value
+// here, so this only tracks which files the user has explicitly collapsed.
+const collapsedFileIds = ref<Set<string>>(new Set());
+
+function toggleFileCollapsed(id: string) {
+  const next = new Set(collapsedFileIds.value);
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+  }
+  collapsedFileIds.value = next;
+}
+
+function bulkAssignFile(
+  entry: IndicatorFileEntry,
+  dimension: CustomIndicatorDimension | "skip",
+) {
+  for (const col of entry.columns) {
+    entry.assignments[col] = dimension;
+  }
 }
 
 function parseWeightFile(file: File) {
@@ -432,14 +465,19 @@ function backToUpload() {
 }
 
 function handleUpload() {
-  if (!pcodeColumn.value || !canUpload.value) return;
-  emit("upload", {
-    pcodeColumn: pcodeColumn.value,
-    rows: parsedRows.value,
-    assignments: assignments.value,
-    mode: uploadMode.value,
-    weights: weightFileRequired.value ? weightCsvData.value : undefined,
+  if (!canUpload.value) return;
+  indicatorFiles.value.forEach((entry, index) => {
+    if (!entry.pcodeColumn) return;
+    emit("upload", {
+      pcodeColumn: entry.pcodeColumn,
+      rows: entry.rows,
+      assignments: entry.assignments,
+      mode:
+        uploadMode.value === "replace" && index === 0 ? "replace" : "append",
+      weights: weightFileRequired.value ? weightCsvData.value : undefined,
+    });
   });
+
   emit("close");
 }
 
@@ -478,7 +516,7 @@ function handleDownloadTemplate() {
       <div class="px-6 pb-6">
         <div class="flex items-center gap-2">
           <div
-            class="flex items-center gap-2 text-slate-400"
+            class="flex items-center gap-2"
             :class="{
               'text-heigit-red': step === 'upload',
               'text-green-800': step === 'assign',
@@ -572,127 +610,147 @@ function handleDownloadTemplate() {
             <div
               class="text-[0.7rem] font-bold uppercase tracking-[0.06em] text-slate-500 mb-2"
             >
-              {{ weightFileRequired ? "Files (2 required)" : "File" }}
+              {{
+                weightFileRequired ? "Files (weight file required)" : "Files"
+              }}
             </div>
 
             <div class="d-flex flex-column gap-3">
               <!-- Indicator data -->
               <div
-                class="flex items-start gap-3 py-3 px-3.5 border-[1.5px] border-slate-200 rounded-[10px] bg-white transition-colors duration-150"
+                class="flex flex-col gap-3 py-3 px-3.5 border-[1.5px] border-slate-200 rounded-[10px] bg-white transition-colors duration-150"
                 :class="{
                   'border-heigit-red bg-[#fdf2f3]': isDragging,
                   'border-green-200 bg-[#f6fdf8]':
-                    indicatorFileReady && matchIsSufficient,
+                    indicatorFilesReady && allMatchIsSufficient,
                   'border-red-200 bg-[#fef6f6]':
-                    !!parseError || (indicatorFileReady && !matchIsSufficient),
+                    indicatorFiles.some((f) => f.parseError) ||
+                    (indicatorFilesReady && !allMatchIsSufficient),
                 }"
                 @dragover.prevent="isDragging = true"
                 @dragleave.prevent="isDragging = false"
                 @drop.prevent="handleDrop"
               >
-                <v-icon
-                  :icon="
-                    indicatorFileReady && matchIsSufficient
-                      ? 'mdi-check-circle'
-                      : 'mdi-file-table-outline'
-                  "
-                  size="20"
-                  :color="
-                    indicatorFileReady && matchIsSufficient
-                      ? 'success'
-                      : 'heigit-red'
-                  "
-                  class="mt-1"
-                />
-                <div class="flex-1 min-w-0 space-y-1">
-                  <div class="text-body-2 font-weight-semibold">
-                    Indicator data
-                  </div>
-                  <div class="text-caption text-xs text-medium-emphasis">
-                    CSV with a PCODE column named "{{ pcodeField }}", plus your
-                    indicator columns.
-                  </div>
-
-                  <div
-                    v-if="isParsing"
-                    class="flex items-center text-[0.72rem] mt-1.5 text-slate-500"
-                  >
-                    <v-progress-circular
-                      indeterminate
-                      size="14"
-                      width="2"
-                      class="mr-2"
-                    />
-                    Reading file...
+                <div class="flex items-start gap-3">
+                  <v-icon
+                    :icon="
+                      indicatorFilesReady && allMatchIsSufficient
+                        ? 'mdi-check-circle'
+                        : 'mdi-file-table-outline'
+                    "
+                    size="20"
+                    :color="
+                      indicatorFilesReady && allMatchIsSufficient
+                        ? 'success'
+                        : 'heigit-red'
+                    "
+                    class="mt-1"
+                  />
+                  <div class="flex-1 min-w-0 space-y-1">
+                    <div class="text-body-2 font-weight-semibold">
+                      Indicator data
+                    </div>
+                    <div class="text-caption text-xs text-medium-emphasis">
+                      CSV(s) with a PCODE column named "{{ pcodeField }}", plus
+                      your indicator columns. Select multiple files to add
+                      several indicators at once.
+                    </div>
                   </div>
 
-                  <div
-                    v-else-if="selectedFile"
-                    class="flex items-center gap-1 mt-2 py-1 pl-2 pr-1 border border-slate-200 rounded-lg bg-slate-50 max-w-full"
-                  >
-                    <v-icon
-                      icon="mdi-file-document-outline"
-                      size="16"
-                      class="mr-1"
-                    />
-                    <span
-                      class="text-[0.75rem] font-semibold text-slate-700 truncate"
-                      >{{ selectedFile.name }}</span
-                    >
-                    <span class="text-[0.7rem] text-slate-400 shrink-0">{{
-                      formatFileSize(selectedFile.size)
-                    }}</span>
+                  <div class="shrink-0">
                     <v-btn
-                      icon="mdi-close"
-                      variant="text"
-                      size="x-small"
-                      density="comfortable"
-                      aria-label="Remove indicator file"
-                      @click="clearIndicatorFile"
+                      variant="flat"
+                      color="heigit-red"
+                      size="small"
+                      :title="`Upload Indicator CSV(s) for ${selectedCountryName}`"
+                      :aria-label="`Upload Indicator CSV(s) for ${selectedCountryName}`"
+                      class="shrink-0 text-white text-none gap-1.5 px-2 font-bold"
+                      prepend-icon="mdi-tray-arrow-up"
+                      @click="indicatorInput?.click()"
+                    >
+                      {{ indicatorFiles.length ? "Add more" : "Upload CSV" }}
+                    </v-btn>
+                    <input
+                      ref="indicatorInput"
+                      type="file"
+                      accept=".csv"
+                      multiple
+                      class="d-none"
+                      @change="handleFileInput"
                     />
-                  </div>
-
-                  <div
-                    v-if="!isParsing && indicatorFileReady"
-                    class="flex items-center text-[0.72rem] mt-1.5"
-                    :class="matchIsSufficient ? 'text-success' : 'text-error'"
-                  >
-                    {{ matchCount }} of {{ parsedRows.length }} PCODEs match the
-                    {{ selectedCountry }} boundaries.
-                    <template v-if="!matchIsSufficient">
-                      At least {{ Math.round(MATCH_THRESHOLD * 100) }}% need to
-                      match.
-                    </template>
-                  </div>
-
-                  <div
-                    v-if="parseError"
-                    class="flex items-center text-[0.72rem] mt-1.5 text-error"
-                  >
-                    {{ parseError }}
                   </div>
                 </div>
 
-                <div class="shrink-0">
-                  <v-btn
-                    variant="flat"
-                    color="heigit-red"
-                    size="small"
-                    :title="`Upload Indicator CSV  for ${selectedCountryName}`"
-                    :aria-label="`Upload Indicator CSV for ${selectedCountryName}`"
-                    class="shrink-0 text-white text-none gap-1.5 px-2 font-bold"
-                    prepend-icon="mdi-tray-arrow-up"
-                    @click="indicatorInput?.click()"
+                <div
+                  v-if="indicatorFiles.length"
+                  class="d-flex flex-column gap-1.5 pl-8"
+                >
+                  <div
+                    v-for="entry in indicatorFiles"
+                    :key="entry.id"
+                    class="flex flex-col gap-1 py-1.5 px-2 border border-slate-200 rounded-lg bg-slate-50"
                   >
-                    {{ selectedFile ? "Replace" : "Upload CSV" }}
-                  </v-btn>
-                  <input
-                    ref="indicatorInput"
-                    type="file"
-                    accept=".csv"
-                    class="d-none"
-                    @change="handleFileInput"
-                  />
+                    <div class="flex items-center gap-1">
+                      <v-icon
+                        icon="mdi-file-document-outline"
+                        size="16"
+                        class="mr-1"
+                      />
+                      <span
+                        class="text-[0.75rem] font-semibold text-slate-700 truncate flex-1 min-w-0"
+                        >{{ entry.file.name }}</span
+                      >
+                      <span class="text-[0.7rem] text-slate-400 shrink-0">{{
+                        formatFileSize(entry.file.size)
+                      }}</span>
+                      <v-btn
+                        icon="mdi-close"
+                        variant="text"
+                        size="x-small"
+                        density="comfortable"
+                        :aria-label="`Remove ${entry.file.name}`"
+                        @click="removeIndicatorFile(entry.id)"
+                      />
+                    </div>
+
+                    <div
+                      v-if="entry.isParsing"
+                      class="flex items-center text-[0.72rem] text-slate-500"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        size="14"
+                        width="2"
+                        class="mr-2"
+                      />
+                      Reading file...
+                    </div>
+
+                    <div
+                      v-else-if="entry.rows.length && entry.pcodeColumn"
+                      class="flex items-center text-[0.72rem]"
+                      :class="
+                        matchIsSufficientFor(entry)
+                          ? 'text-success'
+                          : 'text-error'
+                      "
+                    >
+                      {{ matchCountFor(entry) }} of
+                      {{ entry.rows.length }} PCODEs match the
+                      {{ selectedCountry }} boundaries.
+                      <template v-if="!matchIsSufficientFor(entry)">
+                        At least {{ Math.round(MATCH_THRESHOLD * 100) }}% need
+                        to match.
+                      </template>
+                    </div>
+
+                    <div
+                      v-if="entry.parseError"
+                      class="flex items-center text-[0.72rem] text-error"
+                    >
+                      {{ entry.parseError }}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -733,7 +791,7 @@ function handleDownloadTemplate() {
                   <div class="text-caption text-xs text-medium-emphasis">
                     CSV with "variable_name", "category" and "weight" columns.
                     Replacing the indicator set clears existing weights, so this
-                    file sets them.
+                    file sets weights for every indicator file above.
                   </div>
 
                   <div
@@ -785,7 +843,7 @@ function handleDownloadTemplate() {
                   <div
                     v-if="
                       !isParsingWeight &&
-                      indicatorFileReady &&
+                      indicatorFilesReady &&
                       weightFileProvided
                     "
                     class="flex items-center text-[0.72rem] mt-1.5"
@@ -842,7 +900,7 @@ function handleDownloadTemplate() {
 
         <!-- STEP 2 -->
         <div v-else class="d-flex flex-column gap-4">
-          <p class="text-base text-medium-emphasis mb-0">
+          <p class="text-sm text-medium-emphasis mb-0">
             <template v-if="uploadMode === 'replace'">
               Assign each column to a risk dimension so it can be weighted in
               the model. Columns left on "Skip" are ignored.
@@ -854,33 +912,80 @@ function handleDownloadTemplate() {
           </p>
 
           <div
-            class="flex flex-col border-[1.5px] border-slate-200 rounded-[10px] overflow-hidden"
+            v-for="entry in indicatorFiles"
+            :key="entry.id"
+            class="d-flex flex-column gap-1.5"
           >
             <div
-              v-for="col in assignableColumns"
-              :key="col"
-              class="flex items-center justify-between gap-3 py-2 px-3 border-b border-[#eef2f6] last:border-b-0 even:bg-[#fafbfc]"
+              v-if="indicatorFiles.length > 1"
+              class="flex items-center justify-between sticky -top-5 shadow-xs bg-slate-100 border border-slate-200 px-2 py-1 gap-1 text-sm h-12 rounded-xs w-full font-bold text-slate-700 z-10 p-0 cursor-pointer max-w-full"
+              @click="toggleFileCollapsed(entry.id)"
             >
-              <span class="text-sm font-weight-medium text-truncate">{{
-                col
-              }}</span>
-              <v-select
-                v-model="assignments[col]"
-                :items="assignmentSelectOptions"
-                item-title="label"
-                item-value="value"
-                density="compact"
-                variant="outlined"
-                color="heigit-red"
-                hide-details
-                class="flex-none w-30 text-xs  [&_.v-field__input]:text-[0.78rem] [&_.v-field__input]:font-semibold [&_.v-field__input]:min-h-9 [&_.v-field__input]:py-[0.3rem] [&_.v-field__input]:px-[0.3rem]"
+              <span class="truncate">{{ entry.file.name }}</span>
+              <v-icon
+                :icon="
+                  collapsedFileIds.has(entry.id)
+                    ? 'mdi-chevron-right'
+                    : 'mdi-chevron-down'
+                "
+                size="20"
+                class="shrink-0"
               />
             </div>
             <div
-              v-if="assignableColumns.length === 0"
-              class="text-caption text-medium-emphasis text-center py-3"
+              v-if="!collapsedFileIds.has(entry.id)"
+              class="flex flex-col ml-4 border-[1.5px] overflow-clip border-slate-200"
             >
-              No columns found besides the PCODE column.
+              <div
+                v-if="entry.columns.length > 1"
+                class="flex items-center justify-between gap-3 py-2 px-3 border-b border-[#eef2f6] bg-slate-50"
+              >
+                <span class="text-xs font-weight-medium text-slate-500"
+                  >Assign all columns to</span
+                >
+                <v-select
+                  :items="assignmentSelectOptions"
+                  item-title="label"
+                  item-value="value"
+                  density="compact"
+                  variant="outlined"
+                  color="heigit-red"
+                  hide-details
+                  placeholder="Choose..."
+                  :list-props="{ density: 'compact' }"
+                  :menu-props="{ contentClass: 'upload-assign-menu' }"
+                  class="flex-none w-30 border px-2 rounded-md [&_.v-field__input]:text-[0.7rem] [&_.v-field__input]:font-medium [&_.v-field__input]:min-h-8 [&_.v-field__input]:py-[0.2rem] [&_.v-field__input]:px-[0.3rem]"
+                  @update:model-value="bulkAssignFile(entry, $event)"
+                />
+              </div>
+              <div
+                v-for="col in entry.columns"
+                :key="col"
+                class="flex items-center justify-between gap-3 py-2 px-3 border-b border-[#eef2f6] last:border-b-0 even:bg-[#fafbfc]"
+              >
+                <span class="text-sm font-weight-medium text-truncate">{{
+                  col
+                }}</span>
+                <v-select
+                  v-model="entry.assignments[col]"
+                  :items="assignmentSelectOptions"
+                  item-title="label"
+                  item-value="value"
+                  density="compact"
+                  variant="outlined"
+                  color="heigit-red"
+                  hide-details
+                  :list-props="{ density: 'compact' }"
+                  :menu-props="{ contentClass: 'upload-assign-menu' }"
+                  class="flex-none w-30 border px-2 rounded-md [&_.v-field__input]:text-[0.7rem] [&_.v-field__input]:font-medium [&_.v-field__input]:min-h-8 [&_.v-field__input]:py-[0.2rem] [&_.v-field__input]:px-[0.3rem]"
+                />
+              </div>
+              <div
+                v-if="entry.columns.length === 0"
+                class="text-caption text-medium-emphasis text-center py-3"
+              >
+                No columns found besides the PCODE column.
+              </div>
             </div>
           </div>
 
@@ -889,7 +994,7 @@ function handleDownloadTemplate() {
             type="warning"
             variant="tonal"
             density="compact"
-            class="rounded-lg text-sm  flex items-center p-2 gap-2"
+            class="rounded-lg text-sm flex items-center p-2 gap-2"
           >
             Assign at least one column to a dimension to upload.
           </v-alert>
@@ -899,7 +1004,7 @@ function handleDownloadTemplate() {
             type="info"
             variant="tonal"
             density="compact"
-            class="rounded-lg text-body-2 p-2 gap-2"
+            class="rounded-lg text-sm p-2 gap-2"
           >
             No column assigned to:
             {{ missingRequiredDimensions.map((d) => d.label).join(", ") }}. Risk
@@ -911,7 +1016,7 @@ function handleDownloadTemplate() {
             :type="weightMatchIsSufficient ? 'success' : 'error'"
             variant="tonal"
             density="compact"
-            class="rounded-lg text-body-2 p-2 gap-2"
+            class="rounded-lg text-sm p-2 gap-2"
           >
             <span v-if="weightMatchIsSufficient">
               {{ weightMatchResult.matched }} of {{ weightMatchResult.total }}
@@ -997,5 +1102,25 @@ function handleDownloadTemplate() {
 .mode-option--active {
   border-color: #ca2333;
   background-color: #fdf2f3;
+}
+.alert-small-icon :deep(.v-alert__icon) {
+  font-size: 0.075rem;
+}
+</style>
+
+<style>
+.upload-assign-menu {
+  border-radius: 10px;
+  font-size: 0.7rem !important;
+}
+
+.upload-assign-menu .v-list {
+  padding: 0;
+}
+
+.upload-assign-menu .v-list-item {
+  min-height: 32px;
+  padding-inline: 10px;
+  font-size: 0.7rem !important;
 }
 </style>

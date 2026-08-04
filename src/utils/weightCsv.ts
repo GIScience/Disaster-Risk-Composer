@@ -62,7 +62,7 @@ export interface WeightMatchResult {
 // (see getRawName in useIndicatorWeights.ts) - an uploaded indicator column can already be named
 // with that prefix (e.g. "vul_female_pop", matching the sample data convention), so strip it
 // before looking the name up in the weight file.
-function stripDimensionPrefix(name: string, category: string): string {
+export function stripDimensionPrefix(name: string, category: string): string {
   const prefix = `${category}_`;
   return name.startsWith(prefix) ? name.slice(prefix.length) : name;
 }

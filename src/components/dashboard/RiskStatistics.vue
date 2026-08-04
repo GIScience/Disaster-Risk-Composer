@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onBeforeUnmount, watch } from "vue";
+import { computed, ref, nextTick, onMounted, onBeforeUnmount, watch } from "vue";
 import { useIndicatorColumns } from "@/composables/useIndicatorColumns";
 import { useIndicatorWeights } from "@/composables/useIndicatorWeights";
 import RankingTab from "@/components/dashboard/statistics/RankingTab.vue";
@@ -24,6 +24,7 @@ const emit = defineEmits<{
   (e: "region-hover", pcode: string | null): void;
   (e: "region-click", pcode: string): void;
   (e: "update:indicatorWeights", val: Record<string, number>): void;
+  (e: "reset-custom-data"): void;
 }>();
 
 const activeTab = ref<
@@ -74,6 +75,14 @@ const {
   indicatorDimensionGroups,
   dimensionSummaryText,
 } = useIndicatorColumns(props);
+
+// True as soon as any custom upload (append or replace) has added/replaced indicator columns
+// for this country - drives the "Reset to Default" button in the Indicators tab.
+const hasCustomUpload = computed(
+  () =>
+    !!props.customIndicatorsReplaced ||
+    indicatorCols.value.some((c) => c.includes("_custom_")),
+);
 
 const {
   getWeight,
@@ -176,6 +185,8 @@ const {
         :is-group-active="isGroupActive"
         :toggle-group="toggleGroup"
         :format-col-name="formatColName"
+        :has-custom-upload="hasCustomUpload"
+        @reset-custom-data="emit('reset-custom-data')"
       />
 
       <WeightsTab
