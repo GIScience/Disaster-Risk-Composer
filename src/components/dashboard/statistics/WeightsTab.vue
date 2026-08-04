@@ -180,7 +180,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
                   :style="{ accentColor: dim.color }"
                   min="0"
                   max="5"
-                  step="0.1"
+                  step="0.01"
                   :value="getWeight(col)"
                   @input="
                     (e) =>
@@ -192,7 +192,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
                 />
                 <span
                   class="text-[10px] font-bold tabular-nums min-w-[20px] text-right"
-                  >{{ getWeight(col).toFixed(1) }}</span
+                  >{{ getWeight(col).toFixed(2) }}</span
                 >
               </div>
             </div>

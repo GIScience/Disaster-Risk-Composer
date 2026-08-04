@@ -4,6 +4,18 @@ export interface WeightCsvEntry {
   activated: boolean | null;
 }
 
+// Also used by useRiskLogic.ts to derive indicator column names from uploaded file headers.
+// Defined here (rather than in useRiskLogic.ts) so parseWeightsCSVText can normalize
+// "variable_name" values the same way, without a circular import between the two modules.
+export function sanitizeIndicatorName(name: string) {
+  const cleaned = name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  return cleaned || "indicator";
+}
+
 // Shared by the Weights tab's upload/download flow (useIndicatorWeights.ts) and the "replace"
 // upload flow (UploadModal.vue), so both parse the same "variable_name,category,weight,
 // direction,activated" CSV shape identically.
@@ -33,7 +45,11 @@ export function parseWeightsCSVText(text: string): Record<string, WeightCsvEntry
         ? parts[actIdx].toUpperCase() === "TRUE"
         : null;
     if (rawName && category && !isNaN(weight)) {
-      csvData[rawName] = {
+      // Sanitized the same way indicator column names are (see sanitizeIndicatorName), so a
+      // weight file's "variable_name" matches regardless of case/punctuation differences from
+      // the uploaded indicator column header - otherwise entries that differ only in casing or
+      // spacing silently miss their lookup and the indicator falls back to the 1.0 default.
+      csvData[sanitizeIndicatorName(rawName)] = {
         category,
         weight: Math.min(5, Math.max(0, weight)),
         activated,

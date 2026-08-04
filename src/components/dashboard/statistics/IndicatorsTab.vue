@@ -210,7 +210,7 @@ function getTooltipInfo(col: string): string {
                 <span
                   class="text-[10px] font-bold tabular-nums min-w-[20px] text-right"
                   :class="{ 'text-slate-300': !isSubIndicatorActive(col) }"
-                  >{{ getWeight(col).toFixed(1) }}</span
+                  >{{ getWeight(col).toFixed(2) }}</span
                 >
                 <input
                   type="range"
@@ -218,7 +218,7 @@ function getTooltipInfo(col: string): string {
                   :style="{ accentColor: dim.color }"
                   min="0"
                   max="5"
-                  step="0.1"
+                  step="0.01"
                   :value="getWeight(col)"
                   @input="
                     (e) =>

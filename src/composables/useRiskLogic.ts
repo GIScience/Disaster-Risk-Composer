@@ -14,7 +14,13 @@ import {
   type RiskViewMode,
 } from "../enums/dimensions";
 import { useRiskMapStore } from "../store/riskMapStore";
-import { stripDimensionPrefix, type WeightCsvEntry } from "../utils/weightCsv";
+import {
+  stripDimensionPrefix,
+  sanitizeIndicatorName,
+  type WeightCsvEntry,
+} from "../utils/weightCsv";
+
+export { sanitizeIndicatorName };
 
 export type { RiskViewMode };
 
@@ -63,15 +69,6 @@ function persistCustomUpload(countryCode: string, payload: CustomUploadPayload) 
   } catch (err) {
     console.warn("Could not persist custom upload to localStorage", err);
   }
-}
-
-export function sanitizeIndicatorName(name: string) {
-  const cleaned = name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-  return cleaned || "indicator";
 }
 
 export function useRiskLogic() {
