@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { RouterLink, useRouter, useRoute } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import logo from "@/assets/risk-assessment-lens-logo.png";
 import { useRiskMapStore } from "@/store/riskMapStore";
@@ -18,7 +18,6 @@ const props = withDefaults(
   },
 );
 
-const route = useRoute();
 const router = useRouter();
 
 const { selectedCountry, selectedDisaster, riskViewMode } =
