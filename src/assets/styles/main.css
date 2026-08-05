@@ -28,8 +28,10 @@
 
 
   --heigit-red: #cc0130;
+
   --bg-color: #ffffff;
   --text-color: #0f172a;
+  
 
   font-family: var(--font-family);
   background-color: var(--color-bg-primary);

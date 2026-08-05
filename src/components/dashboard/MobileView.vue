@@ -5,7 +5,7 @@ import RiskStatistics from "@/components/dashboard/RiskStatistics.vue";
 import AboutModal from "@/components/dashboard/modals/AboutModal.vue";
 import FloatingLogo from "@/components/FloatingLogo.vue";
 import { useRiskLogic } from "@/composables/useRiskLogic";
-import logo from "@/assets/DIRC-Logo.png";
+import logo from "@/assets/DIRC-Logo.svg";
 
 const {
   selectedCountry,
@@ -60,8 +60,8 @@ function selectDisaster(disaster: string) {
     <header
       class="bg-white border-b border-slate-200 px-4 py-4 flex items-center justify-between z-50"
     >
-      <div @click="goHome" class="flex flex-col cursor-pointer">
-        <img :src="logo" alt="" class="h-6 w-full object-contain shrink-0" />
+      <div @click="goHome" class="flex text-start cursor-pointer">
+        <img :src="logo" alt="" class="h-10 w-full object-contain shrink-0" />
       </div>
       <div class="flex items-center gap-2">
         <button

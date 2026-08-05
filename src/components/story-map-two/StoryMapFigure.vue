@@ -9,7 +9,7 @@ const imageSrc1 = `${import.meta.env.BASE_URL}${source.replace(/^\//, "")}`;
 </script>
 
 <template>
-  <div class="flex h-[34rem] items-center justify-center bg-[#f3f4f2]">
+  <div>
     <img
       :src="imageSrc1"
       :alt="figure.alt"

@@ -100,6 +100,7 @@ export interface Section {
   id: string;
   number: number;
   title: string;
+  subtitle?: string;
   hasInfoIcon?: boolean;
   icon?: string;
   control?: Control;
@@ -107,7 +108,7 @@ export interface Section {
   figure?: Figure;
   dataset?: Dataset;
   legend?: Legend;
-  map: MapConfig;
+  map?: MapConfig;
 }
 
 export interface layerConfigType {
@@ -149,7 +150,7 @@ export interface SliderTick {
 }
 
 export interface Note {
-  variant: string;
+  variant: "info" | "warning";
   icon: string;
   body: string;
 }

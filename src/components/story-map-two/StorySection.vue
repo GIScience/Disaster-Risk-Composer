@@ -5,6 +5,7 @@ import { useReveal } from "@/composables/useReveal";
 import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
 import StoryMapFigure from "./StoryMapFigure.vue";
+import RichText from "./RichText.vue";
 import Icon from "./Icon.vue";
 import type { layerConfigType } from "@/types/story-map";
 
@@ -34,16 +35,24 @@ watch(defaultLayerConfig, (config) => {
   >
     <div class="flex flex-col gap-5 lg:gap-4">
       <div class="p-3 lg:flex-none">
-        <h3 class="flex items-center gap-1.5 text-sm font-bold text-gray-900">
-          <span class="text-gray-400">{{ section.number }}.</span>
-          {{ section.title }}
-          <v-icon
-            v-if="section.hasInfoIcon"
-            :icon="section.icon"
-            class="h-3.5 w-3.5 text-heigit-red"
-          />
-        </h3>
+        <div>
+          <h3
+            class="flex items-center gap-1.5 text-base font-bold text-gray-900"
+          >
+            <span class="text-gray-400">{{ section.number }}.</span>
+            {{ section.title }}
+            <v-icon
+              v-if="section.hasInfoIcon"
+              :icon="section.icon"
+              class="h-3.5 w-3.5 text-heigit-red"
+            />
+          </h3>
+          <p v-if="section.subtitle" class="mt-1 text-sm text-gray-500">
+            {{ section.subtitle }}
+          </p>
+        </div>
 
+        <!-- Map Layer Control -->
         <StoryControl
           v-if="section.control"
           class="mt-4"
@@ -51,6 +60,20 @@ watch(defaultLayerConfig, (config) => {
           @change-layer="(config) => (layerConfig = config)"
         />
 
+        <!-- Map -->
+        <StoryMapPanel
+          v-if="section.map"
+          class="min-h-[300px] min-w-0 flex-1 my-4"
+          :control="section.map"
+          :layer="layerConfig"
+          :visible="revealed"
+        >
+          <template v-if="$slots.map" #default="{ layerId }">
+            <slot name="map" :layer-id="layerId" />
+          </template>
+        </StoryMapPanel>
+
+        <!-- Data source -->
         <div
           v-if="section.dataset"
           class="mt-3 flex items-center gap-2 text-sm"
@@ -66,33 +89,26 @@ watch(defaultLayerConfig, (config) => {
           </div>
         </div>
 
+        <!-- Note -->
         <div
           v-if="section.note"
-          class="mt-4 flex gap-2 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-gray-600"
+          class="mt-4 flex gap-2 rounded-lg p-3 text-xs leading-relaxed"
+          :class="
+            section.note.variant === 'warning'
+              ? 'bg-amber-50 text-amber-800'
+              : 'bg-blue-50 text-gray-600'
+          "
         >
-          <v-icon
-            :icon="section.note.icon"
-            class="mt-0.5 h-3.5 w-3.5 flex-none text-heigit-red"
-          />
-          <p>{{ section.note.body }}</p>
+          <RichText :text="section.note.body" />
         </div>
       </div>
 
+      <!-- Figure -->
       <StoryMapFigure
         v-if="section.figure"
-        class="mx-auto w-full max-w-3xl rounded-md border border-gray-200 bg-gray-100"
+        class="mx-auto w-full max-w-3xl rounded-md"
         :figure="section.figure"
       />
-      <StoryMapPanel
-        class="min-h-[300px] min-w-0 flex-1"
-        :control="section.map"
-        :layer="layerConfig"
-        :visible="revealed"
-      >
-        <template v-if="$slots.map" #default="{ layerId }">
-          <slot name="map" :layer-id="layerId" />
-        </template>
-      </StoryMapPanel>
     </div>
   </section>
 </template>

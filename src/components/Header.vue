@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import logo from "@/assets/DIRC-Logo.png";
+import logo from "@/assets/DIRC-Logo.svg";
 import { useRiskMapStore } from "@/store/riskMapStore";
 
 const props = withDefaults(
@@ -13,7 +13,7 @@ const props = withDefaults(
   }>(),
   {
     title: "Disaster Risk Composer",
-    subtitle: "",
+    subtitle: "Visualizing risk potential of natural hazards",
     homeLink: "/",
   },
 );
@@ -42,7 +42,14 @@ const homeTarget = computed(() => {
         :to="homeTarget"
         class="flex items-center gap-3 min-w-0 group shrink-0"
       >
-        <img :src="logo" alt="" class="h-10 w-full object-contain shrink-0" />
+        <img :src="logo" alt="" class="h-14 w-14 object-contain shrink-0" />
+        <div class="min-w-0">
+          <h1
+            class="text-lg font-bold text-dirc-text truncate group-hover:text-heigit-400 transition-colors"
+          >
+            {{ title }}
+          </h1>
+        </div>
       </RouterLink>
       <slot name="actions">
         <button

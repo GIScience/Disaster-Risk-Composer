@@ -60,7 +60,7 @@
     },
     "header": {
       "title": "The Core Concept: What does \u201cchildren under 5 exposed to a 50-year flood event above 30 cm\u201d mean ?",
-      "description": "The Concept: What does it actually mean when we say  \u201cChildren under 5 exposed to a 50-year flood event above 30 cm\u201d? It sounds complex, but it’s simply a combination of Hazard (where the water goes) + Population (who is there). Let's break down how we calculate this, step by step, without the GIS jargon. It estimates how many children under 5 are living in areas that could be flooded with more than 30 cm of water during a flood that has a 1% chance of being exceeded in any given year. To make this actionable, we combine three things: Flood Hazard + Population = Exposed Population"
+      "description": "It sounds complex, but it’s simply a combination of Hazard (where the water goes) + Population (who is there). Let's break down how we calculate this, step by step, without the GIS jargon. It estimates how many children under 5 are living in areas that could be flooded with more than 30 cm of water during a flood that has a 1% chance of being exceeded in any given year. To make this actionable, we combine three things: Flood Hazard + Population = Exposed Population"
     },
     "sections": [
       {
@@ -139,56 +139,14 @@
         "number": 2,
         "title": "Flood-depth threshold",
         "hasInfoIcon": true,
-        "control": {
-          "type": "segmented",
-          "id": "overlay-type",
-          "options": [
-            {
-              "value": "30",
-              "label": "30cm",
-              "selected": true
-            }
-          ]
-        },
         "note": {
           "variant": "info",
           "icon": "mdi-information",
           "body": "Depth matters for survival and logistics. Only grid cells with a flood depth strictly above 30 cm are considered in this indicator, filtering out areas with minor water accumulation."
         },
-        "map": {
-          "layerId": "flood-depth-50yr",
-          "legend": {
-            "title": "Flood depth (m)",
-            "type": "categorical",
-            "items": [
-              {
-                "color": "#eff3ff",
-                "label": "0 \u2013 0.3 (excluded)",
-                "excluded": true
-              },
-              {
-                "color": "#bdd7e7",
-                "label": "0.3 \u2013 0.5"
-              },
-              {
-                "color": "#6baed6",
-                "label": "0.5 \u2013 1.0"
-              },
-              {
-                "color": "#3182bd",
-                "label": "1.0 \u2013 2.0"
-              },
-              {
-                "color": "#08519c",
-                "label": "> 2.0"
-              }
-            ]
-          },
-          "controls": [
-            "home",
-            "zoom-in",
-            "zoom-out"
-          ]
+        "figure": {
+          "source": "/flood_impact_diagram.png",
+          "alt": "Flood-depth threshold illustration"
         }
       },
       {

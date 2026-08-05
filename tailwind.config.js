@@ -15,6 +15,9 @@ export default {
           "red-dark": "#a81d2a",
           "red-light": "#f9d5b6",
         },
+        dirc:{
+           "text": "#515161",
+        }
       },
       fontFamily: {
         sans: ["Inter", "Roboto", "Archivo", "sans-serif"],
