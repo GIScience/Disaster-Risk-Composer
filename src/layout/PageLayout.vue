@@ -2,6 +2,7 @@
 import { watchEffect } from "vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
+import { cn } from "@/utils/cn";
 
 const DEFAULT_DESCRIPTION =
   "Visualizing risk potential of natural hazards using open humanitarian data.";
@@ -13,11 +14,13 @@ const props = withDefaults(
     description?: string;
     image?: string;
     fullHeight?: boolean;
+    className?: string;
   }>(),
   {
-    title: "Hazard Risk Dashboard",
+    title: "Disaster Risk Composer",
     description: DEFAULT_DESCRIPTION,
     fullHeight: false,
+    className: "",
   },
 );
 
@@ -52,10 +55,11 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div
-    class="flex flex-col bg-white"
-    :class="fullHeight ? 'h-screen overflow-hidden' : 'min-h-screen'"
-  >
+ <div
+  :class="cn('flex flex-col bg-white',
+    fullHeight ? 'h-screen overflow-hidden' : 'min-h-screen',
+    className)"
+>
     <!-- Maintenance Banner -->
     <div
       class="bg-amber-50 border-b border-amber-300 px-4 py-3 text-center text-sm text-amber-900 flex items-center justify-center gap-2 shrink-0"

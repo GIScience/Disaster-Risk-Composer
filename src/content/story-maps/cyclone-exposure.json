@@ -2,6 +2,7 @@
     "meta": {
         "id": "cyclone-story-map",
         "type": "story-map",
+        "category": "cyclone",
         "version": 1,
         "locale": "en",
         "updatedAt": "2026-07-07",

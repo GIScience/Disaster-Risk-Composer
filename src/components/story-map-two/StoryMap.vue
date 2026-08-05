@@ -13,6 +13,15 @@ const sm = computed(() => props.config.storyMap);
 const { activeId, scrollTo } = useScrollSpy(
   props.config.storyMap.sections.map((s) => s.id),
 );
+
+const riverFlood = "/river_flood.png";
+const imageSrc1 = `${import.meta.env.BASE_URL}${riverFlood.replace(/^\//, "")}`;
+
+const overview = "/flood_impact_diagram.png";
+const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
+
+const explanation = "/flood_exposure_explanation.svg";
+const imageSrc3 = `${import.meta.env.BASE_URL}${explanation.replace(/^\//, "")}`;
 </script>
 
 <template>
@@ -83,6 +92,21 @@ const { activeId, scrollTo } = useScrollSpy(
         </div>
 
         <StoryCallouts class="mt-4" :callouts="config.footer.callouts" />
+        <section class="mt-8">
+          <h2>How Theory Becomes Reality</h2>
+          <img
+            :src="imageSrc1"
+            alt="River Flood"
+            class="mt-4 w-full rounded-md border border-gray-200 bg-gray-100"
+          />
+          <div></div>
+          <img
+            :src="imageSrc2"
+            alt="Overview of Flood Exposure"
+            class="mt-4 w-full rounded-md border border-gray-200 bg-gray-100"
+          />
+          <!-- <h3>Participatory Mapping for Disaster Risk</h3> -->
+        </section>
       </main>
     </div>
   </div>

@@ -1,4 +1,4 @@
-# Hazard Risk Composer
+# Disaster Risk Composer
 
 Live: https://giscience.github.io/Hazard-Risk-Composer/
 

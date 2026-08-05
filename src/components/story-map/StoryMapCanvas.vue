@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
 <template>
   <figure ref="el" data-no-reveal class="h-full">
     <div
-      class="relative overflow-hidden h-[calc(100vh_-_40rem)] rounded-md border border-slate-200 bg-slate-100 shadow-sm transition-all duration-700 ease-out"
+      class="relative overflow-hidden h-[clamp(320px,55vh,600px)] rounded-md border border-slate-200 bg-slate-100 shadow-sm transition-all duration-700 ease-out"
       :class="isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.98]'"
     >
       <!-- Layer Opacity Control -->

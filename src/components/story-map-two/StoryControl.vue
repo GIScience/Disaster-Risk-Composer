@@ -41,7 +41,7 @@ function handleSegChange(value: string) {
         v-for="opt in control.options"
         :key="opt.value"
         type="button"
-        @click="segValue = opt.value"
+        @click="handleSegChange(opt.value)"
         class="flex flex-col items-center gap-1.5 rounded-lg border p-3 text-center transition-colors"
         :class="
           segValue === opt.value

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
+import type { PendingWeightUpload } from "@/composables/useIndicatorWeights";
+import WeightUploadModal from "@/components/dashboard/modals/WeightUploadModal.vue";
 
 const props = defineProps<{
   isMobile?: boolean;
@@ -13,6 +15,9 @@ const props = defineProps<{
   resetDimensionWeights: (cols: string[]) => void;
   downloadWeightsCSV: () => void;
   uploadWeightsCSV: (event: Event) => void;
+  pendingWeightUpload: PendingWeightUpload | null;
+  confirmWeightUpload: () => void;
+  cancelWeightUpload: () => void;
 }>();
 
 const uploadInput = ref<HTMLInputElement | null>(null);
@@ -206,6 +211,17 @@ const uploadInput = ref<HTMLInputElement | null>(null);
         </div>
       </div>
     </div>
+
+    <WeightUploadModal
+      v-if="pendingWeightUpload"
+      :file-name="pendingWeightUpload.fileName"
+      :entry-count="pendingWeightUpload.entryCount"
+      :parse-error="pendingWeightUpload.parseError"
+      :match-result="pendingWeightUpload.matchResult"
+      :format-col-name="formatColName"
+      @cancel="cancelWeightUpload"
+      @confirm="confirmWeightUpload"
+    />
   </section>
 </template>
 

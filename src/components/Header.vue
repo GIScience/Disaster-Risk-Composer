@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import logo from "@/assets/risk-assessment-lens-logo.png";
+import logo from "@/assets/DIRC-Logo.png";
 import { useRiskMapStore } from "@/store/riskMapStore";
 
 const props = withDefaults(
@@ -12,8 +12,8 @@ const props = withDefaults(
     homeLink?: string;
   }>(),
   {
-    title: "Hazard Risk Dashboard",
-    subtitle: "Visualizing risk potential of natural hazards",
+    title: "Disaster Risk Composer",
+    subtitle: "",
     homeLink: "/",
   },
 );
@@ -42,25 +42,12 @@ const homeTarget = computed(() => {
         :to="homeTarget"
         class="flex items-center gap-3 min-w-0 group shrink-0"
       >
-        <img :src="logo" alt="" class="h-9 w-9 object-contain shrink-0" />
-        <div class="flex flex-col items-start leading-tight text-left min-w-0">
-          <span
-            class="font-extrabold text-slate-900 tracking-tight text-lg truncate group-hover:text-heigit-red transition-colors"
-          >
-            {{ title }}
-          </span>
-          <span
-            v-if="subtitle"
-            class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 truncate"
-          >
-            {{ subtitle }}
-          </span>
-        </div>
+        <img :src="logo" alt="" class="h-10 w-full object-contain shrink-0" />
       </RouterLink>
       <slot name="actions">
         <button
           @click="router.push('/')"
-          class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-red border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
+          class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-200 border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
         >
           <svg
             class="h-3.5 w-3.5"

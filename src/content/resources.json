@@ -1,9 +1,9 @@
 {
   "header": {
-    "title": "Hazard Risk Dashboard",
+    "title": "Disaster Risk Composer",
     "subtitle": "Visualizing risk potential of natural hazards"
   },
-  "introHtml": "The <strong>Hazard Risk Dashboard</strong> delivers insights into the spatial distribution of risk from various natural hazards. Developed by <strong>HeiGIT</strong>, this tool helps visualize regions that are highly exposed or vulnerable combined with a lack of coping capacity, empowering decision-makers to identify areas requiring proactive humanitarian or disaster relief interventions.",
+  "introHtml": "The <strong>Disaster Risk Composer Dashboard</strong> delivers insights into the spatial distribution of risk from various natural hazards. Developed by <strong>HeiGIT</strong>, this tool helps visualize regions that are highly exposed or vulnerable combined with a lack of coping capacity, empowering decision-makers to identify areas requiring proactive humanitarian or disaster relief interventions.",
   "methodology": {
     "title": "Methodology",
     "description": "Access the underlying GAIA pipeline and training center.",

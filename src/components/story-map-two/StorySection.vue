@@ -4,6 +4,7 @@ import type { Section } from "@/types/story-map";
 import { useReveal } from "@/composables/useReveal";
 import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
+import StoryMapFigure from "./StoryMapFigure.vue";
 import Icon from "./Icon.vue";
 import type { layerConfigType } from "@/types/story-map";
 
@@ -77,6 +78,11 @@ watch(defaultLayerConfig, (config) => {
         </div>
       </div>
 
+      <StoryMapFigure
+        v-if="section.figure"
+        class="mx-auto w-full max-w-3xl rounded-md border border-gray-200 bg-gray-100"
+        :figure="section.figure"
+      />
       <StoryMapPanel
         class="min-h-[300px] min-w-0 flex-1"
         :control="section.map"

@@ -1,22 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 :root {
-  --font-family: 'Inter', 'Roboto', 'Archivo', system-ui, sans-serif;
+  --font-family: "Inter", "Roboto", "Archivo", system-ui, sans-serif;
   --line-height: 1.5;
   --font-weight: 400;
+
 
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f8fafc;
   --color-text-primary: #0f172a;
   --color-text-secondary: #64748b;
-  --color-accent: #ca2333;
-  --color-accent-hover: #a81d2a;
   --color-border: #e2e8f0;
 
-  /* Compatibility with legacy component styles */
-  --heigit-red: #ca2333;
+
+  --color-accent-50: #f9d5b6;
+  --color-accent-100: #ffd156;
+  --color-accent-200: #f6a44d;
+  --color-accent-300: #e86b3e;
+  --color-accent: #cc0130;
+  --color-accent-hover: #a81d2a;
+
+  --color-primary: #cc0130;
+  --color-primary-light: #f9d5b6;
+  --color-primary-medium: #f6a44d;
+  --color-primary-dark: #e86b3e;
+
+
+  --heigit-red: #cc0130;
   --bg-color: #ffffff;
   --text-color: #0f172a;
 

@@ -2,6 +2,7 @@
   "meta": {
     "id": "flood-exposure-story-map",
     "type": "story-map",
+    "category": "flood",
     "version": 1,
     "locale": "en",
     "updatedAt": "2026-07-07",
@@ -12,7 +13,7 @@
       "image": "/floods.jpeg",
       "alt": "Flood hazard illustration",
       "title": "Flood Exposure Story Map For Myanmar, Thailand",
-      "subtitle": "In disaster risk management, knowing where the water flows is only half the challenge; knowing who is in its path is what saves lives. This guide explains how we turn complex flood models into actionable humanitarian insights. Effective humanitarian response requires anticipating the human cost of a disaster. This Story Map breaks down how we combine global flood simulations with demographic data to identify vulnerable communities before the water rises"
+      "subtitle": "Anticipating the human cost of a disaster saves lives. We combine global flood models with demographic data to turn complex forecasts into actionable humanitarian insights—identifying who is in harm's way before the water rises."
     },
     "sidebar": {
       "icon": "mdi-home-flood",
@@ -240,25 +241,53 @@
           "id": "population-group",
           "options": [
             {
-              "value": "total",
-              "label": "Total population",
-              "icon": "mdi-human-male-female-child"
-            },
-            {
-              "value": "women",
-              "label": "Women",
-              "icon": "mdi-human-female-female"
-            },
-            {
-              "value": "child",
+              "value": "10",
+              "icon": "mdi-baby-face-outline",
               "label": "Children under 5",
-              "icon": "mdi-human-child",
-              "selected": true
+              "selected": true,
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-children-under5",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_children_u5_2030_constrained_cog.tif"
+              }
             },
             {
               "value": "elderly",
               "label": "Elderly (65+)",
-              "icon": "mdi-human-cane"
+              "icon": "mdi-human-male-female",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-elderly",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_elderly_2030_constrained_cog.tif"
+              }
+            },
+            {
+              "value": "female-under5",
+              "label": "Female under 5",
+              "icon": "mdi-human-female",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-female",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_female_u5_2030_constrained_cog.tif"
+              }
+            },
+            {
+              "value": "",
+              "label": "Total population",
+              "icon": "mdi-account-group",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-total",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
+              }
             }
           ]
         },
@@ -273,7 +302,8 @@
             "home",
             "zoom-in",
             "zoom-out"
-          ]
+          ],
+          "showOpacityControl": true
         }
       },
       {
@@ -369,6 +399,10 @@
           "Most importantly, it shows potential exposure, not actual physical impacts, injuries, or damages."
         ]
       }
-    ]
+    ],
+    "figure": {
+      "source": "/flood_impact_diagram.svg",
+      "alt": "Flood exposure figure"
+    }
   }
 }

@@ -94,6 +94,9 @@ const {
   resetDimensionWeights,
   downloadWeightsCSV,
   uploadWeightsCSV,
+  pendingWeightUpload,
+  confirmWeightUpload,
+  cancelWeightUpload,
 } = useIndicatorWeights(props, emit, indicatorDimensionGroups);
 </script>
 
@@ -201,6 +204,9 @@ const {
         :reset-dimension-weights="resetDimensionWeights"
         :download-weights-c-s-v="downloadWeightsCSV"
         :upload-weights-c-s-v="uploadWeightsCSV"
+        :pending-weight-upload="pendingWeightUpload"
+        :confirm-weight-upload="confirmWeightUpload"
+        :cancel-weight-upload="cancelWeightUpload"
       />
 
       <TableTab

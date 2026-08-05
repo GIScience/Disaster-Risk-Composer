@@ -6,18 +6,19 @@ export interface StoryMapConfig {
   app: AppConfig;
   storyMap: StoryMapContent;
   footer: FooterConfig;
-  hero:{
+  hero: {
     title: string;
     subtitle: string;
     alt: string;
     image: string;
-  }
+  };
 }
 
 export interface Meta {
   id: string;
   type: string;
   version: number;
+  category: string;
   locale: string;
   updatedAt: string;
   notes?: string;
@@ -103,6 +104,7 @@ export interface Section {
   icon?: string;
   control?: Control;
   note?: Note;
+  figure?: Figure;
   dataset?: Dataset;
   legend?: Legend;
   map: MapConfig;
@@ -151,6 +153,11 @@ export interface Note {
   icon: string;
   body: string;
 }
+
+export interface Figure {
+  source: string;
+  alt: string;
+}
 export interface Dataset {
   icon: string;
   title: string;
@@ -191,6 +198,7 @@ export interface ResultRow {
 
 export interface FooterConfig {
   callouts: Callout[];
+  figure: Figure;
 }
 export interface Callout {
   variant: "positive" | "warning";

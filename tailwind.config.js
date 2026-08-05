@@ -6,9 +6,14 @@ export default {
     extend: {
       colors: {
         heigit: {
-          red: "#ca2333",
+          50: "#f9d5b6",
+          100: "#ffd156",
+          200: "#f6a44d",
+          300: "#e86b3e",
+          400: "#cc0130",
+          red: "#cc0130",
           "red-dark": "#a81d2a",
-          "red-light": "#f2d7d9",
+          "red-light": "#f9d5b6",
         },
       },
       fontFamily: {
