@@ -20,8 +20,6 @@ const imageSrc1 = `${import.meta.env.BASE_URL}${riverFlood.replace(/^\//, "")}`;
 const overview = "/flood_impact_diagram.png";
 const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
 
-const explanation = "/flood_exposure_explanation.svg";
-const imageSrc3 = `${import.meta.env.BASE_URL}${explanation.replace(/^\//, "")}`;
 </script>
 
 <template>
