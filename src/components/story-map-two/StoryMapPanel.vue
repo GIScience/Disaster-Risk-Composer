@@ -28,10 +28,14 @@ defineProps<{
       interactive
       :rasterMin="0"
       :rasterMax="1"
-      :rasterUrl="layer.sourceUrl"
+      :rasterUrl="layer.type === 'vector' ? undefined : layer.sourceUrl"
       :layer-id="layer.layerId"
       :raster-color-scheme="layer.colorScheme"
       :mode="layer.mode"
+      :vectorUrl="layer.type === 'vector' ? layer.sourceUrl : undefined"
+      :vectorCategoryProperty="layer.categoryProperty"
+      :vectorCategories="layer.categories"
+      :vectorSourceLayer="layer.sourceLayer"
       :showOpacityControl="control?.showOpacityControl"
       :visible="visible"
     />

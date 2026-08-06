@@ -159,20 +159,22 @@
           "id": "overlay-type",
           "options": [
             {
-              "value": "population",
-              "label": "Population",
-              "selected": true
-            },
-            {
               "value": "facilities",
-              "label": "Facilities"
+              "label": "Facilities",
+               "selected": true,
+              "layerConfig": {
+                "type": "vector",
+                "layerId": "flood-facilities-pois",
+                "sourceUrl": "/data/myanmar_gaia_pois.geojson",
+                "categoryProperty": "amenity",
+                "categories": [
+                  { "value": "school", "label": "School", "icon": "mdi-school", "color": "#2563eb" },
+                  { "value": "hospital", "label": "Hospital", "icon": "mdi-hospital-box", "color": "#dc2626" },
+                  { "value": "clinic", "label": "Clinic", "icon": "mdi-medical-bag", "color": "#059669" }
+                ]
+              }
             }
           ]
-        },
-        "dataset": {
-          "icon": "mdi-grid",
-          "title": "Population grid (100m)",
-          "source": "WorldPop (2020)"
         },
         "note": {
           "variant": "info",
@@ -181,6 +183,8 @@
         },
         "map": {
           "layerId": "population-grid-100m",
+          "center": [96, 19],
+          "zoom": 5.5,
           "controls": [
             "home",
             "zoom-in",

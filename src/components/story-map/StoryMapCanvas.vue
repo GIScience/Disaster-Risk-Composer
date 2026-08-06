@@ -2,7 +2,9 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import Map from "@/components/map/map.vue";
 import COGLayer from "@/components/map/COGLayer.vue";
+import VectorLayer from "@/components/map/VectorLayer.vue";
 import { cn } from "@/utils/cn";
+import type { VectorCategoryStyle } from "@/types/story-map";
 const props = withDefaults(
   defineProps<{
     center?: [number, number];
@@ -18,6 +20,10 @@ const props = withDefaults(
     rasterMax?: number;
     mode?: "rgb" | "ramp" | "categorical";
     showOpacityControl?: boolean;
+    vectorUrl?: string;
+    vectorCategoryProperty?: string;
+    vectorCategories?: VectorCategoryStyle[];
+    vectorSourceLayer?: string;
   }>(),
   {
     center: () => [20, 10],
@@ -64,6 +70,7 @@ onMounted(() => {
   );
 
   if (el.value) intersectionObserver.observe(el.value);
+  
 });
 
 onBeforeUnmount(() => {
@@ -126,6 +133,15 @@ onBeforeUnmount(() => {
             :max="rasterMax"
             continuous
             :mode="mode"
+          />
+          <VectorLayer
+            v-if="vectorUrl && vectorCategoryProperty && vectorCategories"
+            :map="map"
+            :source-url="vectorUrl"
+            :layer-id="layerId"
+            :category-property="vectorCategoryProperty"
+            :categories="vectorCategories"
+            :source-layer="vectorSourceLayer"
           />
         </template>
       </Map>

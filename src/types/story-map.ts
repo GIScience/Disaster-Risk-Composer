@@ -112,11 +112,25 @@ export interface Section {
 }
 
 export interface layerConfigType {
-  type?: string;
+  type?: "raster" | "vector";
   layerId: string;
   colorScheme?: string;
   mode?: "rgb" | "ramp" | "categorical";
   sourceUrl?: string;
+  // --- vector layers (type: "vector") ---
+  // GeoJSON or PMTiles URL, auto-detected by extension.
+  categoryProperty?: string;
+  categories?: VectorCategoryStyle[];
+  // Vector tile source-layer name; required when sourceUrl is a PMTiles archive.
+  sourceLayer?: string;
+}
+
+// Styling for one value of a vector layer's category column (e.g. amenity=school).
+export interface VectorCategoryStyle {
+  value: string;
+  label: string;
+  icon: string;
+  color?: string;
 }
 
 export type Control = SegmentedControl | SliderControl;
