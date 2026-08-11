@@ -77,7 +77,6 @@ const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
           <p class="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">
             {{ sm.header.description }}
           </p>
-          <!-- <StoryEquation class="mt-6" :terms="sm.header.equation.terms" /> -->
         </header>
 
         <div class="mt-4 overflow-hidden rounded-xl space-y-4">
@@ -97,7 +96,38 @@ const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
             alt="River Flood"
             class="mt-4 w-full rounded-md border border-gray-200 bg-gray-100"
           />
-          <div></div>
+          <div class="mt-4 gap-6 rounded-md border border-gray-200 bg-white p-6">
+            <h3 class="text-base font-bold text-gray-900">
+              🌊 From Forecast to Action: How It Actually Works
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">
+              Turning a 10-day weather forecast into a life-saving map takes
+              three connected steps:
+            </p>
+            <ol class="mt-3 space-y-2 text-sm leading-relaxed text-gray-600 mx-4">
+              <li>
+                <strong>Predict:</strong> Daily weather forecasts feed
+                into a river simulation model, showing where rivers are
+                likely to rise before the rain even falls.
+              </li>
+              <li>
+                <strong>Map:</strong> We check whether that rise will
+                overwhelm local flood defenses, then draw the exact flooded
+                area down to ~90m resolution — not a guess, an explicit
+                picture.
+              </li>
+              <li>
+                <strong>Prioritize:</strong> We overlay that map with
+                where people, hospitals, and roads actually are, then rank
+                each district by two things: how many people are exposed,
+                and how soon the water will arrive.
+              </li>
+            </ol>
+            <p class="mt-3 text-sm leading-relaxed text-gray-600">
+              ✅ The result: a daily-updated map telling emergency teams
+              exactly where to act first.
+            </p>
+          </div>
           <img
             :src="imageSrc2"
             alt="Overview of Flood Exposure"

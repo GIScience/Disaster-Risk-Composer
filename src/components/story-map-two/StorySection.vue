@@ -16,7 +16,7 @@ const { revealed } = useReveal(el);
 const defaultLayerConfig = computed(() =>
   props.section.control?.type === "segmented"
     ? props.section.control.options.find((c) => c.selected)?.layerConfig
-    : undefined,
+    : props.section.map?.layerConfig,
 );
 
 const layerConfig = ref<layerConfigType | undefined>(defaultLayerConfig.value);
@@ -85,6 +85,7 @@ watch(defaultLayerConfig, (config) => {
         class="min-h-[300px] min-w-0 flex-1 my-4"
         :control="section.map"
         :layer="layerConfig"
+        :legend="section.legend"
         :visible="revealed"
       >
         <template v-if="$slots.map" #default="{ layerId }">

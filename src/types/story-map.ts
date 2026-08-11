@@ -1,5 +1,3 @@
-// Types for the story-map JSON config.
-// Text fields may contain inline markdown (**bold** -> accent, [label](href) -> link).
 
 export interface StoryMapConfig {
   meta: Meta;
@@ -112,25 +110,30 @@ export interface Section {
 }
 
 export interface layerConfigType {
-  type?: "raster" | "vector";
+  type?: "raster" | "vector" | "choropleth";
   layerId: string;
   colorScheme?: string;
   mode?: "rgb" | "ramp" | "categorical";
   sourceUrl?: string;
-  // --- vector layers (type: "vector") ---
-  // GeoJSON or PMTiles URL, auto-detected by extension.
   categoryProperty?: string;
   categories?: VectorCategoryStyle[];
-  // Vector tile source-layer name; required when sourceUrl is a PMTiles archive.
   sourceLayer?: string;
+  pcodeField?: string;
+  valuesUrl?: string;
+  stops?: ChoroplethStop[];
+  unit?: string;
 }
 
-// Styling for one value of a vector layer's category column (e.g. amenity=school).
 export interface VectorCategoryStyle {
   value: string;
   label: string;
   icon: string;
   color?: string;
+}
+
+export interface ChoroplethStop {
+  max: number;
+  color: string;
 }
 
 export type Control = SegmentedControl | SliderControl;
@@ -192,6 +195,8 @@ export interface LegendItem {
 
 export interface MapConfig {
   layerId: string;
+  // Fixed layer to render when the section has no `control` to select one from.
+  layerConfig?: layerConfigType;
   caption?: { icon?: string; label: string; sublabel?: string };
   legend?: Legend;
   center?: [number, number];

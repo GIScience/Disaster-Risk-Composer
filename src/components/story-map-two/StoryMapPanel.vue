@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Legend, layerConfigType, MapConfig } from "@/types/story-map";
 import StoryMapCanvas from "@/components/story-map/StoryMapCanvas.vue";
+import StoryLegend from "./StoryLegend.vue";
 
 defineProps<{
   control: MapConfig;
@@ -28,7 +29,7 @@ defineProps<{
       interactive
       :rasterMin="0"
       :rasterMax="1"
-      :rasterUrl="layer.type === 'vector' ? undefined : layer.sourceUrl"
+      :rasterUrl="layer.type === 'vector' || layer.type === 'choropleth' ? undefined : layer.sourceUrl"
       :layer-id="layer.layerId"
       :raster-color-scheme="layer.colorScheme"
       :mode="layer.mode"
@@ -36,8 +37,21 @@ defineProps<{
       :vectorCategoryProperty="layer.categoryProperty"
       :vectorCategories="layer.categories"
       :vectorSourceLayer="layer.sourceLayer"
+      :choroplethUrl="layer.type === 'choropleth' ? layer.sourceUrl : undefined"
+      :choroplethSourceLayer="layer.sourceLayer"
+      :choroplethPcodeField="layer.pcodeField"
+      :choroplethValuesUrl="layer.valuesUrl"
+      :choroplethStops="layer.stops"
+      :choroplethUnit="layer.unit"
       :showOpacityControl="control?.showOpacityControl"
       :visible="visible"
+    />
+
+    <StoryLegend
+      v-if="legend"
+      class="absolute bottom-3 left-3 z-30"
+      :legend="legend"
+      floating
     />
   </div>
 </template>

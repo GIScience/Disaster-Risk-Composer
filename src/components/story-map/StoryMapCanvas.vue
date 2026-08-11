@@ -3,9 +3,10 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import Map from "@/components/map/map.vue";
 import COGLayer from "@/components/map/COGLayer.vue";
 import VectorLayer from "@/components/map/VectorLayer.vue";
+import ChoroplethLayer from "@/components/map/ChoroplethLayer.vue";
 import MapLegend from "@/components/story-map-two/MapLegend.vue";
 import { cn } from "@/utils/cn";
-import type { VectorCategoryStyle } from "@/types/story-map";
+import type { ChoroplethStop, VectorCategoryStyle } from "@/types/story-map";
 const props = withDefaults(
   defineProps<{
     center?: [number, number];
@@ -25,6 +26,12 @@ const props = withDefaults(
     vectorCategoryProperty?: string;
     vectorCategories?: VectorCategoryStyle[];
     vectorSourceLayer?: string;
+    choroplethUrl?: string;
+    choroplethSourceLayer?: string;
+    choroplethPcodeField?: string;
+    choroplethValuesUrl?: string;
+    choroplethStops?: ChoroplethStop[];
+    choroplethUnit?: string;
   }>(),
   {
     center: () => [20, 10],
@@ -150,6 +157,23 @@ onBeforeUnmount(() => {
             :category-property="vectorCategoryProperty"
             :categories="vectorCategories"
             :source-layer="vectorSourceLayer"
+          />
+          <ChoroplethLayer
+            v-if="
+              choroplethUrl &&
+              choroplethSourceLayer &&
+              choroplethPcodeField &&
+              choroplethValuesUrl &&
+              choroplethStops
+            "
+            :map="map"
+            :source-url="choroplethUrl"
+            :layer-id="layerId"
+            :source-layer="choroplethSourceLayer"
+            :pcode-field="choroplethPcodeField"
+            :values-url="choroplethValuesUrl"
+            :stops="choroplethStops"
+            :unit="choroplethUnit"
           />
         </template>
       </Map>

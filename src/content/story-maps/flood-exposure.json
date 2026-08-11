@@ -142,7 +142,7 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "**Depth is what turns water into a hazard**\n\nFrom above, a harmless puddle and a dangerous flood can look exactly the same. To measure real flood risk, we draw the line at **30 cm**:\n\n- **Above 30 cm (light red):** Deep enough to trap people. This counts as exposure.\n- **Below 30 cm (light gray):** Shallow water. This is ignored."
+          "body": "**Depth is what turns water into a hazard**\n\nFrom above, a harmless puddle and a dangerous flood can look exactly the same. To measure real flood risk, we draw the line at **30 cm**:\n\n- **Above 30 cm (light red):** Deep enough to trap people. This counts as exposure.\n- **Below 30 cm (light blue):** Shallow water. This is ignored."
         },
         "figure": {
           "source": "/flood-depth_illustration.svg",
@@ -301,33 +301,45 @@
           "body": "Pixel-level data is hard to use for operational planning. By grouping the numbers (e.g., District A: 4,200 exposed vs. District D: 320 exposed), we allow decision-makers to easily compare regions and allocate aid where it is needed most."
         },
         "legend": {
-          "title": "Exposed children under 5 (50-year event, >30 cm)",
+          "title": "Flood Exposure",
           "type": "graduated",
           "items": [
             {
-              "color": "#ffffb2",
-              "label": "0 \u2013 500"
+              "color": "#ffffff",
+              "label": "Low Risk"
             },
             {
-              "color": "#fecc5c",
-              "label": "501 \u2013 2,000"
+              "color": "#f9d6c1",
+              "label": "Moderate Risk"
             },
             {
-              "color": "#fd8d3c",
-              "label": "2,001 \u2013 5,000"
+              "color": "#f28c82",
+              "label": "High Risk"
             },
             {
-              "color": "#f03b20",
-              "label": "5,001 \u2013 10,000"
-            },
-            {
-              "color": "#bd0026",
-              "label": "> 10,000"
+              "color": "#8b4c4c",
+              "label": "Very High Risk"
             }
           ]
         },
         "map": {
           "layerId": "adm2-exposure-choropleth",
+          "layerConfig": {
+            "type": "choropleth",
+            "layerId": "adm2-exposure-choropleth",
+            "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/mmr/MMR_ADM2.pmtiles",
+            "sourceLayer": "boundary",
+            "pcodeField": "ADM2_PCODE",
+            "valuesUrl": "/data/mmr-adm2-flood-risk.json",
+            "stops": [
+              { "max": 0.069, "color": "#ffffff" },
+              { "max": 0.149, "color": "#f9d6c1" },
+              { "max": 0.242, "color": "#f28c82" },
+              { "max": 1, "color": "#8b4c4c" }
+            ]
+          },
+          "center": [96, 19],
+          "zoom": 5.2,
           "controls": [
             "home",
             "zoom-in",
