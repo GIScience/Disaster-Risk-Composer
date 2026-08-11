@@ -108,7 +108,7 @@ const {
         v-if="canScrollLeft"
         type="button"
         aria-label="Scroll tabs left"
-        class="flex-none p-0 text-heigit-red flex items-center justify-center hover:bg-slate-100 absolute left-6 bg-white rounded-md shadow-2xl "
+        class="flex-none p-0 text-heigit-red flex items-center justify-center hover:bg-heigit-50 absolute left-1 z-20 border border-red-300 bg-white rounded-md shadow-2xl "
         @click="scrollTabs('left')"
       >
         <v-icon icon="mdi-chevron-left" size="24" />
@@ -148,7 +148,7 @@ const {
         v-if="canScrollRight"
         type="button"
         aria-label="Scroll tabs right"
-        class="flex-none p-0 text-heigit-red flex items-center justify-center hover:bg-slate-100 absolute right-6 bg-white rounded-md shadow-2xl "
+        class="flex-none p-0 text-heigit-red flex items-center justify-center  hover:bg-heigit-50 absolute right-1 bg-white rounded-md shadow-2xl "
         @click="scrollTabs('right')"
       >
         <v-icon icon="mdi-chevron-right" size="24" />
