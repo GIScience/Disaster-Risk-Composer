@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-// import { DataSourcesURL } from "@/config";
+import { ref, computed, onMounted } from "vue";
+import { DataSourcesURL } from "@/config";
 import { HAZARDS } from "@/enums/hazards";
 import { cn } from "@/utils/cn";
 
@@ -9,44 +9,15 @@ interface DataSource {
   description: string;
   url: string | null;
   hazard_type: string[];
+  used_indicator: string[];
 }
 
-// To be replaced with a fetch from the API once the file returns the right json is available
-const data = ref<DataSource[]>([
-  {
-    name: "Worldpop",
-    description: "2030 Projection",
-    url: "https://hub.worldpop.org/geodata/listing?id=135",
-    hazard_type: ["flood", "cyclone"],
-  },
-  {
-    name: "OpenStreetMap",
-    description: "March 2026",
-    url: "https://wiki.openstreetmap.org/wiki/Ohsome_API",
-    hazard_type: ["flood", "cyclone"],
-  },
-  {
-    name: "Global Human Settlement Layer",
-    description: "2030 Projection",
-    url: "https://human-settlement.emergency.copernicus.eu/ghs_pop2023.php",
-    hazard_type: ["flood", "cyclone"],
-  },
-  {
-    name: "JRC Flood Hazard Map",
-    description: "2024",
-    url: "https://data.jrc.ec.europa.eu/dataset/jrc-floods-floodmapgl_rp50y-tif",
-    hazard_type: ["flood"],
-  },
-  {
-    name: "International Best Track Archive for Climate Stewardship",
-    description: "March 2026",
-    url: "https://www.ncei.noaa.gov/products/international-best-track-archive",
-    hazard_type: ["cyclone"],
-  },
-]);
 
-// const isLoading = ref(false);
+const data = ref<DataSource[]>([]);
+
+const isLoading = ref(false);
 const selectedHazard = ref<string | null>(HAZARDS[0].keyword);
+const expandedNames = ref<Set<string>>(new Set());
 
 // Filter the data based on the selected hazard type
 const filteredData = computed(() => {
@@ -56,22 +27,32 @@ const filteredData = computed(() => {
   );
 });
 
-// async function fetchDataSources() {
-//   isLoading.value = true;
-//   try {
-//     const response = await fetch(DataSourcesURL);
-//     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-//     data.value = await response.json();
-//   } catch (error) {
-//     console.error("Error fetching data sources:", error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// }
+function toggleExpanded(name: string) {
+  const next = new Set(expandedNames.value);
+  if (next.has(name)) {
+    next.delete(name);
+  } else {
+    next.add(name);
+  }
+  expandedNames.value = next;
+}
 
-// onMounted(() => {
-//   fetchDataSources();
-// });
+async function fetchDataSources() {
+  isLoading.value = true;
+  try {
+    const response = await fetch(DataSourcesURL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    data.value = await response.json();
+  } catch (error) {
+    console.error("Error fetching data sources:", error);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchDataSources();
+});
 </script>
 
 <template>
@@ -101,62 +82,79 @@ const filteredData = computed(() => {
           {{ hazard.label }}
         </v-btn>
       </div>
-      <div
-        class="overflow-auto border border-slate-200 rounded-lg custom-scrollbar bg-white"
-      >
-        <v-table
-          class="w-full table-fixed rounded text-left text-sm text-slate-600 relative border-collapse"
+      <div class="overflow-auto custom-scrollbar space-y-2">
+        <div
+          v-for="item in filteredData"
+          :key="item.name"
+          class="border border-slate-200 rounded-lg bg-white overflow-hidden"
         >
-          <thead
-            class="text-xs text-slate-500 uppercase sticky top-0 z-10 shadow-sm border-b border-slate-200"
+          <button
+            type="button"
+            class="w-full flex items-center justify-between hover:bg-slate-50 gap-2 px-4 py-2.5 text-left cursor-pointer"
+            @click="toggleExpanded(item.name)"
           >
-            <tr>
-              <th
-                class="w-1/4 px-4 py-2 bg-slate-50 whitespace-nowrap border-b border-slate-200"
-              >
-                Name
-              </th>
-              <th
-                class="w-1/4 px-4 py-2 bg-slate-50 whitespace-nowrap border-b border-slate-200"
+            <span class="font-medium text-slate-900 break-words">{{
+              item.name
+            }}</span>
+            <v-icon
+              :icon="
+                expandedNames.has(item.name)
+                  ? 'mdi-chevron-down'
+                  : 'mdi-chevron-right'
+              "
+              size="20"
+              class="shrink-0 text-slate-500"
+            />
+          </button>
+          <div
+            v-if="expandedNames.has(item.name)"
+            class="px-4 pb-3 pt-0 border-t border-slate-100 space-y-2 text-sm text-slate-600"
+          >
+            <div class="pt-3">
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1"
               >
                 Description
-              </th>
-              <th
-                class="w-1/2 px-4 py-2 bg-slate-50 whitespace-nowrap border-b border-slate-200"
+              </p>
+              <p>{{ item.description }}</p>
+            </div>
+            <div>
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1"
               >
-                Link
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in filteredData" :key="item.name">
-              <td
-                class="px-4 py-2 font-medium text-slate-900 break-words border-b border-slate-100"
+               URL
+              </p>
+              <a
+                v-if="item.url"
+                :href="item.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-heigit-red underline break-all"
               >
-                {{ item.name }}
-              </td>
-              <td
-                class="px-4 py-2 font-medium text-slate-900 break-words border-b border-slate-100"
+                {{ item.url }}
+              </a>
+              <span v-else class="text-slate-400">No link available</span>
+            </div>
+            <div v-if="item.used_indicator?.length" class="pt-1">
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1.5"
               >
-                {{ item.description }}
-              </td>
-              <td
-                class="px-4 py-2 font-medium text-slate-900 border-b border-slate-100"
+                Derived Indicators ({{ item.used_indicator.length }})
+              </p>
+              <div
+                class="flex flex-wrap gap-1.5 max-h-60 overflow-y-auto custom-scrollbar pr-1"
               >
-                <a
-                  v-if="item.url"
-                  :href="item.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-heigit-red underline break-all"
+                <span
+                  v-for="indicator in item.used_indicator"
+                  :key="indicator"
+                  class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-mono"
                 >
-                  {{ item.url }}
-                </a>
-                <span v-else class="text-slate-400">—</span>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
+                  {{ indicator }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
