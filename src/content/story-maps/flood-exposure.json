@@ -123,7 +123,7 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": " \u201c50-year return period flood\u201d does not mean it happens exactly once every 50 years. It means there is a 1% chance of a flood this size being exceeded in any given year. Naturally, a 50-year flood covers a larger area than a 10-year flood, but a smaller area than 100- or 500-year events."
+          "body": " **\u201c50-year return period flood\u201d** does not mean it happens exactly once every 50 years. It means there is a *1% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 50-year flood covers a larger area than a 10-year flood\n- But a smaller area than 100- or 500-year events\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
         },
         "map": {
           "controls": [
@@ -142,10 +142,10 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "Depth matters for survival and logistics. Only grid cells with a flood depth strictly above 30 cm are considered in this indicator, filtering out areas with minor water accumulation."
+          "body": "**Depth is what turns water into a hazard**\n\nFrom above, a harmless puddle and a dangerous flood can look exactly the same. To measure real flood risk, we draw the line at **30 cm**:\n\n- **Above 30 cm (light red):** Deep enough to trap people. This counts as exposure.\n- **Below 30 cm (light gray):** Shallow water. This is ignored."
         },
         "figure": {
-          "source": "/flood_impact_diagram.png",
+          "source": "/flood-depth_illustration.svg",
           "alt": "Flood-depth threshold illustration"
         }
       },
@@ -154,23 +154,54 @@
         "number": 3,
         "title": "Overlay population or facilities",
         "hasInfoIcon": true,
+        "figure": {
+          "source": "/flood-overlay-illustration.svg",
+          "alt": "Flood-depth Overlay illustration"
+        },
         "control": {
           "type": "segmented",
           "id": "overlay-type",
           "options": [
             {
+              "value": "",
+              "label": "Population",
+              "selected": true,
+              "icon": "mdi-account-group",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-total",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
+              }
+            },
+            {
               "value": "facilities",
               "label": "Facilities",
-               "selected": true,
               "layerConfig": {
                 "type": "vector",
                 "layerId": "flood-facilities-pois",
                 "sourceUrl": "/data/myanmar_gaia_pois.geojson",
                 "categoryProperty": "amenity",
                 "categories": [
-                  { "value": "school", "label": "School", "icon": "mdi-school", "color": "#2563eb" },
-                  { "value": "hospital", "label": "Hospital", "icon": "mdi-hospital-box", "color": "#dc2626" },
-                  { "value": "clinic", "label": "Clinic", "icon": "mdi-medical-bag", "color": "#059669" }
+                  {
+                    "value": "school",
+                    "label": "School",
+                    "icon": "mdi-school",
+                    "color": "#2563eb"
+                  },
+                  {
+                    "value": "hospital",
+                    "label": "Hospital",
+                    "icon": "mdi-hospital-box",
+                    "color": "#dc2626"
+                  },
+                  {
+                    "value": "clinic",
+                    "label": "Clinic",
+                    "icon": "mdi-medical-bag",
+                    "color": "#059669"
+                  }
                 ]
               }
             }
@@ -179,11 +210,14 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "By stacking the hazard map over the demographic grid, we pinpoint exactly where human settlements intersect with dangerous water levels."
+          "body": "**Seeing who and what is in the water's path**\n\nThe flood extent alone doesn't tell us much — we need to know what sits inside it. So we overlay two kinds of data on top of the hazard layer:\n\n- **Population grid:** shows how many people live in each area, so we can see whose homes fall inside the flooded zone.\n- **Facilities:** points marking schools, hospitals, and clinics, so we can see which critical infrastructure is at risk.\n\nToggle facilities on to check which schools, hospitals, and clinics fall inside the flooded area."
         },
         "map": {
           "layerId": "population-grid-100m",
-          "center": [96, 19],
+          "center": [
+            96,
+            19
+          ],
           "zoom": 5.5,
           "controls": [
             "home",
@@ -238,25 +272,13 @@
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_female_u5_2030_constrained_cog.tif"
               }
-            },
-            {
-              "value": "",
-              "label": "Total population",
-              "icon": "mdi-account-group",
-              "layerConfig": {
-                "type": "cog",
-                "layerId": "pop-total",
-                "colorScheme": "BrewerPurples9",
-                "mode": "ramp",
-                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
-              }
             }
           ]
         },
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "Humanitarian resources are limited and must be prioritized. Only the selected population group located within that specific exposed area is counted."
+          "body": "Humanitarian resources are limited and must be prioritized. Only the selected population group located within that specific exposed area is counted:\n\n- **Children under 5:** often the most vulnerable to injury and disease during a flood.\n- **Elderly (65+):** may have reduced mobility, making evacuation harder.\n- **Female under 5:** highlights gender-specific exposure within young children.\n- **Total population:** everyone located in the exposed area, regardless of group."
         },
         "map": {
           "layerId": "exposed-children-under5-points",

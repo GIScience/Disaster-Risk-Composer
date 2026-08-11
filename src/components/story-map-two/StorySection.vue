@@ -33,7 +33,7 @@ watch(defaultLayerConfig, (config) => {
     class="story-section scroll-mt-24 h-full border-gray-200 bg-white border rounded-md"
     :class="{ 'is-revealed': revealed }"
   >
-    <div class="flex flex-col gap-5 lg:gap-4">
+    <div class="flex flex-col gap-5 lg:gap-2">
       <div class="p-3 lg:flex-none">
         <div>
           <h3
@@ -51,64 +51,59 @@ watch(defaultLayerConfig, (config) => {
             {{ section.subtitle }}
           </p>
         </div>
-
-        <!-- Map Layer Control -->
-        <StoryControl
-          v-if="section.control"
-          class="mt-4"
-          :control="section.control"
-          @change-layer="(config) => (layerConfig = config)"
+        <!-- Figure -->
+        <StoryMapFigure
+          v-if="section.figure"
+          class="mx-auto w-full rounded-md"
+          :figure="section.figure"
         />
-
-        <!-- Map -->
-        <StoryMapPanel
-          v-if="section.map"
-          class="min-h-[300px] min-w-0 flex-1 my-4"
-          :control="section.map"
-          :layer="layerConfig"
-          :visible="revealed"
-        >
-          <template v-if="$slots.map" #default="{ layerId }">
-            <slot name="map" :layer-id="layerId" />
-          </template>
-        </StoryMapPanel>
-
-        <!-- Data source -->
-        <div
-          v-if="section.dataset"
-          class="mt-3 flex items-center gap-2 text-sm"
-        >
-          <Icon :name="section.dataset.icon" class="h-4 w-4 text-emerald-500" />
-          <div>
-            <div class="font-medium text-gray-700">
-              {{ section.dataset.title }}
-            </div>
-            <div class="text-xs text-gray-400">
-              {{ section.dataset.source }}
-            </div>
-          </div>
-        </div>
-
         <!-- Note -->
         <div
           v-if="section.note"
-          class="mt-4 flex gap-2 rounded-lg p-3 text-xs leading-relaxed"
+          class="mt-4 flex gap-2 rounded-lg p-3 text-sm leading-relaxed"
           :class="
             section.note.variant === 'warning'
               ? 'bg-amber-50 text-amber-800'
-              : 'bg-blue-50 text-gray-600'
+              : 'bg-heigit-50 text-gray-900'
           "
         >
           <RichText :text="section.note.body" />
         </div>
       </div>
 
-      <!-- Figure -->
-      <StoryMapFigure
-        v-if="section.figure"
-        class="mx-auto w-full max-w-3xl rounded-md"
-        :figure="section.figure"
+      <!-- Map Layer Control -->
+      <StoryControl
+        v-if="section.control"
+        class="px-4"
+        :control="section.control"
+        @change-layer="(config) => (layerConfig = config)"
       />
+
+      <!-- Map -->
+      <StoryMapPanel
+        v-if="section.map"
+        class="min-h-[300px] min-w-0 flex-1 my-4"
+        :control="section.map"
+        :layer="layerConfig"
+        :visible="revealed"
+      >
+        <template v-if="$slots.map" #default="{ layerId }">
+          <slot name="map" :layer-id="layerId" />
+        </template>
+      </StoryMapPanel>
+
+      <!-- Data source -->
+      <div v-if="section.dataset" class="mt-3 flex items-center gap-2 text-sm">
+        <Icon :name="section.dataset.icon" class="h-4 w-4 text-emerald-500" />
+        <div>
+          <div class="font-medium text-gray-700">
+            {{ section.dataset.title }}
+          </div>
+          <div class="text-xs text-gray-400">
+            {{ section.dataset.source }}
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>

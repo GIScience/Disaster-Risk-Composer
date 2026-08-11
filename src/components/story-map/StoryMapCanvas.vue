@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import Map from "@/components/map/map.vue";
 import COGLayer from "@/components/map/COGLayer.vue";
 import VectorLayer from "@/components/map/VectorLayer.vue";
+import MapLegend from "@/components/story-map-two/MapLegend.vue";
 import { cn } from "@/utils/cn";
 import type { VectorCategoryStyle } from "@/types/story-map";
 const props = withDefaults(
@@ -114,6 +115,13 @@ onBeforeUnmount(() => {
           "
         />
       </div>
+      <!-- Legend -->
+      <MapLegend
+        :raster-color-scheme="
+          rasterUrl && mode === 'ramp' ? rasterColorScheme : undefined
+        "
+        :vector-categories="vectorUrl ? vectorCategories : undefined"
+      />
       <Map
         v-if="isVisible"
         :map-style="mapStyle"
