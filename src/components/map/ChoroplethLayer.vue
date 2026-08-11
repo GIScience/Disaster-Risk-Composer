@@ -152,20 +152,24 @@ watch(
     if (!map || !source || !fillLayer || !outlineLayer || !hoverLayer) return;
 
     const addAll = () => {
-      if (!map.isStyleLoaded()) return;
-      if (!map.getSource(sId)) map.addSource(sId, source);
-      if (!map.getLayer(fillLayer.id))
-        map.addLayer(fillLayer, props.belowLayerId);
-      if (!map.getLayer(outlineLayer.id))
-        map.addLayer(outlineLayer, props.belowLayerId);
-      if (!map.getLayer(hoverLayer.id))
-        map.addLayer(hoverLayer, props.belowLayerId);
-      if (map.getLayer(fillLayer.id)) {
-        map.setPaintProperty(
-          fillLayer.id,
-          "fill-color",
-          fillColorExpression.value as never,
-        );
+      try {
+        if (!map.getSource(sId)) map.addSource(sId, source);
+        if (!map.getLayer(fillLayer.id))
+          map.addLayer(fillLayer, props.belowLayerId);
+        if (!map.getLayer(outlineLayer.id))
+          map.addLayer(outlineLayer, props.belowLayerId);
+        if (!map.getLayer(hoverLayer.id))
+          map.addLayer(hoverLayer, props.belowLayerId);
+        if (map.getLayer(fillLayer.id)) {
+          map.setPaintProperty(
+            fillLayer.id,
+            "fill-color",
+            fillColorExpression.value as never,
+          );
+        }
+      } catch {
+        // Style isn't done parsing yet; retry once it is.
+        map.once("styledata", addAll);
       }
     };
 
@@ -239,29 +243,28 @@ watch(
       popup.remove();
     };
 
-    if (map.isStyleLoaded()) {
-      addAll();
-    } else {
-      map.once("load", addAll);
-    }
+    addAll();
 
     map.on("mousemove", fillLayer.id, setPointerCursor);
     map.on("mousemove", fillLayer.id, handleMouseMove);
     map.on("mouseleave", fillLayer.id, handleMouseLeave);
 
     onCleanup(() => {
-      map.off("load", addAll);
+      map.off("styledata", addAll);
       map.off("mousemove", fillLayer.id, setPointerCursor);
       map.off("mousemove", fillLayer.id, handleMouseMove);
       map.off("mouseleave", fillLayer.id, handleMouseLeave);
       clearHover();
       popup.remove();
 
-      if (!map.isStyleLoaded()) return;
-      if (map.getLayer(hoverLayer.id)) map.removeLayer(hoverLayer.id);
-      if (map.getLayer(outlineLayer.id)) map.removeLayer(outlineLayer.id);
-      if (map.getLayer(fillLayer.id)) map.removeLayer(fillLayer.id);
-      if (map.getSource(sId)) map.removeSource(sId);
+      try {
+        if (map.getLayer(hoverLayer.id)) map.removeLayer(hoverLayer.id);
+        if (map.getLayer(outlineLayer.id)) map.removeLayer(outlineLayer.id);
+        if (map.getLayer(fillLayer.id)) map.removeLayer(fillLayer.id);
+        if (map.getSource(sId)) map.removeSource(sId);
+      } catch {
+        // Style already torn down.
+      }
     });
   },
   { immediate: true },

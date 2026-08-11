@@ -203,11 +203,15 @@ watch(
     if (!map || !source || !layers.length || !iconImagesReady.value) return;
 
     const addAll = () => {
-      if (!map.isStyleLoaded()) return;
-      if (!map.getSource(sId)) map.addSource(sId, source);
-      const beforeId = props.belowLayerId;
-      for (const layer of layers) {
-        if (!map.getLayer(layer.id)) map.addLayer(layer, beforeId);
+      try {
+        if (!map.getSource(sId)) map.addSource(sId, source);
+        const beforeId = props.belowLayerId;
+        for (const layer of layers) {
+          if (!map.getLayer(layer.id)) map.addLayer(layer, beforeId);
+        }
+      } catch {
+        // Style isn't done parsing yet; retry once it is.
+        map.once("styledata", addAll);
       }
     };
 
@@ -239,11 +243,7 @@ watch(
         .catch(() => {});
     };
 
-    if (map.isStyleLoaded()) {
-      addAll();
-    } else {
-      map.once("load", addAll);
-    }
+    addAll();
 
     if (clusteringEnabled.value) {
       map.on("click", clusterLayerId.value, handleClusterClick);
@@ -252,16 +252,19 @@ watch(
     }
 
     onCleanup(() => {
-      map.off("load", addAll);
+      map.off("styledata", addAll);
       map.off("click", clusterLayerId.value, handleClusterClick);
       map.off("mouseenter", clusterLayerId.value, setPointerCursor);
       map.off("mouseleave", clusterLayerId.value, resetCursor);
 
-      if (!map.isStyleLoaded()) return;
-      for (const layer of layers) {
-        if (map.getLayer(layer.id)) map.removeLayer(layer.id);
+      try {
+        for (const layer of layers) {
+          if (map.getLayer(layer.id)) map.removeLayer(layer.id);
+        }
+        if (map.getSource(sId)) map.removeSource(sId);
+      } catch {
+        // Style already torn down.
       }
-      if (map.getSource(sId)) map.removeSource(sId);
     });
   },
   { immediate: true },

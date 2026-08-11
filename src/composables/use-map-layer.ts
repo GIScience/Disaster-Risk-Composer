@@ -9,9 +9,14 @@ export const useMapLayers = (
 ) => {
   const addSourcesAndLayers = () => {
     const mapInstance = toValue(map);
-    if (!mapInstance || !mapInstance.isStyleLoaded()) return;
-    addSources(mapInstance, toValue(sourcesSpec));
-    addLayers(mapInstance, toValue(layersSpec));
+    if (!mapInstance) return;
+    try {
+      addSources(mapInstance, toValue(sourcesSpec));
+      addLayers(mapInstance, toValue(layersSpec));
+    } catch {
+      // Style isn't done parsing yet; retry once it is.
+      mapInstance.once("styledata", addSourcesAndLayers);
+    }
   };
 
   watch(
@@ -20,11 +25,7 @@ export const useMapLayers = (
       const mapInstance = toValue(map);
       if (!mapInstance) return;
 
-      if (!mapInstance.isStyleLoaded()) {
-        mapInstance.once("styledata", addSourcesAndLayers);
-      } else {
-        addSourcesAndLayers();
-      }
+      addSourcesAndLayers();
 
       onCleanup(() => {
         mapInstance.off("styledata", addSourcesAndLayers);
@@ -66,39 +67,40 @@ export const useDynamicMapLayer = (
       if (!mapInstance || !source || !layer || !toValue(enabled)) return;
 
       const addLayer = () => {
-        if (!mapInstance.isStyleLoaded()) return;
+        try {
+          const existingLayer = mapInstance.getLayer(lId);
+          if (!existingLayer && !mapInstance.getSource(sId)) {
+            mapInstance.addSource(sId, source);
+          }
 
-        const existingLayer = mapInstance.getLayer(lId);
-        if (!existingLayer && !mapInstance.getSource(sId)) {
-          mapInstance.addSource(sId, source);
-        }
+          if (!existingLayer) {
+            const beforeId = toValue(belowLayerIds).find((id) =>
+              mapInstance.getLayer(id),
+            );
 
-        if (!existingLayer) {
-          const beforeId = toValue(belowLayerIds).find((id) =>
-            mapInstance.getLayer(id),
-          );
-
-          mapInstance.addLayer(layer, beforeId);
+            mapInstance.addLayer(layer, beforeId);
+          }
+        } catch {
+          // Style isn't done parsing yet; retry once it is.
+          mapInstance.once("styledata", addLayer);
         }
       };
 
-      if (mapInstance.isStyleLoaded()) {
-        addLayer();
-      } else {
-        mapInstance.once("load", addLayer);
-      }
+      addLayer();
 
       onCleanup(() => {
-        mapInstance.off("load", addLayer);
+        mapInstance.off("styledata", addLayer);
 
-        if (!mapInstance.isStyleLoaded()) return;
+        try {
+          if (mapInstance.getLayer(lId)) {
+            mapInstance.removeLayer(lId);
+          }
 
-        if (mapInstance.getLayer(lId)) {
-          mapInstance.removeLayer(lId);
-        }
-
-        if (mapInstance.getSource(sId)) {
-          mapInstance.removeSource(sId);
+          if (mapInstance.getSource(sId)) {
+            mapInstance.removeSource(sId);
+          }
+        } catch {
+          // Style already torn down.
         }
       });
     },
