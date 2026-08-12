@@ -179,22 +179,22 @@ watch(
       className: "risk-tooltip",
     });
 
-    let hoveredId: string | number | null = null;
+    let hoveredId: string | number | undefined = undefined;
 
     const clearHover = () => {
-      if (hoveredId !== null) {
+      if (hoveredId !== undefined) {
         map.setFeatureState(
           { source: sId, sourceLayer: props.sourceLayer, id: hoveredId },
           { hover: false },
         );
       }
-      hoveredId = null;
+      hoveredId = undefined;
     };
 
     const setPointerCursor = () => {
       map.getCanvas().style.cursor = "pointer";
     };
-    const handleMouseMove = (e: maplibregl.MapMouseEvent) => {
+    const handleMouseMove = (e: maplibregl.MapLayerMouseEvent) => {
       const feature = e.features?.[0];
       if (!feature) return;
       const pcode = feature.properties?.[props.pcodeField];

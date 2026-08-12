@@ -14,12 +14,6 @@ const { activeId, scrollTo } = useScrollSpy(
   props.config.storyMap.sections.map((s) => s.id),
 );
 
-const riverFlood = "/river_flood.png";
-const imageSrc1 = `${import.meta.env.BASE_URL}${riverFlood.replace(/^\//, "")}`;
-
-const overview = "/flood_impact_diagram.png";
-const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
-
 </script>
 
 <template>
@@ -31,10 +25,10 @@ const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
       :image="sm.hero.image"
     />
     <div
-      class="flex flex-col gap-8 lg:flex-row lg:gap-2 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      class="flex flex-col gap-8 lg:flex-row lg:gap-2 mx-auto w-full max-w-[1680px] px-4 py-8 sm:px-6 lg:px-6 xl:px-8"
     >
       <!-- sidebar -->
-      <aside class="lg:w-[24rem] lg:flex-none">
+      <aside class="lg:w-[22rem] lg:flex-none">
         <div class="lg:sticky lg:top-40 px-4">
           <div class="mb-12 flex items-start gap-3">
             <span class="mt-0.5 text-heigit-red">
@@ -72,14 +66,18 @@ const imageSrc2 = `${import.meta.env.BASE_URL}${overview.replace(/^\//, "")}`;
 
       <!-- main -->
       <main class="min-w-0 flex-1">
-        <header class="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 class="text-lg font-bold text-gray-900">{{ sm.header.title }}</h2>
-          <p class="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">
+        <header
+          class="rounded-xl border border-gray-200 mx-auto max-w-3xl bg-white p-6"
+        >
+          <h2 class="text-lg font-bold text-heigit-400 text-center">
+            {{ sm.header.title }}
+          </h2>
+          <p class="mt-2 text-sm leading-relaxed text-gray-600">
             {{ sm.header.description }}
           </p>
         </header>
 
-        <div class="mt-4 overflow-hidden rounded-xl space-y-4">
+        <div class="mt-4 overflow-hidden rounded-xl space-y-16">
           <StorySection
             v-for="section in sm.sections"
             :key="section.id"

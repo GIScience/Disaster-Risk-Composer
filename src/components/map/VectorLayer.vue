@@ -130,7 +130,6 @@ const pointLayerSpec = computed<SymbolLayerSpecification | null>(() => {
       "icon-image": iconImageExpression.value as never,
       "icon-size": props.iconSize,
       "icon-allow-overlap": true,
-      "icon-anchor": "bottom",
     },
   } as SymbolLayerSpecification;
 });

@@ -87,8 +87,9 @@ export interface Header {
 export type EquationTerm =
   | {
       kind: "operand" | "result";
-      image: string;
-      alt: string;
+      image?: string;
+      icon?: string;
+      alt?: string;
       label: string;
       sublabel: string | null;
     }
@@ -102,6 +103,18 @@ export interface Section {
   hasInfoIcon?: boolean;
   icon?: string;
   control?: Control;
+  // Secondary segmented control driving a base/underlay map layer rendered
+  // beneath `control`'s layer (e.g. flood extent under population/facilities).
+  baseControl?: Control;
+  // Compact equation strip combining baseControl's and control's active
+  // selections (e.g. "Flood Extent (50-years) + Facilities"). The base term's
+  // label/icon are static content here; the operand for `control` and the
+  // base term's sublabel are filled in dynamically from the active selection.
+  equation?: {
+    baseLabel: string;
+    baseIcon: string;
+    operator?: string;
+  };
   note?: Note;
   figure?: Figure;
   dataset?: Dataset;

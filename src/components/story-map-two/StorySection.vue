@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import type { Section, Note, Figure } from "@/types/story-map";
+import type {
+  Section,
+  Note,
+  Figure,
+  SegmentedOption,
+  EquationTerm,
+} from "@/types/story-map";
 import { useReveal } from "@/composables/useReveal";
 import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
 import StoryMapFigure from "./StoryMapFigure.vue";
+import StoryEquation from "./StoryEquation.vue";
 import RichText from "./RichText.vue";
 import Icon from "./Icon.vue";
 import type { layerConfigType } from "@/types/story-map";
@@ -33,9 +40,36 @@ const defaultFigure = computed(() =>
     : props.section.figure,
 );
 
+// Base/underlay layer (e.g. flood extent), driven by `section.baseControl`
+// and rendered beneath the primary `layerConfig` on the same map.
+const defaultBaseLayerConfig = computed(() =>
+  props.section.baseControl?.type === "segmented"
+    ? props.section.baseControl.options.find((c) => c.selected)?.layerConfig
+    : undefined,
+);
+
+const defaultBaseOption = computed(() =>
+  props.section.baseControl?.type === "segmented"
+    ? props.section.baseControl.options.find((c) => c.selected)
+    : undefined,
+);
+
+const defaultOverlayOption = computed(() =>
+  props.section.control?.type === "segmented"
+    ? props.section.control.options.find((c) => c.selected)
+    : undefined,
+);
+
 const layerConfig = ref<layerConfigType | undefined>(defaultLayerConfig.value);
 const activeNote = ref<Note | undefined>(defaultNote.value);
 const activeFigure = ref<Figure | undefined>(defaultFigure.value);
+const baseLayerConfig = ref<layerConfigType | undefined>(
+  defaultBaseLayerConfig.value,
+);
+const baseSelected = ref<SegmentedOption | undefined>(defaultBaseOption.value);
+const overlaySelected = ref<SegmentedOption | undefined>(
+  defaultOverlayOption.value,
+);
 
 watch(defaultLayerConfig, (config) => {
   layerConfig.value = config;
@@ -48,6 +82,43 @@ watch(defaultNote, (note) => {
 watch(defaultFigure, (figure) => {
   activeFigure.value = figure;
 });
+
+watch(defaultBaseLayerConfig, (config) => {
+  baseLayerConfig.value = config;
+});
+
+
+const equationTerms = computed<EquationTerm[] | undefined>(() => {
+  const equation = props.section.equation;
+  if (!equation || !baseSelected.value || !overlaySelected.value)
+    return undefined;
+
+  return [
+    {
+      kind: "operand",
+      icon: overlaySelected.value.icon,
+      label: overlaySelected.value.label,
+      sublabel: null,
+    },
+    { kind: "operator", symbol: equation.operator ?? "+" },
+    {
+      kind: "operand",
+      icon: equation.baseIcon,
+      label: equation.baseLabel,
+      sublabel: baseSelected.value.label,
+    },
+  ];
+});
+
+// Legend layer names shown in MapLegend, e.g. "Flood Extent (10-years)".
+const layerLabel = computed(() => overlaySelected.value?.label);
+const baseLayerLabel = computed(() => {
+  if (!baseSelected.value) return undefined;
+  const baseLabel = props.section.equation?.baseLabel;
+  return baseLabel
+    ? `${baseLabel} (${baseSelected.value.label})`
+    : baseSelected.value.label;
+});
 </script>
 
 <template>
@@ -57,8 +128,15 @@ watch(defaultFigure, (figure) => {
     class="story-section scroll-mt-24 h-full border-gray-200 bg-white border rounded-md"
     :class="{ 'is-revealed': revealed }"
   >
-    <div class="flex flex-col gap-4 lg:gap-5">
-      <div class="p-3 lg:flex-none">
+    <div
+      class="flex flex-col gap-4 lg:flex-row lg:gap-5"
+      :class="section.map ? 'lg:min-h-[700px] lg:items-stretch' : 'lg:items-start'"
+    >
+      <div
+        class="flex min-w-0 flex-col p-4"
+        :class="section.map ? 'lg:w-[26rem] xl:w-[33rem] lg:flex-none' : 'w-full'"
+      >
+        <!-- Title: always pinned to the top -->
         <div>
           <h3
             class="flex items-center gap-1.5 text-base font-bold text-gray-900"
@@ -75,42 +153,79 @@ watch(defaultFigure, (figure) => {
             {{ section.subtitle }}
           </p>
         </div>
-        <!-- Figure -->
-        <StoryMapFigure
-          v-if="activeFigure"
-          class="mx-auto w-full rounded-md"
-          :figure="activeFigure"
-        />
-        <!-- Note -->
-        <div
-          v-if="activeNote"
-          class="mt-4 flex gap-2 rounded-lg p-3 text-sm leading-relaxed"
-          :class="
-            activeNote.variant === 'warning'
-              ? 'bg-amber-50 text-amber-800'
-              : 'bg-heigit-50 text-gray-900'
-          "
-        >
-          <RichText :text="activeNote.body" />
+
+        <!-- Rest of the content: centered in the remaining column height -->
+        <div class="mt-4 flex flex-1 flex-col justify-center gap-4">
+          <!-- Figure -->
+          <StoryMapFigure
+            v-if="activeFigure"
+            class="mx-auto w-full rounded-md"
+            :figure="activeFigure"
+          />
+
+          <!-- Map Layer Control -->
+          <StoryControl
+            v-if="section.control"
+            :control="section.control"
+            @change-layer="(config) => (layerConfig = config)"
+            @change-note="(note) => (activeNote = note ?? section.note)"
+            @change-figure="(figure) => (activeFigure = figure ?? section.figure)"
+            @change-option="(option) => (overlaySelected = option)"
+          />
+
+          <!-- Equation strip: how the base and primary layers combine -->
+          <StoryEquation
+            v-if="equationTerms"
+            :terms="equationTerms"
+            compact
+          />
+
+          <!-- Base Layer Control -->
+          <StoryControl
+            v-if="section.baseControl"
+            :control="section.baseControl"
+            @change-layer="(config) => (baseLayerConfig = config)"
+            @change-option="(option) => (baseSelected = option)"
+          />
+
+
+          <!-- Note -->
+          <div
+            v-if="activeNote"
+            class="flex gap-2 rounded-lg p-3 text-sm leading-relaxed"
+            :class="
+              activeNote.variant === 'warning'
+                ? 'bg-amber-50 text-amber-800'
+                : 'bg-heigit-50 text-gray-900'
+            "
+          >
+            <RichText :text="activeNote.body" />
+          </div>
+
+          <!-- Data source -->
+          <div v-if="section.dataset" class="flex items-center gap-2 text-sm">
+            <Icon :name="section.dataset.icon" class="h-4 w-4 text-emerald-500" />
+            <div>
+              <div class="font-medium text-gray-700">
+                {{ section.dataset.title }}
+              </div>
+              <div class="text-xs text-gray-400">
+                {{ section.dataset.source }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Map Layer Control -->
-      <StoryControl
-        v-if="section.control"
-        class="px-4"
-        :control="section.control"
-        @change-layer="(config) => (layerConfig = config)"
-        @change-note="(note) => (activeNote = note ?? section.note)"
-        @change-figure="(figure) => (activeFigure = figure ?? section.figure)"
-      />
 
       <!-- Map -->
       <StoryMapPanel
         v-if="section.map"
-        class="min-h-[300px] min-w-0 flex-1"
+        class="min-h-[700px] min-w-0 flex-1"
         :control="section.map"
         :layer="layerConfig"
+        :layer-label="layerLabel"
+        :base-layer="baseLayerConfig"
+        :base-layer-label="baseLayerLabel"
         :legend="section.legend"
         :visible="revealed"
       >
@@ -118,19 +233,6 @@ watch(defaultFigure, (figure) => {
           <slot name="map" :layer-id="layerId" />
         </template>
       </StoryMapPanel>
-
-      <!-- Data source -->
-      <div v-if="section.dataset" class="mt-3 flex items-center gap-2 text-sm">
-        <Icon :name="section.dataset.icon" class="h-4 w-4 text-emerald-500" />
-        <div>
-          <div class="font-medium text-gray-700">
-            {{ section.dataset.title }}
-          </div>
-          <div class="text-xs text-gray-400">
-            {{ section.dataset.source }}
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 </template>

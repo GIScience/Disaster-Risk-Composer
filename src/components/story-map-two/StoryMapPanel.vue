@@ -6,6 +6,9 @@ import StoryLegend from "./StoryLegend.vue";
 defineProps<{
   control: MapConfig;
   layer?: layerConfigType;
+  layerLabel?: string;
+  baseLayer?: layerConfigType;
+  baseLayerLabel?: string;
   legend?: Legend;
   visible?: boolean;
 }>();
@@ -33,6 +36,12 @@ defineProps<{
       :layer-id="layer.layerId"
       :raster-color-scheme="layer.colorScheme"
       :mode="layer.mode"
+      :baseLayerId="baseLayer?.layerId"
+      :baseRasterUrl="baseLayer?.type === 'vector' || baseLayer?.type === 'choropleth' ? undefined : baseLayer?.sourceUrl"
+      :baseRasterColorScheme="baseLayer?.colorScheme"
+      :baseMode="baseLayer?.mode"
+      :layerLabel="layerLabel"
+      :baseLayerLabel="baseLayerLabel"
       :vectorUrl="layer.type === 'vector' ? layer.sourceUrl : undefined"
       :vectorCategoryProperty="layer.categoryProperty"
       :vectorCategories="layer.categories"

@@ -7,6 +7,7 @@ import { cn } from "@/utils/cn";
 interface DataSource {
   name: string;
   description: string;
+  version: string;
   url: string | null;
   hazard_type: string[];
   used_indicator: string[];

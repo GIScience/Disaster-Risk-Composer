@@ -17,7 +17,7 @@ const imageSrc1 = computed(
       :alt="figure.alt"
       width="100%"
       height="100%"
-      class="mx-auto h-80 w-full max-w-full object-contain"
+      class="mx-auto h-60 w-full max-w-full object-contain"
     />
   </div>
 </template>

@@ -169,13 +169,69 @@
         "number": 3,
         "title": "Overlay population or facilities",
         "hasInfoIcon": true,
+        "baseControl": {
+          "type": "segmented",
+          "id": "overlay-return-period",
+          "options": [
+            {
+              "value": "10",
+              "label": "10-years",
+              "selected": true,
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
+              }
+            },
+            {
+              "value": "50",
+              "label": "50-years",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
+              }
+            },
+            {
+              "value": "100",
+              "label": "100-years",
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
+              }
+            },
+            {
+              "value": "500",
+              "label": "500-years",
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
+              }
+            }
+          ]
+        },
+        "equation": {
+          "baseLabel": "Flood Extent",
+          "baseIcon": "mdi-water",
+          "operator": "+"
+        },
         "control": {
           "type": "segmented",
           "id": "overlay-type",
           "options": [
             {
               "value": "",
-              "label": "Population",
+              "label": "Total Population",
               "icon": "mdi-account-group",
               "layerConfig": {
                 "type": "cog",
@@ -198,6 +254,7 @@
               "value": "facilities",
               "label": "Facilities",
               "selected": true,
+              "icon": "mdi-map-marker-multiple",
               "layerConfig": {
                 "type": "vector",
                 "layerId": "flood-facilities-pois",
@@ -255,9 +312,64 @@
         "number": 4,
         "title": "Focus on a population group",
         "hasInfoIcon": true,
+          "baseControl": {
+          "type": "segmented",
+          "id": "overlay-return-period",
+          "options": [
+            {
+              "value": "10",
+              "label": "10-years",
+              "selected": true,
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
+              }
+            },
+            {
+              "value": "50",
+              "label": "50-years",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
+              }
+            },
+            {
+              "value": "100",
+              "label": "100-years",
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
+              }
+            },
+            {
+              "value": "500",
+              "label": "500-years",
+              "layerConfig": {
+                "type": "raster",
+                "layerId": "flood-extent",
+                "colorScheme": "BrewerBlues9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
+              }
+            }
+          ]
+        },
+         "equation": {
+          "baseLabel": "Flood Extent",
+          "baseIcon": "mdi-water",
+          "operator": "+"
+        },
         "control": {
           "type": "segmented",
-          "variant": "cards",
           "id": "population-group",
           "options": [
             {
@@ -387,34 +499,7 @@
             "home",
             "zoom-in",
             "zoom-out"
-          ],
-          "results": {
-            "title": "Example results (ADM2)",
-            "unit": "children under 5 exposed",
-            "rows": [
-              {
-                "name": "District A",
-                "value": 4200
-              },
-              {
-                "name": "District B",
-                "value": 1100
-              },
-              {
-                "name": "District C",
-                "value": 8700
-              },
-              {
-                "name": "District D",
-                "value": 320
-              }
-            ],
-            "link": {
-              "label": "View full table",
-              "href": "/data/adm2-exposure",
-              "external": true
-            }
-          }
+          ]
         }
       }
     ]

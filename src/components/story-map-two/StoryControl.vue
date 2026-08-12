@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Control, layerConfigType, Note, Figure } from "@/types/story-map";
+import type {
+  Control,
+  layerConfigType,
+  Note,
+  Figure,
+  SegmentedOption,
+} from "@/types/story-map";
 
 const props = defineProps<{ control: Control }>();
 
@@ -8,6 +14,7 @@ const emit = defineEmits<{
   (e: "change-layer", config: layerConfigType): void;
   (e: "change-note", note: Note | undefined): void;
   (e: "change-figure", figure: Figure | undefined): void;
+  (e: "change-option", option: SegmentedOption): void;
 }>();
 
 const segValue = ref(
@@ -32,6 +39,7 @@ function handleSegChange(value: string) {
 
   emit("change-note", selectedOption.note);
   emit("change-figure", selectedOption.figure);
+  emit("change-option", selectedOption);
   if (!selectedOption.layerConfig) return;
 
   emit("change-layer", selectedOption.layerConfig);
@@ -75,13 +83,14 @@ function handleSegChange(value: string) {
         :key="opt.value"
         type="button"
         @click="handleSegChange(opt.value)"
-        class="rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors"
+        class="flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors"
         :class="
           segValue === opt.value
             ? 'bg-heigit-red text-white shadow-sm'
             : 'text-gray-600 hover:text-gray-900'
         "
       >
+        <v-icon v-if="opt.icon" :icon="opt.icon" class="h-4 w-4" />
         {{ opt.label }}
       </button>
     </div>
