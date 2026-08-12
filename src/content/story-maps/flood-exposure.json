@@ -48,7 +48,7 @@
           "number": 5,
           "sectionRef": "sec-aggregate",
           "title": "Aggregate to administrative areas",
-          "body": "Results are aggregated to the **ADM2 (district)** level."
+          "body": "Results are aggregated to the **ADM2 (district)** level, showing the number of vulnerable children under 5 exposed in each district."
         }
       ],
       "aside": {
@@ -83,6 +83,11 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**\u201c10-year return period flood\u201d** does not mean it happens exactly once every 10 years. It means there is a *10% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 10-year flood covers the smallest extent of the scenarios shown here\n- It is the most frequent, but least severe, event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -94,6 +99,11 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**\u201c50-year return period flood\u201d** does not mean it happens exactly once every 50 years. It means there is a *2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 50-year flood covers a larger area than a 10-year flood\n- But a smaller area than 100- or 500-year events\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -105,6 +115,11 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**\u201c100-year return period flood\u201d** does not mean it happens exactly once every 100 years. It means there is a *1% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 100-year flood covers a larger area than 10- or 50-year floods\n- But a smaller area than a 500-year event\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -116,14 +131,14 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**\u201c500-year return period flood\u201d** does not mean it happens exactly once every 500 years. It means there is only a *0.2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 500-year flood covers the largest extent of the scenarios shown here\n- It is rare, but represents the most severe event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             }
           ]
-        },
-        "note": {
-          "variant": "info",
-          "icon": "mdi-information",
-          "body": " **\u201c50-year return period flood\u201d** does not mean it happens exactly once every 50 years. It means there is a *1% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 50-year flood covers a larger area than a 10-year flood\n- But a smaller area than 100- or 500-year events\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
         },
         "map": {
           "controls": [
@@ -154,10 +169,6 @@
         "number": 3,
         "title": "Overlay population or facilities",
         "hasInfoIcon": true,
-        "figure": {
-          "source": "/flood-overlay-illustration.svg",
-          "alt": "Flood-depth Overlay illustration"
-        },
         "control": {
           "type": "segmented",
           "id": "overlay-type",
@@ -165,7 +176,6 @@
             {
               "value": "",
               "label": "Population",
-              "selected": true,
               "icon": "mdi-account-group",
               "layerConfig": {
                 "type": "cog",
@@ -173,11 +183,21 @@
                 "colorScheme": "BrewerPurples9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**Seeing who is in the water's path**\n\nThe flood extent alone doesn't tell us much — we need to know who lives inside it. The population grid shows how many people live in each area, so we can see whose homes fall inside the flooded zone."
+              },
+              "figure": {
+                "source": "/flood_overlay_with_population_grid.svg",
+                "alt": "Flood-depth overlay with population grid illustration"
               }
             },
             {
               "value": "facilities",
               "label": "Facilities",
+              "selected": true,
               "layerConfig": {
                 "type": "vector",
                 "layerId": "flood-facilities-pois",
@@ -203,14 +223,18 @@
                     "color": "#059669"
                   }
                 ]
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information",
+                "body": "**Seeing what is in the water's path**\n\nCritical infrastructure can be hit by floods just like people. This layer marks schools, hospitals, and clinics, so we can see which critical infrastructure is at risk.\n\nToggle facilities on to check which schools, hospitals, and clinics fall inside the flooded area."
+              },
+              "figure": {
+                "source": "/flood_overlay_with_facilities.svg",
+                "alt": "Flood-depth overlay with facilities illustration"
               }
             }
           ]
-        },
-        "note": {
-          "variant": "info",
-          "icon": "mdi-information",
-          "body": "**Seeing who and what is in the water's path**\n\nThe flood extent alone doesn't tell us much — we need to know what sits inside it. So we overlay two kinds of data on top of the hazard layer:\n\n- **Population grid:** shows how many people live in each area, so we can see whose homes fall inside the flooded zone.\n- **Facilities:** points marking schools, hospitals, and clinics, so we can see which critical infrastructure is at risk.\n\nToggle facilities on to check which schools, hospitals, and clinics fall inside the flooded area."
         },
         "map": {
           "layerId": "population-grid-100m",
@@ -298,27 +322,31 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "Pixel-level data is hard to use for operational planning. By grouping the numbers (e.g., District A: 4,200 exposed vs. District D: 320 exposed), we allow decision-makers to easily compare regions and allocate aid where it is needed most."
+          "body": "Pixel-level data is hard to use for operational planning. By grouping the numbers (e.g., District A: 4,200 children under 5 exposed vs. District D: 320), we allow decision-makers to easily compare regions and allocate aid where it is needed most."
+        },
+        "figure": {
+          "source": "/aggregated_result.svg",
+          "alt": "Vulnerable children under 5 exposure aggregated to administrative areas illustration"
         },
         "legend": {
-          "title": "Flood Exposure",
+          "title": "Vulnerable Children Under 5",
           "type": "graduated",
           "items": [
             {
               "color": "#ffffff",
-              "label": "Low Risk"
+              "label": "Up to 19,000"
             },
             {
               "color": "#f9d6c1",
-              "label": "Moderate Risk"
+              "label": "19,000–43,000"
             },
             {
               "color": "#f28c82",
-              "label": "High Risk"
+              "label": "43,000–68,000"
             },
             {
               "color": "#8b4c4c",
-              "label": "Very High Risk"
+              "label": "68,000+ "
             }
           ]
         },
@@ -330,15 +358,30 @@
             "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/mmr/MMR_ADM2.pmtiles",
             "sourceLayer": "boundary",
             "pcodeField": "ADM2_PCODE",
-            "valuesUrl": "/data/mmr-adm2-flood-risk.json",
+            "valuesUrl": "/data/mmr-adm2-vul_children_u5.json",
             "stops": [
-              { "max": 0.069, "color": "#ffffff" },
-              { "max": 0.149, "color": "#f9d6c1" },
-              { "max": 0.242, "color": "#f28c82" },
-              { "max": 1, "color": "#8b4c4c" }
+              {
+                "max": 19000,
+                "color": "#ffffff"
+              },
+              {
+                "max": 43000,
+                "color": "#f9d6c1"
+              },
+              {
+                "max": 68000,
+                "color": "#f28c82"
+              },
+              {
+                "max": 190000,
+                "color": "#8b4c4c"
+              }
             ]
           },
-          "center": [96, 19],
+          "center": [
+            96,
+            19
+          ],
           "zoom": 5.2,
           "controls": [
             "home",

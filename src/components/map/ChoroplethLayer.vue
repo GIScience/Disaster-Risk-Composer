@@ -222,7 +222,7 @@ watch(
                     ? colorForValue(value)
                     : props.fallbackColor
                 }"></div>
-                <div class="text-[11px] font-extrabold text-slate-600 uppercase tracking-tight">Risk Score</div>
+                <div class="text-[11px] font-extrabold text-slate-600 uppercase tracking-tight">Count</div>
               </div>
               <div class="text-2xl font-black text-slate-900 tabular-nums">
                 ${

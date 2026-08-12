@@ -149,6 +149,8 @@ export interface SegmentedOption {
   icon?: string;
   selected?: boolean;
   layerConfig?: layerConfigType;
+  note?: Note;
+  figure?: Figure;
 }
 export interface SliderControl {
   type: "slider";

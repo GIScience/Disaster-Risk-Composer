@@ -12,7 +12,6 @@ interface DataSource {
   used_indicator: string[];
 }
 
-
 const data = ref<DataSource[]>([]);
 
 const isLoading = ref(false);
@@ -122,7 +121,18 @@ onMounted(() => {
               <p
                 class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1"
               >
-               URL
+                Version
+              </p>
+              <p v-if="item.version" rel="noopener noreferrer">
+                {{ item.version }}
+              </p>
+              <span v-else class="text-slate-400">No link available</span>
+            </div>
+            <div>
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1"
+              >
+                URL
               </p>
               <a
                 v-if="item.url"
@@ -135,6 +145,7 @@ onMounted(() => {
               </a>
               <span v-else class="text-slate-400">No link available</span>
             </div>
+
             <div v-if="item.used_indicator?.length" class="pt-1">
               <p
                 class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1.5"

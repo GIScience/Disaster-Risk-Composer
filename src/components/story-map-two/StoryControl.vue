@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Control, layerConfigType } from "@/types/story-map";
+import type { Control, layerConfigType, Note, Figure } from "@/types/story-map";
 
 const props = defineProps<{ control: Control }>();
 
 const emit = defineEmits<{
   (e: "change-layer", config: layerConfigType): void;
+  (e: "change-note", note: Note | undefined): void;
+  (e: "change-figure", figure: Figure | undefined): void;
 }>();
 
 const segValue = ref(
@@ -26,7 +28,11 @@ function handleSegChange(value: string) {
 
   // Find the selected option based on the value only if the control type is segmented
   const selectedOption = props.control.options.find((o) => o.value === value);
-  if (!selectedOption?.layerConfig) return;
+  if (!selectedOption) return;
+
+  emit("change-note", selectedOption.note);
+  emit("change-figure", selectedOption.figure);
+  if (!selectedOption.layerConfig) return;
 
   emit("change-layer", selectedOption.layerConfig);
 }
