@@ -52,7 +52,7 @@ jobs:
       - name: Build (Prod)
         run: |
           npm install
-          npm run build
+          npm run build -- --base=/Disaster-Risk-Composer/
 
       # --- Stage everything ---
       - name: Prep staging folder
