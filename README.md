@@ -1,6 +1,6 @@
 # Disaster Risk Composer
 
-Live: https://giscience.github.io/Hazard-Risk-Composer/
+Live: https://giscience.github.io/Disaster-Risk-Composer/
 
 # Vue 3 + TypeScript + Vite
 
