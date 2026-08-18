@@ -489,7 +489,7 @@ defineExpose({
                         ? 'px-1.5 py-0.5 text-[9px]'
                         : 'px-2 py-2 text-xs',
                       riskViewMode === dimension.value
-                        ? 'bg-heigit-red text-white'
+                        ? 'bg-heigit-red  text-white'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                     )
                   "
@@ -498,17 +498,6 @@ defineExpose({
                     <v-icon :icon="dimension.icon" size="18" />
                     <span>{{ dimension.label }}</span>
                   </div>
-                  <!-- <v-icon
-                    @click.stop="emit('click:info')"
-                    icon="mdi-information-slab-circle-outline"
-                    size="15"
-                    :class="
-                      cn(
-                        'ml-1 text-heigit-red',
-                        riskViewMode === dimension.value && 'text-white',
-                      )
-                    "
-                  /> -->
                 </button>
 
                 <v-divider class="my-2 bg-slate-200/70" />

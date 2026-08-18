@@ -49,12 +49,12 @@ const renderDemographics = async () => {
     insidetextorientation: "radial",
     marker: {
       colors: [
-        "#8B1824", // Shade (Dark Red)
-        "#E77480", // Tint (Soft Red/Rose)
-        "#2C3E50", // Base (Midnight Navy)
-        "#5D6D7E", // Tint (Steel Blue)
-        "#1B2838", // Shade (Deep Night Blue)
-        "#CA2333", // Base (Your Main Red)
+        "#e86b3e", // Shade (Dark Red)
+        "#f6a44d", // Tint (Soft Red/Rose)
+        "#ffd156", // Base (Midnight Navy)
+        "#f9d5b6", // Tint (Steel Blue)
+        "#cc0130", // Shade (Deep Night Blue)
+        "#cc0130", // Base (Your Main Red)
       ],
     },
   };

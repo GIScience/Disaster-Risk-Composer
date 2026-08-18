@@ -61,7 +61,7 @@ function selectDisaster(disaster: string) {
       class="bg-white border-b border-slate-200 px-4 py-4 flex items-center justify-between z-50"
     >
       <div @click="goHome" class="flex text-start cursor-pointer">
-        <img :src="logo" alt="" class="h-10 w-full object-contain shrink-0" />
+        <img :src="logo" alt="" class="h-6 w-full object-contain shrink-0" />
       </div>
       <div class="flex items-center gap-2">
         <button

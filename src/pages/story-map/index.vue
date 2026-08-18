@@ -104,8 +104,8 @@ const filteredStoryMaps = computed(() => {
       </div>
     </div>
 
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 mb-12">
-      <div class="mb-6">
+    <div class="mx-auto max-w-6xl flex items-center gap-4 px-4 sm:px-6 lg:px-8 mb-12">
+      <div class="w-1/3">
         <input
           v-model="searchQuery"
           type="text"

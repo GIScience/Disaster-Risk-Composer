@@ -146,9 +146,9 @@ export function useRiskLogic() {
       const val = Number(d[riskColumn]);
       if (isNaN(val)) return;
       let color = "#FFFFFF";
-      if (val > q3) color = "#8B4C4C";
-      else if (val > q2) color = "#F28C82";
-      else if (val > q1) color = "#F9D6C1";
+      if (val > q3) color = "#cc0130";
+      else if (val > q2) color = "#f6a44d";
+      else if (val > q1) color = "#f9d5b6";
       matches.push([d[field], color, val]);
     });
 

@@ -42,14 +42,7 @@ const homeTarget = computed(() => {
         :to="homeTarget"
         class="flex items-center gap-3 min-w-0 group shrink-0"
       >
-        <img :src="logo" alt="" class="h-14 w-14 object-contain shrink-0" />
-        <div class="min-w-0">
-          <h1
-            class="text-lg font-bold text-dirc-text truncate group-hover:text-heigit-400 transition-colors"
-          >
-            {{ title }}
-          </h1>
-        </div>
+        <img :src="logo" alt="" class="h-8 object-contain shrink-0" />
       </RouterLink>
       <slot name="actions">
         <button

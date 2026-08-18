@@ -136,7 +136,7 @@ const {
           class="flex-none px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors"
           :class="
             activeTab === tab
-              ? 'bg-heigit-red text-white'
+              ? 'bg-heigit-red  text-white'
               : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
           "
         >

@@ -36,9 +36,9 @@ const renderComponents = async () => {
 
   const traces = [];
   const colors = {
-    exp: "#ca2333",
-    vul: "#E77480",
-    cop: "#F4C2C7",
+    exp: "#e86b3e",
+    vul: "#f6a44d",
+    cop: "#ffd156",
   };
 
   if (exp) {

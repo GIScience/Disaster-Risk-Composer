@@ -85,7 +85,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
 
         <!-- Final Risk Node -->
         <div
-          class="bg-slate-800 text-white font-black px-6 py-2.5 rounded-xl shadow-lg border-b-4 border-slate-900 text-base tracking-wide uppercase"
+          class="bg-slate-500 text-white font-black px-6 py-2.5 rounded-xl shadow-lg border-b-4 border-slate-600 text-base tracking-wide uppercase"
         >
           {{ disasterLabel }} Risk
         </div>

@@ -42,10 +42,13 @@ const GROUP_DEFS = [
 ];
 
 const DIMENSION_COLORS: Record<string, string> = {
-  [DimensionPrefix.EXPOSURE]: "#ca2333",
-  [DimensionPrefix.VULNERABILITY]: "#E77480",
-  [DimensionPrefix.COPING_CAPACITY]: "#2C3E50",
+  [DimensionPrefix.EXPOSURE]: "#e86b3e",
+  [DimensionPrefix.VULNERABILITY]: "#f6a44d",
+  [DimensionPrefix.COPING_CAPACITY]: "#ffd156",
 };
+
+
+
 const EXTRA_DIMENSION_PALETTE = [
   "#7c3aed",
   "#0891b2",
@@ -253,7 +256,7 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
       },
       {
         key: DimensionPrefix.COPING_CAPACITY,
-        label: "Lack of Coping Capacity",
+        label: "Coping Capacity",
         cols: copCols.value,
       },
     ];

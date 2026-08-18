@@ -39,9 +39,9 @@ const renderRanking = async () => {
     marker: {
       color: xValues,
       colorscale: [
-        [0, "#F9D6C1"],
-        [0.5, "#F28C82"],
-        [1, "#8B4C4C"],
+        [0, "#ffd156"],
+        [0.5, "#e86b3e"],
+        [1, "#cc0130"],
       ],
     },
     text: xValues.map((v) => v.toFixed(3)),

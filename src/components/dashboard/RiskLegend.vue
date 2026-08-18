@@ -10,9 +10,9 @@ const props = withDefaults(
 );
 
 const legendItems = [
-  { label: "Very High Risk", color: "#8B4C4C" },
-  { label: "High Risk", color: "#F28C82" },
-  { label: "Moderate Risk", color: "#F9D6C1" },
+  { label: "Very High Risk", color: "#cc0130" },
+  { label: "High Risk", color: "#f6a44d" },
+  { label: "Moderate Risk", color: "#f9d5b6" },
   { label: "Low Risk", color: "#FFFFFF" },
 ];
 </script>
