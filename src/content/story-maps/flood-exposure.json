@@ -12,7 +12,7 @@
     "hero": {
       "image": "/floods.jpeg",
       "alt": "Flood hazard illustration",
-      "title": "Flood Exposure Story Map For Myanmar, Thailand",
+      "title": "Flood Exposure For Myanmar, Thailand",
       "subtitle": "Anticipating the human cost of a disaster saves lives. We combine global flood models with demographic data to turn complex forecasts into actionable humanitarian insights—identifying who is in harm's way before the water rises."
     },
     "sidebar": {
@@ -60,7 +60,7 @@
     },
     "header": {
       "title": "The Core Concept: What does \u201cchildren under 5 exposed to a 50-year flood event above 30 cm\u201d mean ?",
-      "description": "It sounds complex, but it’s simply a combination of Hazard (where the water goes) + Population (who is there). Let's break down how we calculate this, step by step, without the GIS jargon. It estimates how many children under 5 are living in areas that could be flooded with more than 30 cm of water during a flood that has a 1% chance of being exceeded in any given year. To make this actionable, we combine three things: Flood Hazard + Population = Exposed Population"
+      "description": "It sounds complex, but it’s simply a combination of Hazard (where the water goes) + Population (who is there). Let's break down how we calculate this, step by step, without the GIS jargon. It estimates how many children under 5 are living in areas that could be flooded with more than 30 cm of water during a flood that has a 2% chance of being exceeded in any given year. To make this actionable, we combine three things: Flood Hazard + Population = Exposed Population"
     },
     "sections": [
       {
@@ -83,11 +83,6 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
-              },
-              "note": {
-                "variant": "info",
-                "icon": "mdi-information",
-                "body": "**\u201c10-year return period flood\u201d** does not mean it happens exactly once every 10 years. It means there is a *10% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 10-year flood covers the smallest extent of the scenarios shown here\n- It is the most frequent, but least severe, event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -99,11 +94,6 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
-              },
-              "note": {
-                "variant": "info",
-                "icon": "mdi-information",
-                "body": "**\u201c50-year return period flood\u201d** does not mean it happens exactly once every 50 years. It means there is a *2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 50-year flood covers a larger area than a 10-year flood\n- But a smaller area than 100- or 500-year events\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -115,11 +105,6 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
-              },
-              "note": {
-                "variant": "info",
-                "icon": "mdi-information",
-                "body": "**\u201c100-year return period flood\u201d** does not mean it happens exactly once every 100 years. It means there is a *1% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 100-year flood covers a larger area than 10- or 50-year floods\n- But a smaller area than a 500-year event\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             },
             {
@@ -131,11 +116,6 @@
                 "colorScheme": "BrewerBlues9",
                 "mode": "ramp",
                 "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
-              },
-              "note": {
-                "variant": "info",
-                "icon": "mdi-information",
-                "body": "**\u201c500-year return period flood\u201d** does not mean it happens exactly once every 500 years. It means there is only a *0.2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 500-year flood covers the largest extent of the scenarios shown here\n- It is rare, but represents the most severe event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
               }
             }
           ]
@@ -147,6 +127,11 @@
             "zoom-out"
           ],
           "showOpacityControl": true
+        },
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information",
+          "body": "A **\u201cflood return period\u201d** does not mean it happens exactly once every 10 years. For example, a 50-year flood is *50-year* flood is statistically expected to occur once every 50 years.\n\nHowever, due to natural variability, such extreme floods can actually happen more or less frequently in reality\n\nLearn more about [return periods](https://www.gfdrr.org/en/100-year-flood)."
         }
       },
       {
@@ -312,7 +297,7 @@
         "number": 4,
         "title": "Focus on a population group",
         "hasInfoIcon": true,
-          "baseControl": {
+        "baseControl": {
           "type": "segmented",
           "id": "overlay-return-period",
           "options": [
@@ -363,7 +348,7 @@
             }
           ]
         },
-         "equation": {
+        "equation": {
           "baseLabel": "Flood Extent",
           "baseIcon": "mdi-water",
           "operator": "+"
@@ -414,7 +399,7 @@
         "note": {
           "variant": "info",
           "icon": "mdi-information",
-          "body": "Humanitarian resources are limited and must be prioritized. Only the selected population group located within that specific exposed area is counted:\n\n- **Children under 5:** often the most vulnerable to injury and disease during a flood.\n- **Elderly (65+):** may have reduced mobility, making evacuation harder.\n- **Female under 5:** highlights gender-specific exposure within young children.\n- **Total population:** everyone located in the exposed area, regardless of group."
+          "body": "Given the limited humanitarian resources, we must move beyond simple headcounts and evaluate true socioeconomic exposure. By isolating specific demographic groups within the hazard zone, we account for the unique socioeconomic attributes that make responding to and recovering from a disaster much more difficult for highly vulnerable populations."
         },
         "map": {
           "layerId": "exposed-children-under5-points",
@@ -449,16 +434,16 @@
               "label": "Up to 19,000"
             },
             {
-              "color": "#f9d6c1",
+              "color": "#f6a44d",
               "label": "19,000–43,000"
             },
             {
-              "color": "#f28c82",
+              "color": "#e86b3e",
               "label": "43,000–68,000"
             },
             {
-              "color": "#8b4c4c",
-              "label": "68,000+ "
+              "color": "#cc0130",
+              "label": "> 68,000 "
             }
           ]
         },
@@ -478,15 +463,15 @@
               },
               {
                 "max": 43000,
-                "color": "#f9d6c1"
+                "color": "#f6a44d"
               },
               {
                 "max": 68000,
-                "color": "#f28c82"
+                "color": "#e86b3e"
               },
               {
                 "max": 190000,
-                "color": "#8b4c4c"
+                "color": "#cc0130"
               }
             ]
           },

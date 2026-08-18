@@ -10,15 +10,15 @@
     },
     "storyMap": {
         "hero": {
-            "image": "/floods.jpg",
-            "alt": "Cyclone Story Map",
+            "image": "/floods.jpeg",
+            "alt": "Flood hazard illustration",
             "title": "Cyclone Exposure For Myanmar, Thailand",
-            "subtitle": "This Story Map illustrates how we translate complex wind-speed models into clear, actionable data to prioritize humanitarian aid for the most vulnerable populations. When a cyclone strikes, extreme winds threaten both lives and infrastructure. This guide explains how we merge global wind hazard models with population grids to pinpoint exactly where vulnerable communities face the highest risk."
+            "subtitle": "Extreme winds threaten lives and infrastructure. This guide explains how we combine wind hazard models with population data to identify who is in the danger zone—helping humanitarian teams prioritize relief efforts."
         },
         "sidebar": {
             "icon": "mdi-weather-hurricane",
             "title": "Cyclone Exposure",
-            "subtitle": "Understand how cyclone exposure indicators are produced and what they mean",
+            "subtitle": "Understand how Cyclone exposure indicators are produced and what they mean.",
             "steps": [
                 {
                     "number": 1,
@@ -59,8 +59,8 @@
             }
         },
         "header": {
-            "title": "The Core Concept: What does \u201cchildren under 5 exposed to a 50-year cyclone event above 19 km/h\u201d mean ?",
-            "description": "The Concept: It estimates how many children under 5 are living in areas that could be hit by extreme winds of more than 119 km/h (Category 1 hurricane force) during a cyclone that has a 1% chance of being exceeded in any given year. Basically, Cyclone Wind Hazard + Population = Exposed Population."
+            "title": "The Core Concept: What does \u201cchildren under 5 exposed to a 50-year cyclone event mean ?",
+            "description": "It combines two layers: wind hazard (above 119 km/h, Category 1 force) and population (children under 5). A \u201c50-year event\u201d means a 2% chance of winds this strong hitting in any given year — not a fixed cycle. Together: Cyclone Wind Hazard + Population = Exposed Population."
         },
         "sections": [
             {
@@ -72,6 +72,106 @@
                 "control": {
                     "type": "segmented",
                     "id": "return-period",
+                    "options": [
+                        {
+                            "value": "10",
+                            "label": "10-years",
+                            "selected": true,
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
+                            },
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**\u201c10-year return period flood\u201d** does not mean it happens exactly once every 10 years. It means there is a *10% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 10-year flood covers the smallest extent of the scenarios shown here\n- It is the most frequent, but least severe, event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
+                            }
+                        },
+                        {
+                            "value": "50",
+                            "label": "50-years",
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
+                            },
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**\u201c50-year return period flood\u201d** does not mean it happens exactly once every 50 years. It means there is a *2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 50-year flood covers a larger area than a 10-year flood\n- But a smaller area than 100- or 500-year events\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
+                            }
+                        },
+                        {
+                            "value": "100",
+                            "label": "100-years",
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
+                            },
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**\u201c100-year return period flood\u201d** does not mean it happens exactly once every 100 years. It means there is a *1% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 100-year flood covers a larger area than 10- or 50-year floods\n- But a smaller area than a 500-year event\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
+                            }
+                        },
+                        {
+                            "value": "500",
+                            "label": "500-years",
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
+                            },
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**\u201c500-year return period flood\u201d** does not mean it happens exactly once every 500 years. It means there is only a *0.2% chance* of a flood this size being exceeded in any given year.\n\nReturn period and flood extent:\n- A 500-year flood covers the largest extent of the scenarios shown here\n- It is rare, but represents the most severe event modelled\n\nLearn more about [return periods](https://en.wikipedia.org/wiki/Return_period)."
+                            }
+                        }
+                    ]
+                },
+                "map": {
+                    "controls": [
+                        "home",
+                        "zoom-in",
+                        "zoom-out"
+                    ],
+                    "showOpacityControl": true
+                }
+            },
+            {
+                "id": "sec-depth",
+                "number": 2,
+                "title": "Flood-depth threshold",
+                "hasInfoIcon": true,
+                "note": {
+                    "variant": "info",
+                    "icon": "mdi-information",
+                    "body": "**Depth is what turns water into a hazard**\n\nFrom above, a harmless puddle and a dangerous flood can look exactly the same. To measure real flood risk, we draw the line at **30 cm**:\n\n- **Above 30 cm (light red):** Deep enough to trap people. This counts as exposure.\n- **Below 30 cm (light blue):** Shallow water. This is ignored."
+                },
+                "figure": {
+                    "source": "/flood-depth_illustration.svg",
+                    "alt": "Flood-depth threshold illustration"
+                }
+            },
+            {
+                "id": "sec-overlay",
+                "number": 3,
+                "title": "Overlay population or facilities",
+                "hasInfoIcon": true,
+                "baseControl": {
+                    "type": "segmented",
+                    "id": "overlay-return-period",
                     "options": [
                         {
                             "value": "10",
@@ -120,109 +220,86 @@
                         }
                     ]
                 },
-                "note": {
-                    "variant": "info",
-                    "icon": "mdi-information",
-                    "body": "A \"50-year return period cyclone\" does not mean it happens once every 50 years. It means there is a 1% chance of a tropical cyclone of this wind intensity occurring in any given year. Naturally, a 50-year cyclone covers a larger impact area with extreme winds than a 10-year event."
+                "equation": {
+                    "baseLabel": "Flood Extent",
+                    "baseIcon": "mdi-water",
+                    "operator": "+"
                 },
-                "map": {
-                    "controls": [
-                        "home",
-                        "zoom-in",
-                        "zoom-out"
-                    ],
-                    "showOpacityControl": true
-                }
-            },
-            {
-                "id": "sec-depth",
-                "number": 2,
-                "title": "Wind-speed threshold",
-                "hasInfoIcon": true,
                 "control": {
                     "type": "segmented",
                     "id": "overlay-type",
                     "options": [
                         {
-                            "value": "119",
-                            "label": "119km/h",
-                            "selected": true
-                        }
-                    ]
-                },
-                "note": {
-                    "variant": "info",
-                    "icon": "mdi-information",
-                    "body": "Depth matters for survival and logistics. Only grid cells with a flood depth strictly above 30 cm are considered in this indicator, filtering out areas with minor water accumulation"
-                },
-                "map": {
-                    "layerId": "flood-depth-50yr",
-                    "legend": {
-                        "title": "Flood depth (m)",
-                        "type": "categorical",
-                        "items": [
-                            {
-                                "color": "#eff3ff",
-                                "label": "0 \u2013 0.3 (excluded)",
-                                "excluded": true
+                            "value": "",
+                            "label": "Total Population",
+                            "icon": "mdi-account-group",
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "pop-total",
+                                "colorScheme": "BrewerPurples9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
                             },
-                            {
-                                "color": "#bdd7e7",
-                                "label": "0.3 \u2013 0.5"
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**Seeing who is in the water's path**\n\nThe flood extent alone doesn't tell us much — we need to know who lives inside it. The population grid shows how many people live in each area, so we can see whose homes fall inside the flooded zone."
                             },
-                            {
-                                "color": "#6baed6",
-                                "label": "0.5 \u2013 1.0"
-                            },
-                            {
-                                "color": "#3182bd",
-                                "label": "1.0 \u2013 2.0"
-                            },
-                            {
-                                "color": "#08519c",
-                                "label": "> 2.0"
+                            "figure": {
+                                "source": "/flood_overlay_with_population_grid.svg",
+                                "alt": "Flood-depth overlay with population grid illustration"
                             }
-                        ]
-                    },
-                    "controls": [
-                        "home",
-                        "zoom-in",
-                        "zoom-out"
-                    ]
-                }
-            },
-            {
-                "id": "sec-overlay",
-                "number": 3,
-                "title": "Overlay population or facilities",
-                "hasInfoIcon": true,
-                "control": {
-                    "type": "segmented",
-                    "id": "overlay-type",
-                    "options": [
-                        {
-                            "value": "population",
-                            "label": "Population",
-                            "selected": true
                         },
                         {
                             "value": "facilities",
-                            "label": "Facilities"
+                            "label": "Facilities",
+                            "selected": true,
+                            "icon": "mdi-map-marker-multiple",
+                            "layerConfig": {
+                                "type": "vector",
+                                "layerId": "flood-facilities-pois",
+                                "sourceUrl": "/data/myanmar_gaia_pois.geojson",
+                                "categoryProperty": "amenity",
+                                "categories": [
+                                    {
+                                        "value": "school",
+                                        "label": "School",
+                                        "icon": "mdi-school",
+                                        "color": "#2563eb"
+                                    },
+                                    {
+                                        "value": "hospital",
+                                        "label": "Hospital",
+                                        "icon": "mdi-hospital-box",
+                                        "color": "#dc2626"
+                                    },
+                                    {
+                                        "value": "clinic",
+                                        "label": "Clinic",
+                                        "icon": "mdi-medical-bag",
+                                        "color": "#059669"
+                                    }
+                                ]
+                            },
+                            "note": {
+                                "variant": "info",
+                                "icon": "mdi-information",
+                                "body": "**Seeing what is in the water's path**\n\nCritical infrastructure can be hit by floods just like people. This layer marks schools, hospitals, and clinics, so we can see which critical infrastructure is at risk.\n\nToggle facilities on to check which schools, hospitals, and clinics fall inside the flooded area."
+                            },
+                            "figure": {
+                                "source": "/flood_overlay_with_facilities.svg",
+                                "alt": "Flood-depth overlay with facilities illustration"
+                            }
                         }
                     ]
                 },
-                "dataset": {
-                    "icon": "mdi-grid",
-                    "title": "Population grid (100m)",
-                    "source": "WorldPop (2020)"
-                },
-                "note": {
-                    "variant": "info",
-                    "icon": "mdi-information",
-                    "body": "By stacking the hazard map over the demographic grid, we pinpoint exactly where human settlements intersect with dangerous water levels"
-                },
                 "map": {
                     "layerId": "population-grid-100m",
+                    "center": [
+                        96,
+                        19
+                    ],
+                    "zoom": 5.5,
                     "controls": [
                         "home",
                         "zoom-in",
@@ -235,38 +312,109 @@
                 "number": 4,
                 "title": "Focus on a population group",
                 "hasInfoIcon": true,
+                "baseControl": {
+                    "type": "segmented",
+                    "id": "overlay-return-period",
+                    "options": [
+                        {
+                            "value": "10",
+                            "label": "10-years",
+                            "selected": true,
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP10_cog_3857.tif"
+                            }
+                        },
+                        {
+                            "value": "50",
+                            "label": "50-years",
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP50_cog_3857.tif"
+                            }
+                        },
+                        {
+                            "value": "100",
+                            "label": "100-years",
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP100_cog_3857.tif"
+                            }
+                        },
+                        {
+                            "value": "500",
+                            "label": "500-years",
+                            "layerConfig": {
+                                "type": "raster",
+                                "layerId": "flood-extent",
+                                "colorScheme": "BrewerBlues9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_flooded_RP500_cog_3857.tif"
+                            }
+                        }
+                    ]
+                },
+                "equation": {
+                    "baseLabel": "Flood Extent",
+                    "baseIcon": "mdi-water",
+                    "operator": "+"
+                },
                 "control": {
                     "type": "segmented",
-                    "variant": "cards",
                     "id": "population-group",
                     "options": [
                         {
-                            "value": "mdi-human-male-female-child",
-                            "label": "Total population",
-                            "icon": "user"
-                        },
-                        {
-                            "value": "mdi-human-female-female",
-                            "label": "Women",
-                            "icon": "user"
-                        },
-                        {
-                            "value": "mdi-human-child",
+                            "value": "10",
+                            "icon": "mdi-baby-face-outline",
                             "label": "Children under 5",
-                            "icon": "baby",
-                            "selected": true
+                            "selected": true,
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "pop-children-under5",
+                                "colorScheme": "BrewerPurples9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_children_u5_2030_constrained_cog.tif"
+                            }
                         },
                         {
-                            "value": "mdi-human-cane",
+                            "value": "elderly",
                             "label": "Elderly (65+)",
-                            "icon": "user-round"
+                            "icon": "mdi-human-male-female",
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "pop-elderly",
+                                "colorScheme": "BrewerPurples9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_elderly_2030_constrained_cog.tif"
+                            }
+                        },
+                        {
+                            "value": "female-under5",
+                            "label": "Female under 5",
+                            "icon": "mdi-human-female",
+                            "layerConfig": {
+                                "type": "cog",
+                                "layerId": "pop-female",
+                                "colorScheme": "BrewerPurples9",
+                                "mode": "ramp",
+                                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_female_u5_2030_constrained_cog.tif"
+                            }
                         }
                     ]
                 },
                 "note": {
                     "variant": "info",
                     "icon": "mdi-information",
-                    "body": "Humanitarian resources are limited and must be prioritized. Only the selected population group located within that specific exposed area is counted."
+                    "body": "Humanitarian resources are limited and must be prioritized. Only the selected population group located within that specific exposed area is counted:\n\n- **Children under 5:** often the most vulnerable to injury and disease during a flood.\n- **Elderly (65+):** may have reduced mobility, making evacuation harder.\n- **Female under 5:** highlights gender-specific exposure within young children.\n- **Total population:** everyone located in the exposed area, regardless of group."
                 },
                 "map": {
                     "layerId": "exposed-children-under5-points",
@@ -274,7 +422,8 @@
                         "home",
                         "zoom-in",
                         "zoom-out"
-                    ]
+                    ],
+                    "showOpacityControl": true
                 }
             },
             {
@@ -282,66 +431,75 @@
                 "number": 5,
                 "title": "Aggregate to administrative areas",
                 "hasInfoIcon": true,
+                "note": {
+                    "variant": "info",
+                    "icon": "mdi-information",
+                    "body": "Pixel-level data is hard to use for operational planning. By grouping the numbers (e.g., District A: 4,200 children under 5 exposed vs. District D: 320), we allow decision-makers to easily compare regions and allocate aid where it is needed most."
+                },
+                "figure": {
+                    "source": "/aggregated_result.svg",
+                    "alt": "Vulnerable children under 5 exposure aggregated to administrative areas illustration"
+                },
                 "legend": {
-                    "title": "Exposed children under 5 (50-year event, >30 cm)",
+                    "title": "Vulnerable Children Under 5",
                     "type": "graduated",
                     "items": [
                         {
-                            "color": "#ffffb2",
-                            "label": "0 \u2013 500"
+                            "color": "#ffffff",
+                            "label": "Up to 19,000"
                         },
                         {
-                            "color": "#fecc5c",
-                            "label": "501 \u2013 2,000"
+                            "color": "#f9d6c1",
+                            "label": "19,000–43,000"
                         },
                         {
-                            "color": "#fd8d3c",
-                            "label": "2,001 \u2013 5,000"
+                            "color": "#f28c82",
+                            "label": "43,000–68,000"
                         },
                         {
-                            "color": "#f03b20",
-                            "label": "5,001 \u2013 10,000"
-                        },
-                        {
-                            "color": "#bd0026",
-                            "label": "> 10,000"
+                            "color": "#8b4c4c",
+                            "label": "68,000+ "
                         }
                     ]
                 },
                 "map": {
                     "layerId": "adm2-exposure-choropleth",
+                    "layerConfig": {
+                        "type": "choropleth",
+                        "layerId": "adm2-exposure-choropleth",
+                        "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/mmr/MMR_ADM2.pmtiles",
+                        "sourceLayer": "boundary",
+                        "pcodeField": "ADM2_PCODE",
+                        "valuesUrl": "/data/mmr-adm2-vul_children_u5.json",
+                        "stops": [
+                            {
+                                "max": 19000,
+                                "color": "#ffffff"
+                            },
+                            {
+                                "max": 43000,
+                                "color": "#f9d6c1"
+                            },
+                            {
+                                "max": 68000,
+                                "color": "#f28c82"
+                            },
+                            {
+                                "max": 190000,
+                                "color": "#8b4c4c"
+                            }
+                        ]
+                    },
+                    "center": [
+                        96,
+                        19
+                    ],
+                    "zoom": 5.2,
                     "controls": [
                         "home",
                         "zoom-in",
                         "zoom-out"
-                    ],
-                    "results": {
-                        "title": "Example results (ADM2)",
-                        "unit": "children under 5 exposed",
-                        "rows": [
-                            {
-                                "name": "District A",
-                                "value": 4200
-                            },
-                            {
-                                "name": "District B",
-                                "value": 1100
-                            },
-                            {
-                                "name": "District C",
-                                "value": 8700
-                            },
-                            {
-                                "name": "District D",
-                                "value": 320
-                            }
-                        ],
-                        "link": {
-                            "label": "View full table",
-                            "href": "/data/adm2-exposure",
-                            "external": true
-                        }
-                    }
+                    ]
                 }
             }
         ]
