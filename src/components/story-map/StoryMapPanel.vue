@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Legend, layerConfigType, MapConfig } from "@/types/story-map";
-import StoryMapCanvas from "@/components/story-map/StoryMapCanvas.vue";
+import StoryMapCanvas from "./StoryMapCanvas.vue";
 import StoryLegend from "./StoryLegend.vue";
 
 defineProps<{
