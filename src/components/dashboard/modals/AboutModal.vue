@@ -27,15 +27,15 @@ const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferre
         <div class="flex items-center justify-between px-8 py-5 bg-white z-10 shrink-0">
           <div>
             <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ header.title }}</h2>
-            <p class="text-sm text-slate-500 font-bold uppercase tracking-widest mt-1">{{ header.subtitle }}</p>
+            <p class="text-xs text-slate-500 font-medium uppercase tracking-widest mt-1">{{ header.subtitle }}</p>
           </div>
           <v-btn icon="mdi-close" class="hover:bg-heigit-red-light hover:text-heigit-red cursor-pointer" variant="text" density="comfortable" @click="$emit('close')" />
         </div>
       </div>
       <v-divider />
-      <div class="overflow-y-auto px-8 py-8 space-y-10 text-slate-600 leading-relaxed scroll-smooth custom-scrollbar">
+      <div class="overflow-y-auto px-8 py-8 space-y-6 text-slate-600 leading-relaxed scroll-smooth custom-scrollbar">
         <section class="prose max-w-none">
-          <p class="text-lg leading-relaxed text-slate-700" v-html="introHtml" />
+          <p class="text-base leading-relaxed text-slate-500" v-html="introHtml" />
 
           <div
             class="not-prose mt-6 bg-red-50 p-5 rounded-xl border border-red-100 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -55,10 +55,10 @@ const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferre
           </div>
         </section>
 
-        <hr class="border-slate-200" />
+        <hr class="border-slate-200 border" />
 
         <section>
-          <div class="flex items-center gap-2 mb-4">
+          <div class="flex items-center gap-2 mb-2">
             <div class="size-8 flex items-center justify-center bg-slate-100 rounded-lg text-slate-600">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
