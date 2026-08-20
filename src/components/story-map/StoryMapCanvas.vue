@@ -5,8 +5,8 @@ import Map from "@/components/map/map.vue";
 import COGLayer from "@/components/map/COGLayer.vue";
 import VectorLayer from "@/components/map/VectorLayer.vue";
 import ChoroplethLayer from "@/components/map/ChoroplethLayer.vue";
-import MapLegend from "@/components/story-map-two/MapLegend.vue";
-import type { MapLegendLayer } from "@/components/story-map-two/MapLegend.vue";
+import MapLegend from "@/components/story-map/MapLegend.vue";
+import type { MapLegendLayer } from "@/components/story-map/MapLegend.vue";
 import { cn } from "@/utils/cn";
 import type { ChoroplethStop, VectorCategoryStyle } from "@/types/story-map";
 const props = withDefaults(
