@@ -81,12 +81,12 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
           About
         </button>
 
-        <button
+        <!-- <button
           @click="router.push('/story-map')"
           class="px-5 py-2 rounded-full bg-slate-50 border border-slate-100 text-[12px] font-bold text-slate-500 hover:text-heigit-red hover:border-heigit-red transition-all disabled:cursor-not-allowed disabled:opacity-50"
         >
           See Story Maps
-        </button>
+        </button> -->
       </div>
     </template>
 

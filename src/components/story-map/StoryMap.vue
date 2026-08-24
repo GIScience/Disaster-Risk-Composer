@@ -5,7 +5,7 @@ import { useScrollSpy } from "@/composables/useScrollSpy";
 import StoryMapNavbar from "./StoryMapNavbar.vue";
 import StorySection from "./StorySection.vue";
 import StoryCallouts from "./StoryCallouts.vue";
-import StoryMapHero from "./../story-map/StoryMapHero.vue";
+import StoryMapHero from "./StoryMapHero.vue";
 
 const props = defineProps<{ config: StoryMapConfig }>();
 const sm = computed(() => props.config.storyMap);

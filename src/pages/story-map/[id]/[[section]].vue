@@ -2,7 +2,7 @@
 import { computed, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import PageLayout from "@/layout/PageLayout.vue";
-import StoryMap from "@/components/story-map-two/StoryMap.vue";
+import StoryMap from "@/components/story-map/StoryMap.vue";
 import type { StoryMapConfig } from "@/types/story-map";
 
 const route = useRoute();

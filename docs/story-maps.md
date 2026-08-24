@@ -3,7 +3,7 @@
 This covers the **JSON-driven story map system**, served at `/story-map/:id`.
 
 > **Naming note:** the route `/story-map` uses the *renderer* components in
-> `src/components/story-map-two/` and `src/components/story-map/` (`StoryMapCanvas.vue`,
+> `src/components/story-map/` and `src/components/story-map/` (`StoryMapCanvas.vue`,
 > `MapLegend.vue`, `Map.vue`, `COGLayer.vue`, `VectorLayer.vue`, `ChoroplethLayer.vue`).
 > There is a separate, older **Markdown-driven** system at `/story-map-2/:id`
 > (`src/content/story-maps/*.md`, rendered by components in `src/components/story-map/`
@@ -18,7 +18,7 @@ This covers the **JSON-driven story map system**, served at `/story-map/:id`.
 | `src/types/story-map.ts` | TypeScript source of truth for the JSON schema (`StoryMapConfig`). |
 | `src/pages/story-map/index.vue` | Listing page — auto-discovers every JSON file via `import.meta.glob` and renders a card per story map. No registration step needed; drop a new JSON file in and it appears. |
 | `src/pages/story-map/[id]/[[section]].vue` | Detail page — loads the matching JSON by id and passes it to `<StoryMap>`. |
-| `src/components/story-map-two/StoryMap.vue` and siblings | Renderer. You should not need to touch these for a content update — only for new interaction types. |
+| `src/components/story-map/StoryMap.vue` and siblings | Renderer. You should not need to touch these for a content update — only for new interaction types. |
 | `public/data/*.json`, `public/data/*.geojson` | Data files referenced by `sourceUrl`/`valuesUrl` for vector/choropleth layers (see §4). |
 
 Adding a new story map = adding a new JSON file with a unique filename. There is no manifest to update.
