@@ -120,7 +120,7 @@ function formatDisaster(col: string) {
     <transition name="collapse">
       <div
         v-if="isExpanded"
-        class="px-6 py-3 flex flex-col md:flex-row gap-6 items-center justify-center relative"
+        class="py-3 px-3 mt-0.5 flex flex-col md:flex-row gap-6 items-center justify-center relative"
       >
         <div class="flex flex-col md:flex-row gap-4 w-full items-end py-1">
           <div
@@ -278,7 +278,7 @@ function formatDisaster(col: string) {
           <button
             v-if="viewMode === 'DASHBOARD'"
             @click="emit('toggle-analysis')"
-            class="mr-10 flex items-center justify-center w-[34px] h-[34px] bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors border border-slate-200 shrink-0"
+            class="flex items-center justify-center w-[34px] h-[34px] bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors border border-slate-200 shrink-0"
             :title="isAnalysisVisible ? 'Hide Analysis' : 'Show Analysis'"
           >
             <span
