@@ -68,7 +68,6 @@
         "number": 1,
         "title": "Flood scenario (return period)",
         "hasInfoIcon": true,
-        "icon": "mdi-water",
         "control": {
           "type": "segmented",
           "id": "return-period",

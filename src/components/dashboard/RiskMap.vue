@@ -50,6 +50,9 @@ const layerOpacity = ref(0.7);
 const isLayersCollapsed = ref(false);
 
 const countryBounds = ref<maplibregl.LngLatBoundsLike | null>(null);
+// Tracks which pmtilesUrl we've already fit the view to, so re-adding the risk
+// layer after a basemap switch doesn't re-trigger a fitBounds/zoom.
+const boundsFittedForUrl = ref<string | null>(null);
 
 const styleUrl = "https://tiles.openfreemap.org/styles/positron";
 
@@ -72,50 +75,88 @@ function selectDimension(value: RiskViewMode) {
   fitToCountryBounds();
 }
 
-function handleMapLoad(mapInstance: maplibregl.Map) {
-  // Add World Boundaries for Click Interaction
-  updateLayer();
-  mapInstance.addSource("world", {
-    type: "geojson",
-    data: `${import.meta.env.BASE_URL}data/world.json`,
-    promoteId: "iso_a3",
-  });
+function setupWorldLayer() {
+  const mapInstance = map.value;
+  if (!mapInstance) return;
 
   const isLoaded =
     props.availableCountries && props.availableCountries.length > 0;
   const validCountries = isLoaded ? props.availableCountries : ["NONE"];
 
-  // Unavailable Countries Layer
-  mapInstance.addLayer({
-    id: "unavailable-countries",
-    type: "fill",
-    source: "world",
-    paint: {
-      "fill-color": "#cbd5e1", // Slate 300
-      "fill-opacity": 0.6,
-    },
-    filter: isLoaded
-      ? ["!", ["in", ["get", "iso_a3"], ["literal", validCountries]]]
-      : ["==", "iso_a3", "DOES_NOT_EXIST"],
-  });
+  if (!mapInstance.getSource("world")) {
+    mapInstance.addSource("world", {
+      type: "geojson",
+      data: `${import.meta.env.BASE_URL}data/world.json`,
+      promoteId: "iso_a3",
+    });
+  }
 
-  mapInstance.addLayer({
-    id: interactLayerId,
-    type: "fill",
-    source: "world",
-    paint: {
-      "fill-color": "#ca2333",
-      "fill-opacity": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        0.1,
-        0,
-      ],
-    },
-    filter: isLoaded
-      ? ["in", ["get", "iso_a3"], ["literal", validCountries]]
-      : ["==", "iso_a3", "DOES_NOT_EXIST"],
-  });
+  // Unavailable Countries Layer
+  if (!mapInstance.getLayer("unavailable-countries")) {
+    mapInstance.addLayer({
+      id: "unavailable-countries",
+      type: "fill",
+      source: "world",
+      paint: {
+        "fill-color": "#cbd5e1", // Slate 300
+        "fill-opacity": 0.6,
+      },
+      filter: isLoaded
+        ? ["!", ["in", ["get", "iso_a3"], ["literal", validCountries]]]
+        : ["==", "iso_a3", "DOES_NOT_EXIST"],
+    });
+  }
+
+  if (!mapInstance.getLayer(interactLayerId)) {
+    mapInstance.addLayer({
+      id: interactLayerId,
+      type: "fill",
+      source: "world",
+      paint: {
+        "fill-color": "#ca2333",
+        "fill-opacity": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          0.1,
+          0,
+        ],
+      },
+      filter: isLoaded
+        ? ["in", ["get", "iso_a3"], ["literal", validCountries]]
+        : ["==", "iso_a3", "DOES_NOT_EXIST"],
+    });
+  }
+
+  // Country outlines, drawn from our own source so they stay visible on
+  // basemaps (e.g. satellite) that don't carry their own boundary layers.
+  if (!mapInstance.getLayer("world-boundaries")) {
+    mapInstance.addLayer({
+      id: "world-boundaries",
+      type: "line",
+      source: "world",
+      paint: {
+        "line-color": "#ca2333", // HeiGIT red
+        "line-width": 1,
+        "line-opacity": 0.8,
+      },
+    });
+  }
+
+  // Only needed when the basemap itself has no national boundary lines
+  // (e.g. satellite) - hide it on styles like streets that already draw
+  // their own (see boundary_2/boundary_disputed below) to avoid doubling up.
+  const hasNativeBoundaries = !!mapInstance.getLayer("boundary_2");
+  mapInstance.setLayoutProperty(
+    "world-boundaries",
+    "visibility",
+    hasNativeBoundaries ? "none" : "visible",
+  );
+}
+
+function handleMapLoad(mapInstance: maplibregl.Map) {
+  // Add World Boundaries for Click Interaction
+  updateLayer();
+  setupWorldLayer();
 
   const popup = new maplibregl.Popup({
     closeButton: false,
@@ -221,8 +262,14 @@ async function updateLayer() {
     if (mapInstance.getSource(floodLayerId))
       mapInstance.removeSource(floodLayerId);
 
-    countryBounds.value = null;
-    mapViewRef.value?.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, 3000);
+    // Only reset the view on an actual transition to "no country selected" -
+    // updateLayer() also re-runs on every basemap switch, which shouldn't
+    // re-trigger this flyTo if we were already at the home view.
+    if (boundsFittedForUrl.value !== null) {
+      countryBounds.value = null;
+      boundsFittedForUrl.value = null;
+      mapViewRef.value?.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, 3000);
+    }
     return;
   }
 
@@ -270,25 +317,29 @@ async function updateLayer() {
       filter: ["==", props.pcodeField, props.highlightedPcode || ""],
     });
 
-    // Fit bounds
-    const pmtilesFile = new pmtiles.PMTiles(props.pmtilesUrl);
-    try {
-      const metadata = (await pmtilesFile.getMetadata()) as any;
-      if (metadata?.antimeridian_adjusted_bounds) {
-        const bounds = (metadata.antimeridian_adjusted_bounds as string)
-          .split(",")
-          .map(Number);
-        if (bounds.length === 4 && bounds.every((v) => !isNaN(v))) {
-          const [minLon, minLat, maxLon, maxLat] = bounds;
-          countryBounds.value = [
-            [minLon, minLat],
-            [maxLon, maxLat],
-          ];
-          fitToCountryBounds(2000);
+    // Fit bounds - only for a genuinely new dataset, not when the layer is
+    // simply being re-added after a basemap switch.
+    if (boundsFittedForUrl.value !== props.pmtilesUrl) {
+      const pmtilesFile = new pmtiles.PMTiles(props.pmtilesUrl);
+      try {
+        const metadata = (await pmtilesFile.getMetadata()) as any;
+        if (metadata?.antimeridian_adjusted_bounds) {
+          const bounds = (metadata.antimeridian_adjusted_bounds as string)
+            .split(",")
+            .map(Number);
+          if (bounds.length === 4 && bounds.every((v) => !isNaN(v))) {
+            const [minLon, minLat, maxLon, maxLat] = bounds;
+            countryBounds.value = [
+              [minLon, minLat],
+              [maxLon, maxLat],
+            ];
+            fitToCountryBounds(2000);
+          }
         }
+        boundsFittedForUrl.value = props.pmtilesUrl;
+      } catch (err) {
+        console.log("Could not read PMTiles bounds");
       }
-    } catch (err) {
-      console.log("Could not read PMTiles bounds");
     }
   }
 
@@ -331,7 +382,9 @@ const onStyleLoad = () => {
     }
   });
 
-  if (mapInstance.isStyleLoaded()) updateLayer();
+  // Re-add the risk layer after a basemap switch, if it was already present
+  setupWorldLayer();
+  updateLayer();
 };
 
 watch(

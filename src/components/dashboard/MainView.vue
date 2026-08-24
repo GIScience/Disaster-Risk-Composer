@@ -8,10 +8,12 @@ import AboutModal from "@/components/dashboard/modals/AboutModal.vue";
 import UploadModal from "@/components/dashboard/modals/UploadModal.vue";
 import MetadataModal from "@/components/dashboard/modals/MetadataModal.vue";
 import FloatingLogo from "@/components/FloatingLogo.vue";
+// import { useRouter } from "vue-router";
 import { useRiskLogic } from "@/composables/useRiskLogic";
 import { useIndicatorColumns } from "@/composables/useIndicatorColumns";
 import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
 
+// const router = useRouter();
 
 const {
   selectedCountry,
@@ -78,8 +80,8 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
         >
           About
         </button>
-
-        <!-- <button
+<!-- 
+        <button
           @click="router.push('/story-map')"
           class="px-5 py-2 rounded-full bg-slate-50 border border-slate-100 text-[12px] font-bold text-slate-500 hover:text-heigit-red hover:border-heigit-red transition-all disabled:cursor-not-allowed disabled:opacity-50"
         >

@@ -2,6 +2,7 @@
 import { watch } from "vue";
 import type maplibregl from "maplibre-gl";
 import useMapInstance from "@/composables/use-map-instance";
+import BaseMapControl from "@/components/map/basemap-control.vue";
 import MapZoomControl from "@/components/map/zoom-control.vue";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -66,12 +67,12 @@ defineExpose({ map, isLoaded, flyTo, mapContainer: mapContainerRef });
       class="absolute top-4 right-4 z-10"
     />
     <!-- BaseMap Controls -->
-    <!-- 
     <BaseMapControl
       v-if="basemapControls"
       :map="map"
-      class="absolute top-4 left-4 z-10"
-    /> -->
+      default-style-id="streets"
+      @change="(style) => map?.setStyle(style)"
+    />
     <slot :map="map" :is-loaded="isLoaded" />
   </div>
 </template>

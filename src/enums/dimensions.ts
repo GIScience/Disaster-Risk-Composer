@@ -55,7 +55,7 @@ export const BASE_RISK_DIMENSIONS: RiskDimensionConfig[] = [
     value: "exposure",
     label: "Exposure",
     legendLabel: "Exposure:",
-    icon: "mdi-weather-hurricane",
+    icon: "mdi-close-octagon",
     resolveColumn: ({ dimensionColumns }) => dimensionColumns.exp,
   },
   {

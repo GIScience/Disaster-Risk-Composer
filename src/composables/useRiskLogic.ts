@@ -252,7 +252,11 @@ export function useRiskLogic() {
   }
 
   const syncRoute = () => {
-    const query: Record<string, string> = {};
+    // Preserve any query params this function doesn't own (e.g. basemap).
+    const query: Record<string, string> = { ...(route.query as Record<string, string>) };
+    delete query.country;
+    delete query.disaster;
+    delete query.dimension;
     if (selectedCountry.value) query.country = selectedCountry.value;
     if (selectedCountry.value && selectedDisaster.value)
       query.disaster = selectedDisaster.value;
