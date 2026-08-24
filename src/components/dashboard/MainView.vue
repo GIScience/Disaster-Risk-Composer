@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
 import PageLayout from "@/layout/PageLayout.vue";
 import DashboardControlBar from "@/components/dashboard/DashboardControlBar.vue";
 import RiskMap from "@/components/dashboard/RiskMap.vue";
@@ -13,7 +12,6 @@ import { useRiskLogic } from "@/composables/useRiskLogic";
 import { useIndicatorColumns } from "@/composables/useIndicatorColumns";
 import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
 
-const router = useRouter();
 
 const {
   selectedCountry,
