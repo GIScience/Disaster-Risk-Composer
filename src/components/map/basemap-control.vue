@@ -25,13 +25,13 @@ const props = withDefaults(
     position: "top-right",
     options: () => [
       {
-        id: "positron",
+        id: "light",
         label: "Light",
         style: "https://tiles.openfreemap.org/styles/positron",
         image: PositronImage,
       },
       {
-        id: "osm",
+        id: "OSM",
         label: "OpenStreetMap",
         style: "https://tiles.openfreemap.org/styles/bright",
         image: OpenStreetMapImage,
@@ -147,7 +147,7 @@ watch(
     <button
       type="button"
       :title="`Basemap: ${activeOption?.label}`"
-      class="flex items-center justify-center p-1 w-12 h-12 text-slate-700 hover:text-heigit-red hover:border-heigit-red transition-colors overflow-hidden rounded-md"
+      class="flex items-center relative justify-center w-16 h-14 text-slate-700 hover:text-heigit-red hover:border-heigit-red transition-colors overflow-hidden rounded-md"
       @click="toggleDropdown"
     >
       <img
@@ -156,12 +156,23 @@ watch(
         :alt="activeOption.label"
         class="w-full h-full object-cover rounded-md"
       />
+      <div
+        v-if="activeOption?.image"
+        class="absolute inset-0 rounded-md bg-black/30"
+      />
       <v-icon v-else icon="mdi-map" class="w-5 h-5" />
+      <div
+        v-if="activeOption?.image"
+        class="absolute bottom-0 left-0 right-0 text-white text-[8px] font-medium leading-tight text-center py-1 truncate px-0.5"
+      >
+        <v-icon icon="mdi-layers" class="w-3 h-3 mr-0.5" />
+        <span class="capitalize">{{ activeOption?.id }}</span>
+      </div>
     </button>
 
     <div
       v-if="isOpen"
-      class="absolute right-14 -top-6 -translate-y-1/2 min-w-[9.5rem] bg-white border border-slate-200 rounded-lg shadow-2xl py-1 animate-in fade-in slide-in-from-right-2 duration-200"
+      class="absolute right-[4.5rem] -top-4 -translate-y-1/2 min-w-[9.5rem] bg-white border border-slate-200 rounded-lg shadow-2xl py-1 animate-in fade-in slide-in-from-right-2 duration-200"
     >
       <span
         class="block px-4 py-2 text-[9px] font-semibold text-slate-400 uppercase tracking-wider"
