@@ -118,18 +118,18 @@ const noteBodyItems = computed(() =>
       : [],
 );
 
-// const noteBgClasses = {
-//   warning: ["bg-amber-50", "bg-amber-100"],
-//   info: ["bg-orange-100", "bg-heigit-50"],
-// } as const;
+const noteBgClasses = {
+  warning: ["bg-amber-50", "bg-amber-100"],
+  info: ["bg-orange-100", "bg-heigit-50"],
+} as const;
 
-// function noteBgClass(index: number) {
-//   const palette =
-//     activeNote.value?.variant === "warning"
-//       ? noteBgClasses.warning
-//       : noteBgClasses.info;
-//   return palette[index % palette.length];
-// }
+function noteBgClass(index: number) {
+  const palette =
+    activeNote.value?.variant === "warning"
+      ? noteBgClasses.warning
+      : noteBgClasses.info;
+  return palette[index % palette.length];
+}
 
 // Legend layer names shown in MapLegend, e.g. "Flood Extent (10-years)".
 const layerLabel = computed(() => overlaySelected.value?.label);
@@ -217,6 +217,7 @@ const baseLayerLabel = computed(() => {
               :key="index"
               class="flex gap-2 rounded-lg px-3 py-1 text-sm text-justify leading-relaxed"
               :class="[
+                noteBgClass[index],
                 activeNote.variant === 'warning'
                   ? 'text-amber-800'
                   : 'text-gray-950',
