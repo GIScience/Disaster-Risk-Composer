@@ -8,12 +8,12 @@ import AboutModal from "@/components/dashboard/modals/AboutModal.vue";
 import UploadModal from "@/components/dashboard/modals/UploadModal.vue";
 import MetadataModal from "@/components/dashboard/modals/MetadataModal.vue";
 import FloatingLogo from "@/components/FloatingLogo.vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import { useRiskLogic } from "@/composables/useRiskLogic";
 import { useIndicatorColumns } from "@/composables/useIndicatorColumns";
 import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
 
-const router = useRouter();
+// const router = useRouter();
 
 const {
   selectedCountry,
