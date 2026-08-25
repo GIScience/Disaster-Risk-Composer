@@ -184,7 +184,7 @@ export interface SliderTick {
 export interface Note {
   variant: "info" | "warning";
   icon: string;
-  body: string;
+  body: string | string[];
 }
 
 export interface Figure {

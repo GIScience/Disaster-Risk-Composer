@@ -47,7 +47,7 @@ const homeTarget = computed(() => {
       <slot name="actions">
         <button
           @click="router.push('/')"
-          class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-200 border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
+          class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-400 transition-colors hover:text-heigit-red border hover:border-heigit-red border-slate-200 rounded-md px-3 py-2 hover:bg-slate-50"
         >
           <svg
             class="h-3.5 w-3.5"

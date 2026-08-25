@@ -110,6 +110,27 @@ const equationTerms = computed<EquationTerm[] | undefined>(() => {
   ];
 });
 
+const noteBodyItems = computed(() =>
+  Array.isArray(activeNote.value?.body)
+    ? activeNote.value.body
+    : activeNote.value?.body
+      ? [activeNote.value.body]
+      : [],
+);
+
+// const noteBgClasses = {
+//   warning: ["bg-amber-50", "bg-amber-100"],
+//   info: ["bg-orange-100", "bg-heigit-50"],
+// } as const;
+
+// function noteBgClass(index: number) {
+//   const palette =
+//     activeNote.value?.variant === "warning"
+//       ? noteBgClasses.warning
+//       : noteBgClasses.info;
+//   return palette[index % palette.length];
+// }
+
 // Legend layer names shown in MapLegend, e.g. "Flood Extent (10-years)".
 const layerLabel = computed(() => overlaySelected.value?.label);
 const baseLayerLabel = computed(() => {
@@ -129,7 +150,7 @@ const baseLayerLabel = computed(() => {
     :class="{ 'is-revealed': revealed }"
   >
     <div
-      class="flex flex-col gap-4 lg:flex-row lg:gap-5"
+      class="flex flex-col gap-4 lg:flex-row lg:gap-2"
       :class="section.map ? 'lg:min-h-[700px] lg:items-stretch' : 'lg:items-start'"
     >
       <div
@@ -190,17 +211,20 @@ const baseLayerLabel = computed(() => {
 
 
           <!-- Note -->
-          <div
-            v-if="activeNote"
-            class="flex gap-2 rounded-lg p-3 text-sm leading-relaxed"
-            :class="
-              activeNote.variant === 'warning'
-                ? 'bg-amber-50 text-amber-800'
-                : 'bg-heigit-50 text-gray-900'
-            "
-          >
-            <RichText :text="activeNote.body" />
-          </div>
+          <template v-if="activeNote">
+            <div
+              v-for="(paragraph, index) in noteBodyItems"
+              :key="index"
+              class="flex gap-2 rounded-lg px-3 py-1 text-sm text-justify leading-relaxed"
+              :class="[
+                activeNote.variant === 'warning'
+                  ? 'text-amber-800'
+                  : 'text-gray-950',
+              ]"
+            >
+              <RichText :text="paragraph" />
+            </div>
+          </template>
 
           <!-- Data source -->
           <div v-if="section.dataset" class="flex items-center gap-2 text-sm">
@@ -220,7 +244,7 @@ const baseLayerLabel = computed(() => {
       <!-- Map -->
       <StoryMapPanel
         v-if="section.map"
-        class="min-h-[700px] min-w-0 flex-1"
+        class="min-h-[700px] w-full min-w-0 flex-1"
         :control="section.map"
         :layer="layerConfig"
         :layer-label="layerLabel"

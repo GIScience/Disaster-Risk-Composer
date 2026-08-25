@@ -70,7 +70,7 @@ defineExpose({ map, isLoaded, flyTo, mapContainer: mapContainerRef });
     <BaseMapControl
       v-if="basemapControls"
       :map="map"
-      default-style-id="streets"
+      default-style-id="positron"
       @change="(style) => map?.setStyle(style)"
     />
     <slot :map="map" :is-loaded="isLoaded" />

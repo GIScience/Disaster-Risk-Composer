@@ -26,7 +26,7 @@ const props = withDefaults(
     options: () => [
       {
         id: "positron",
-        label: "Positron",
+        label: "Light",
         style: "https://tiles.openfreemap.org/styles/positron",
         image: PositronImage,
       },
@@ -140,10 +140,9 @@ watch(
   <div
     v-if="map"
     ref="controlRef"
-    class="absolute z-30 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border border-slate-200 rounded-lg shadow-2xl animate-in"
+    class="absolute z-30 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border hover:bg-slate-200 border-slate-200 rounded-lg shadow-2xl animate-in"
     :class="props.isMobile ? 'bottom-4 right-4' : 'bottom-32 right-4'"
-    @mouseenter="openDropdown"
-    @mouseleave="closeDropdown"
+    @click="openDropdown"
   >
     <button
       type="button"
@@ -162,8 +161,12 @@ watch(
 
     <div
       v-if="isOpen"
-      class="absolute right-full top-2 -translate-y-1/2 min-w-[9.5rem] bg-white border border-slate-200 rounded-lg shadow-2xl py-1 animate-in fade-in slide-in-from-right-2 duration-200"
+      class="absolute right-14 -top-6 -translate-y-1/2 min-w-[9.5rem] bg-white border border-slate-200 rounded-lg shadow-2xl py-1 animate-in fade-in slide-in-from-right-2 duration-200"
     >
+      <span
+        class="block px-4 py-2 text-[9px] font-semibold text-slate-400 uppercase tracking-wider"
+        >Basemaps</span
+      >
       <button
         v-for="option in options"
         :key="option.id"
@@ -180,7 +183,7 @@ watch(
         <span class="truncate capitalize">{{ option.label }}</span>
         <span
           v-if="activeStyleId === option.id"
-          class="text-heigit-red text-xs shrink-0"
+          class="text-heigit-red text-[6px] shrink-0"
           >●</span
         >
       </button>

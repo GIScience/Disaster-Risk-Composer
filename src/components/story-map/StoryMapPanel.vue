@@ -15,7 +15,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="relative h-full bg-[#f3f4f2]">
+  <div class="relative bg-[#f3f4f2]">
     <slot :layer-id="layer?.layerId">
       <div
         class="absolute inset-0 flex items-center justify-center text-xs text-gray-300"
