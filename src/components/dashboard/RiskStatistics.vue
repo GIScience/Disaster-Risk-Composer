@@ -217,6 +217,7 @@ const {
         :disaster-label="disasterLabel"
         :indicator-cols="indicatorCols"
         :format-col-name="formatColName"
+        :selected-country="selectedCountry"
         @region-hover="emit('region-hover', $event)"
       />
       <MetadataTab v-else-if="activeTab === 'metadata'" />
