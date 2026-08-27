@@ -37,15 +37,15 @@ export const TooltipInfoList = {
   // Healthcare Indicators
   access_pop_hospitals_30min:
     "Population with access to hospitals within 30 minutes",
-  access_pop_hospitals_1hr: "Population with access to hospitals within 1 hour",
-  access_pop_hospitals_2hr:
+  access_pop_hospitals_1h: "Population with access to hospitals within 1 hour",
+  access_pop_hospitals_2h:
     "Population with access to hospitals within 2 hours",
 
   access_pop_primary_healthcare_30min:
     "Population with access to primary healthcare within 30 minutes",
-  access_pop_primary_healthcare_1hr:
+  access_pop_primary_healthcare_1h:
     "Population with access to primary healthcare within 1 hour",
-  access_pop_primary_healthcare_2hr:
+  access_pop_primary_healthcare_2h:
     "Population with access to primary healthcare within 2 hours",
 
   education_count: "Number of educational facilities",

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { generateFilename } from "@/utils/filenameGenerator";
 
 const props = defineProps<{
   data: any[];
   selectedDisaster: string;
   pcodeField: string;
+  selectedCountry: string;
   disasterLabel: string;
   indicatorCols: string[];
   formatColName: (col: string) => string;
@@ -16,8 +18,9 @@ const emit = defineEmits<{
 
 const sortKey = ref<string>("");
 const sortOrder = ref<"asc" | "desc">("desc");
-const currentPage = ref(1);
 const itemsPerPage = 50;
+const displayCount = ref(itemsPerPage);
+const tableContainer = ref<HTMLElement | null>(null);
 
 const sortedData = computed(() => {
   if (!props.data || props.data.length === 0) return [];
@@ -54,22 +57,26 @@ const sortedData = computed(() => {
   });
 });
 
-const totalPages = computed(() => {
-  return Math.max(1, Math.ceil(sortedData.value.length / itemsPerPage));
-});
-
 const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return sortedData.value.slice(start, start + itemsPerPage);
+  return sortedData.value.slice(0, displayCount.value);
 });
 
 watch(
   [sortKey, sortOrder, () => props.data],
   () => {
-    currentPage.value = 1;
+    displayCount.value = itemsPerPage;
   },
   { deep: true },
 );
+
+const handleScroll = () => {
+  const el = tableContainer.value;
+  if (!el || displayCount.value >= sortedData.value.length) return;
+
+  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 100) {
+    displayCount.value += itemsPerPage;
+  }
+};
 
 const toggleSort = (key: string) => {
   if (sortKey.value === key) {
@@ -79,18 +86,58 @@ const toggleSort = (key: string) => {
     sortOrder.value = "desc";
   }
 };
+
+const handleDownloadIndicatorData = () => {
+  const headers = [
+    props.pcodeField,
+    props.selectedDisaster,
+    ...props.indicatorCols,
+  ];
+  const rows = sortedData.value.map((row) =>
+    headers.map((header) => row[header] ?? ""),
+  );
+
+  const csvContent =
+    "data:text/csv;charset=utf-8," +
+    [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute(
+    "download",
+    generateFilename(`Risk_Data`, props.selectedCountry, "csv"),
+  );
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 </script>
 
 <template>
   <section class="w-full h-full flex flex-col min-h-0 relative">
-    <div class="flex justify-between items-center mb-2 shrink-0">
+    <div class="flex justify-between items-center mb-2 px-2 shrink-0">
       <div class="text-sm font-bold text-slate-700">
         {{ sortedData.length }} Regions
       </div>
+      <v-btn
+        variant="flat"
+        color="heigit-red"
+        size="small"
+        title="Download a CSV of the current indicator data for this country"
+        class="shrink-0 text-white text-none gap-1.5 px-2 font-bold"
+        aria-label="download current indicator data as CSV"
+        prepend-icon="mdi-download"
+        @click="handleDownloadIndicatorData()"
+      >
+        Download CSV
+      </v-btn>
     </div>
 
     <div
+      ref="tableContainer"
       class="flex-1 overflow-auto border border-slate-200 rounded-lg custom-scrollbar bg-white"
+      @scroll="handleScroll"
     >
       <table
         class="w-full text-left text-sm text-slate-600 relative border-collapse"
@@ -172,30 +219,6 @@ const toggleSort = (key: string) => {
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- Pagination Controls -->
-    <div
-      class="flex justify-between items-center mt-3 shrink-0"
-      v-if="totalPages > 1"
-    >
-      <button
-        @click="currentPage--"
-        :disabled="currentPage === 1"
-        class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-600 rounded-md disabled:opacity-40 hover:bg-slate-200 transition-colors cursor-pointer"
-      >
-        Previous
-      </button>
-      <span class="text-xs font-bold text-slate-500 tracking-wider">
-        PAGE {{ currentPage }} OF {{ totalPages }}
-      </span>
-      <button
-        @click="currentPage++"
-        :disabled="currentPage === totalPages"
-        class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-600 rounded-md disabled:opacity-40 hover:bg-slate-200 transition-colors cursor-pointer"
-      >
-        Next
-      </button>
     </div>
   </section>
 </template>
