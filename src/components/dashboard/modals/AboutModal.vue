@@ -9,11 +9,18 @@ defineEmits<{
 
 const riskMapStore = useRiskMapStore();
 
+const HDX_ORG_LINK = 'https://data.humdata.org/organization/heidelberg-institute-for-geoinformation-technology';
+
 const resourceItems = computed(() =>
-  resources.items.map((resource) => ({
-    ...resource,
-    link: resource.link.replace('{{ country }}', riskMapStore.selectedCountryName.toLowerCase()),
-  }))
+  resources.items.map((resource) => {
+    if (resource.link.includes('{{ country }}') && !riskMapStore.selectedCountry) {
+      return { ...resource, link: HDX_ORG_LINK };
+    }
+    return {
+      ...resource,
+      link: resource.link.replace('{{ country }}', riskMapStore.selectedCountryName.toLowerCase()),
+    };
+  })
 );
 
 const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferrer');
