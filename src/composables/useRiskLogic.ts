@@ -14,6 +14,7 @@ import {
   type RiskViewMode,
 } from "../enums/dimensions";
 import { useRiskMapStore } from "../store/riskMapStore";
+import { useIsEmbedded } from "./use-is-embedded";
 import {
   stripDimensionPrefix,
   sanitizeIndicatorName,
@@ -75,6 +76,7 @@ export function useRiskLogic() {
   const route = useRoute();
   const router = useRouter();
   const store = useRiskMapStore();
+  const isEmbedded = useIsEmbedded();
 
   const {
     selectedCountry,
@@ -184,6 +186,7 @@ export function useRiskLogic() {
     error.value = null;
     viewMode.value = "DASHBOARD";
     store.resetForNewCountry();
+    if (isEmbedded) store.setShowAnalysis(false);
 
     try {
       const folder = countryCode.toLowerCase();

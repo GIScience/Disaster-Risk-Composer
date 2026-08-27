@@ -16,6 +16,7 @@ const props = withDefaults(
     zoomControls?: boolean;
     basemapControls?: boolean;
     attributionControls?: boolean;
+    compactBasemap?: boolean;
   }>(),
   {
     mapStyle: "https://tiles.openfreemap.org/styles/positron",
@@ -26,6 +27,7 @@ const props = withDefaults(
     zoomControls: true,
     basemapControls: true,
     attributionControls: true,
+    compactBasemap: false,
   },
 );
 
@@ -70,6 +72,7 @@ defineExpose({ map, isLoaded, flyTo, mapContainer: mapContainerRef });
     <BaseMapControl
       v-if="basemapControls"
       :map="map"
+      :compact="compactBasemap"
       default-style-id="positron"
       @change="(style) => map?.setStyle(style)"
     />

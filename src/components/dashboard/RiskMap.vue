@@ -8,20 +8,26 @@ import RiskLegend from "@/components/dashboard/RiskLegend.vue";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { cn } from "@/utils/cn";
 import type { RiskViewMode } from "@/composables/useRiskLogic";
+import { useIsEmbedded } from "@/composables/use-is-embedded";
 
 const { dimensions } = storeToRefs(useRiskMapStore());
+const isEmbedded = useIsEmbedded();
 
-const props = defineProps<{
-  pmtilesUrl: string;
-  pcodeField: string;
-  matchArray: [string, string, number][];
-  highlightedPcode?: string | null;
-  isAnalysisVisible?: boolean;
-  availableCountries?: string[];
-  isMobile?: boolean;
-  riskViewMode?: RiskViewMode;
-  legendTitle?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    pmtilesUrl: string;
+    pcodeField: string;
+    matchArray: [string, string, number][];
+    highlightedPcode?: string | null;
+    isAnalysisVisible?: boolean;
+    availableCountries?: string[];
+    isMobile?: boolean;
+    riskViewMode?: RiskViewMode;
+    legendTitle?: string;
+    showZoomControls?: boolean;
+  }>(),
+  { showZoomControls: true },
+);
 
 const emit = defineEmits<{
   (e: "country-click", code: string): void;
@@ -47,7 +53,7 @@ const floodLayerId = "risk-layer";
 const interactLayerId = "world-fills";
 
 const layerOpacity = ref(0.7);
-const isLayersCollapsed = ref(false);
+const isLayersCollapsed = ref(true);
 
 const countryBounds = ref<maplibregl.LngLatBoundsLike | null>(null);
 // Tracks which pmtilesUrl we've already fit the view to, so re-adding the risk
@@ -596,7 +602,8 @@ defineExpose({
       :scroll-zoom="true"
       @load="handleMapLoad"
       interactive
-      zoomControls
+      :zoom-controls="props.showZoomControls && !isEmbedded"
+      :compact-basemap="isEmbedded"
     />
 
     <RiskLegend

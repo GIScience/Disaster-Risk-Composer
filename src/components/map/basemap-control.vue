@@ -5,6 +5,7 @@ import PositronImage from "@/assets/basemap/positron.svg";
 import OpenStreetMapImage from "@/assets/basemap/osm.svg";
 import { useRoute, useRouter } from "vue-router";
 import type maplibregl from "maplibre-gl";
+import { cn } from "@/utils/cn";
 
 export interface BasemapOption {
   id: string;
@@ -18,11 +19,12 @@ const props = withDefaults(
     map: maplibregl.Map | null;
     position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
     options?: BasemapOption[];
-    isMobile?: boolean;
     defaultStyleId?: string;
+    compact?: boolean;
   }>(),
   {
     position: "top-right",
+    compact: false,
     options: () => [
       {
         id: "light",
@@ -140,14 +142,18 @@ watch(
   <div
     v-if="map"
     ref="controlRef"
-    class="absolute z-30 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border hover:bg-slate-200 border-slate-200 rounded-lg shadow-2xl animate-in"
-    :class="props.isMobile ? 'bottom-4 right-4' : 'bottom-32 right-4'"
+    class="absolute z-30 bottom-32 right-4 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border hover:bg-slate-200 border-slate-200 rounded-lg shadow-2xl animate-in"
     @click="openDropdown"
   >
     <button
       type="button"
       :title="`Basemap: ${activeOption?.label}`"
-      class="flex items-center relative justify-center w-16 h-14 text-slate-700 hover:text-heigit-red hover:border-heigit-red transition-colors overflow-hidden rounded-md"
+      :class="
+        cn(
+          'flex items-center relative justify-center text-slate-700 hover:text-heigit-red hover:border-heigit-red transition-colors overflow-hidden rounded-md',
+          compact ? 'w-9 h-9' : 'w-16 h-14',
+        )
+      "
       @click="toggleDropdown"
     >
       <img
@@ -160,9 +166,9 @@ watch(
         v-if="activeOption?.image"
         class="absolute inset-0 rounded-md bg-black/30"
       />
-      <v-icon v-else icon="mdi-map" class="w-5 h-5" />
+      <v-icon v-else icon="mdi-map" :size="compact ? 16 : 20" />
       <div
-        v-if="activeOption?.image"
+        v-if="activeOption?.image && !compact"
         class="absolute bottom-0 left-0 right-0 text-white text-[8px] font-medium leading-tight text-center py-1 truncate px-0.5"
       >
         <v-icon icon="mdi-layers" class="w-3 h-3 mr-0.5" />
