@@ -40,9 +40,17 @@ export async function fetchCountries(): Promise<Country[]> {
 
 export async function checkFileExists(url: string): Promise<boolean> {
   try {
-    const response = await fetch(url, { method: "HEAD" });
+    const response = await fetch(url, { method: "HEAD", cache: "no-store" });
     return response.ok;
   } catch {
     return false;
   }
+}
+
+// Used to verify the HeiGIT data bucket is actually reachable from this origin
+// (e.g. not blocked by a CORS misconfiguration) before relying on it.
+export async function checkDataSourceAvailable(): Promise<boolean> {
+  return checkFileExists(
+    "https://hot.storage.heigit.org/heigit-hdx-public/oqapi_hdx/countries/countries.yaml",
+  );
 }
