@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, nextTick, watch } from "vue";
 import Plotly from "plotly.js-dist-min";
+import { formatRegionLabel } from "@/utils/regionLabel";
 
 const props = defineProps<{
   data: any[];
   selectedDisaster: string;
   pcodeField: string;
+  pcodeNames: Record<string, string>;
 }>();
 
 const emit = defineEmits<{
@@ -28,12 +30,18 @@ const renderRanking = async () => {
     .slice(0, 15)
     .reverse(); // Reverse for Plotly horizontal bar chart (bottom to top)
 
+  // y stays the raw pcode - it's what plotly_hover reports below, and that
+  // value drives the map's hover-highlight, so it can't become a display label.
   const yValues = topData.map((d) => d[props.pcodeField]);
+  const displayLabels = yValues.map((pcode) =>
+    formatRegionLabel(pcode, props.pcodeNames),
+  );
   const xValues = topData.map((d) => Number(d[props.selectedDisaster]));
 
   const trace = {
     x: xValues,
     y: yValues,
+    customdata: displayLabels,
     type: "bar",
     orientation: "h",
     marker: {
@@ -46,7 +54,7 @@ const renderRanking = async () => {
     },
     text: xValues.map((v) => v.toFixed(3)),
     textposition: "auto",
-    hoverinfo: "y+text",
+    hovertemplate: "%{customdata}<br>Risk Score: %{x:.3f}<extra></extra>",
   };
 
   const layout = {
@@ -62,6 +70,8 @@ const renderRanking = async () => {
     yaxis: {
       automargin: true,
       tickfont: { size: 10, color: "#475569" },
+      tickvals: yValues,
+      ticktext: displayLabels,
     },
     margin: { t: 10, r: 10, b: 10, l: 10 },
   };
@@ -87,7 +97,7 @@ onMounted(() => {
 });
 
 watch(
-  [() => props.data, () => props.selectedDisaster],
+  [() => props.data, () => props.selectedDisaster, () => props.pcodeNames],
   () => {
     renderRanking();
   },

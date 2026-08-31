@@ -13,6 +13,7 @@ const {
   disasters,
   pmtilesUrl,
   pcodeField,
+  pcodeNames,
   matchArray,
   isLoading,
   lastLoadedData,
@@ -290,6 +291,7 @@ function selectDisaster(disaster: string) {
                 :selected-country="selectedCountry"
                 :indicator-weights="indicatorWeights"
                 :pcode-field="pcodeField"
+                :pcode-names="pcodeNames"
                 :is-mobile="true"
                 @update:indicatorWeights="indicatorWeights = $event"
                 @region-hover="highlightedPcode = $event"

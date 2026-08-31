@@ -10,7 +10,8 @@ import { cn } from "@/utils/cn";
 import type { RiskViewMode } from "@/composables/useRiskLogic";
 import { useIsEmbedded } from "@/composables/use-is-embedded";
 
-const { dimensions } = storeToRefs(useRiskMapStore());
+const riskMapStore = useRiskMapStore();
+const { dimensions } = storeToRefs(riskMapStore);
 const isEmbedded = useIsEmbedded();
 
 const props = withDefaults(
@@ -51,6 +52,45 @@ const map = computed<maplibregl.Map | null>(
 
 const floodLayerId = "risk-layer";
 const interactLayerId = "world-fills";
+
+// Admin-unit names live in the pmtiles vector tiles (as "<LEVEL>_NAME",
+// alongside the existing "<LEVEL>_PCODE") rather than in the parquet data.
+const nameField = computed(() =>
+  props.pcodeField ? props.pcodeField.replace(/_PCODE$/, "_NAME") : "",
+);
+
+const HTML_ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+function escapeHtml(str: string): string {
+  return str.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]);
+}
+
+// Best-effort: pull whatever pcode -> name pairs are in the currently loaded
+// tiles and merge them into the shared store, so the statistics panels (which
+// only have the parquet data, with no NAME field) can look names up too.
+function collectPcodeNames() {
+  const mapInstance = map.value;
+  if (!mapInstance || !nameField.value || !mapInstance.getSource(floodLayerId))
+    return;
+
+  const features = mapInstance.querySourceFeatures(floodLayerId, {
+    sourceLayer: "boundary",
+  });
+  if (!features.length) return;
+
+  const names: Record<string, string> = {};
+  for (const feature of features) {
+    const pcode = feature.properties?.[props.pcodeField];
+    const name = feature.properties?.[nameField.value];
+    if (pcode && name) names[pcode] = name;
+  }
+  if (Object.keys(names).length) riskMapStore.addPcodeNames(names);
+}
 
 const layerOpacity = ref(0.7);
 const isLayersCollapsed = ref(true);
@@ -164,6 +204,14 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
   updateLayer();
   setupWorldLayer();
 
+  // Tiles for the risk layer load incrementally (e.g. as the fit-bounds
+  // animation pans/zooms in) - re-collect names every time more of them load.
+  mapInstance.on("sourcedata", (e) => {
+    if (e.sourceId === floodLayerId && mapInstance.isSourceLoaded(floodLayerId)) {
+      collectPcodeNames();
+    }
+  });
+
   const popup = new maplibregl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -176,6 +224,7 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
 
     const feature = e.features[0];
     const pcode = feature.properties[props.pcodeField];
+    const name = feature.properties[nameField.value];
     const match = props.matchArray.find((m) => m[0] === pcode);
 
     if (match) {
@@ -184,7 +233,7 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
         .setHTML(
           `
           <div class="p-3 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-2xl min-w-[120px]">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${pcode}</div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${name ? `${escapeHtml(name)} <span class="normal-case font-medium">(${pcode})</span>` : pcode}</div>
             <div class="flex flex-col gap-1.5">
               <div class="flex items-center gap-2">
                 <div class="w-2.5 h-2.5 rounded-full ring-2 ring-slate-100" style="background-color: ${match[1]}"></div>

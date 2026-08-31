@@ -15,6 +15,7 @@ const props = defineProps<{
   selectedDisaster: string;
   selectedCountry: string;
   pcodeField: string;
+  pcodeNames: Record<string, string>;
   indicatorWeights: Record<string, number>;
   isMobile?: boolean;
   customIndicatorsReplaced?: boolean;
@@ -165,6 +166,7 @@ const {
         :data="data"
         :selected-disaster="selectedDisaster"
         :pcode-field="pcodeField"
+        :pcode-names="pcodeNames"
         @region-hover="emit('region-hover', $event)"
       />
 
@@ -173,6 +175,7 @@ const {
         :data="data"
         :selected-disaster="selectedDisaster"
         :pcode-field="pcodeField"
+        :pcode-names="pcodeNames"
         @region-hover="emit('region-hover', $event)"
       />
 
@@ -214,6 +217,7 @@ const {
         :data="data"
         :selected-disaster="selectedDisaster"
         :pcode-field="pcodeField"
+        :pcode-names="pcodeNames"
         :disaster-label="disasterLabel"
         :indicator-cols="indicatorCols"
         :format-col-name="formatColName"

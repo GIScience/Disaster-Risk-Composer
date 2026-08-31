@@ -2,11 +2,13 @@
 import { computed, onMounted, nextTick, watch } from "vue";
 import Plotly from "plotly.js-dist-min";
 import { getDimensionColumns } from "@/utils/riskCalculation";
+import { formatRegionLabel } from "@/utils/regionLabel";
 
 const props = defineProps<{
   data: any[];
   selectedDisaster: string;
   pcodeField: string;
+  pcodeNames: Record<string, string>;
 }>();
 
 const emit = defineEmits<{
@@ -31,7 +33,12 @@ const renderComponents = async () => {
     )
     .slice(0, 5);
 
+  // x stays the raw pcode - it's what plotly_hover reports below, and that
+  // value drives the map's hover-highlight, so it can't become a display label.
   const pcodes = topData.map((d) => d[props.pcodeField]);
+  const displayLabels = pcodes.map((pcode) =>
+    formatRegionLabel(pcode, props.pcodeNames),
+  );
   const { exp, vul, cop } = componentCols.value;
 
   const traces = [];
@@ -45,6 +52,8 @@ const renderComponents = async () => {
     traces.push({
       x: pcodes,
       y: topData.map((d) => Number(d[exp]) || 0),
+      customdata: displayLabels,
+      hovertemplate: "%{customdata}<br>Exposure: %{y:.3f}<extra></extra>",
       name: "Exposure",
       type: "bar",
       marker: { color: colors.exp },
@@ -54,6 +63,8 @@ const renderComponents = async () => {
     traces.push({
       x: pcodes,
       y: topData.map((d) => Number(d[vul]) || 0),
+      customdata: displayLabels,
+      hovertemplate: "%{customdata}<br>Vulnerability: %{y:.3f}<extra></extra>",
       name: "Vulnerability",
       type: "bar",
       marker: { color: colors.vul },
@@ -63,6 +74,9 @@ const renderComponents = async () => {
     traces.push({
       x: pcodes,
       y: topData.map((d) => Number(d[cop]) || 0),
+      customdata: displayLabels,
+      hovertemplate:
+        "%{customdata}<br>Lack of Coping Capacity: %{y:.3f}<extra></extra>",
       name: "Lack of Coping Capacity",
       type: "bar",
       marker: { color: colors.cop },
@@ -75,9 +89,11 @@ const renderComponents = async () => {
     plot_bgcolor: "rgba(0,0,0,0)",
     barmode: "group",
     xaxis: {
-      title: "Region (PCODE)",
+      title: "Region",
       gridcolor: "#e2e8f0",
       tickfont: { size: 10, color: "#475569" },
+      tickvals: pcodes,
+      ticktext: displayLabels,
       automargin: true,
     },
     yaxis: {
@@ -124,7 +140,7 @@ onMounted(() => {
 });
 
 watch(
-  [() => props.data, () => props.selectedDisaster],
+  [() => props.data, () => props.selectedDisaster, () => props.pcodeNames],
   () => {
     renderComponents();
   },

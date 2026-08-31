@@ -21,6 +21,7 @@ const {
   disasters,
   pmtilesUrl,
   pcodeField,
+  pcodeNames,
   matchArray,
   isLoading,
   error,
@@ -222,6 +223,7 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
                 :selected-country="selectedCountry"
                 :indicator-weights="indicatorWeights"
                 :pcode-field="pcodeField"
+                :pcode-names="pcodeNames"
                 :custom-indicators-replaced="customIndicatorsReplaced"
                 @update:indicatorWeights="indicatorWeights = $event"
                 @region-hover="highlightedPcode = $event"

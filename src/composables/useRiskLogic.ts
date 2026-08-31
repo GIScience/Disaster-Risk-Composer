@@ -107,6 +107,7 @@ export function useRiskLogic() {
     selectedCountryName,
     existingPcodes,
     customIndicatorsReplaced,
+    pcodeNames,
   } = storeToRefs(store);
 
   if (!store.initialized) {
@@ -552,6 +553,7 @@ export function useRiskLogic() {
     countries,
     dimensions,
     customIndicatorsReplaced,
+    pcodeNames,
 
     // Getters
     riskViewLabel,

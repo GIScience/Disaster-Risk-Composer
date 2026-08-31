@@ -38,6 +38,11 @@ export const useRiskMapStore = defineStore("riskMap", {
     riskViewMode: "total" as string,
     dimensions: [...BASE_RISK_DIMENSIONS] as RiskDimensionConfig[],
     selectedCountryPcodeFieldMap: [] as Array<string>,
+    // Admin-unit names keyed by pcode, discovered from the map's own vector-tile
+    // data (not every country's tiles carry a NAME field yet, and low-zoom tiles
+    // can omit tiny polygons - so this is a best-effort lookup, not guaranteed
+    // complete; callers should fall back to the pcode when a name is missing).
+    pcodeNames: {} as Record<string, string>,
   }),
 
   getters: {
@@ -145,6 +150,13 @@ export const useRiskMapStore = defineStore("riskMap", {
       this.selectedCountryPcodeFieldMap = value;
     },
 
+    // Merges newly-discovered pcode -> name pairs (e.g. from the map's vector
+    // tiles) into the existing lookup, rather than replacing it, since tiles
+    // for a country can load incrementally across several viewport changes.
+    addPcodeNames(names: Record<string, string>) {
+      Object.assign(this.pcodeNames, names);
+    },
+
     // Reset the store to its initial state when switching to a new country
     resetForNewCountry() {
       this.matchArray = [];
@@ -154,6 +166,7 @@ export const useRiskMapStore = defineStore("riskMap", {
       this.pendingCustomDataCountry = null;
       this.customIndicatorsReplaced = false;
       this.showAnalysis = true;
+      this.pcodeNames = {};
     },
 
     // Reset the store to its initial state when returning to the home view
@@ -172,6 +185,7 @@ export const useRiskMapStore = defineStore("riskMap", {
       this.uploadError = null;
       this.customIndicatorsReplaced = false;
       this.showAnalysis = true;
+      this.pcodeNames = {};
     },
   },
 });

@@ -6,6 +6,7 @@ const props = defineProps<{
   data: any[];
   selectedDisaster: string;
   pcodeField: string;
+  pcodeNames: Record<string, string>;
   selectedCountry: string;
   disasterLabel: string;
   indicatorCols: string[];
@@ -87,14 +88,21 @@ const toggleSort = (key: string) => {
   }
 };
 
+const NAME_COLUMN = "Name";
+
 const handleDownloadIndicatorData = () => {
   const headers = [
     props.pcodeField,
+    NAME_COLUMN,
     props.selectedDisaster,
     ...props.indicatorCols,
   ];
   const rows = sortedData.value.map((row) =>
-    headers.map((header) => row[header] ?? ""),
+    headers.map((header) =>
+      header === NAME_COLUMN
+        ? (props.pcodeNames[row[props.pcodeField]] ?? "")
+        : (row[header] ?? ""),
+    ),
   );
 
   const csvContent =
@@ -156,6 +164,11 @@ const handleDownloadIndicatorData = () => {
               }}</span>
             </th>
             <th
+              class="px-4 py-3 bg-slate-50 whitespace-nowrap border-b border-slate-200"
+            >
+              Name
+            </th>
+            <th
               class="px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100 whitespace-nowrap border-b border-slate-200"
               @click="toggleSort(selectedDisaster)"
             >
@@ -189,6 +202,11 @@ const handleDownloadIndicatorData = () => {
               class="px-4 py-2 font-medium text-slate-900 whitespace-nowrap border-b border-slate-100"
             >
               {{ row[pcodeField] }}
+            </td>
+            <td
+              class="px-4 py-2 text-slate-600 whitespace-nowrap border-b border-slate-100"
+            >
+              {{ pcodeNames[row[pcodeField]] || "—" }}
             </td>
             <td
               class="px-4 py-2 font-bold whitespace-nowrap border-b border-slate-100"

@@ -9,7 +9,7 @@ const emit = defineEmits<{
   (e: "retry"): void;
 }>();
 
-const CONTACT_EMAIL = "communications@heigit.org";
+const CONTACT_EMAIL = "humanitarian_gi@heigit.org";
 </script>
 
 <template>
