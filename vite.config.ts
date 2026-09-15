@@ -7,7 +7,7 @@ import vuetify from "vite-plugin-vuetify";
 
 export default defineConfig({
   // This ensures assets (JS/CSS) load from the correct subfolder
-  base: "/Hazard-Risk-Composer/",
+  base: "/",
   plugins: [
     vue({
       include: [/\.vue$/, /\.md$/], // treats .md files as Vue components
