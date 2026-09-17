@@ -13,6 +13,7 @@
     "@duckdb/duckdb-wasm": "^1.33.1-dev20.0",
     "@geomatico/maplibre-cog-protocol": "^0.9.0",
     "@mdi/font": "^7.4.47",
+    "@versatiles/style": "^5.13.1",
     "clsx": "^2.1.1",
     "geotiff": "^3.0.5",
     "js-yaml": "^4.1.1",

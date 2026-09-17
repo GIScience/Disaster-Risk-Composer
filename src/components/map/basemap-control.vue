@@ -6,6 +6,11 @@ import OpenStreetMapImage from "@/assets/basemap/osm.svg";
 import { useRoute, useRouter } from "vue-router";
 import type maplibregl from "maplibre-gl";
 import { cn } from "@/utils/cn";
+import {
+  COLORFUL_STYLE,
+  GRAYBEARD_STYLE,
+  ESRI_WORLD_IMAGERY_STYLE,
+} from "@/config/basemaps";
 
 export interface BasemapOption {
   id: string;
@@ -27,44 +32,22 @@ const props = withDefaults(
     compact: false,
     options: () => [
       {
-        id: "light",
-        label: "Light",
-        style: "https://tiles.openfreemap.org/styles/positron",
-        image: PositronImage,
-      },
-      {
-        id: "OSM",
-        label: "OpenStreetMap",
-        style: "https://tiles.openfreemap.org/styles/bright",
+        id: "colorful",
+        label: "Colorful",
+        style: COLORFUL_STYLE,
         image: OpenStreetMapImage,
       },
       {
+        id: "graybeard",
+        label: "Graybeard",
+        style: GRAYBEARD_STYLE,
+        image: PositronImage,
+      },
+      {
         id: "satellite",
-        label: "Satellite",
+        label: "ESRI World Imagery",
         image: SatelliteImage,
-        style: {
-          version: 8,
-          sources: {
-            "satellite-tiles": {
-              type: "raster",
-              tiles: [
-                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-              ],
-              tileSize: 256,
-              attribution:
-                "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-            },
-          },
-          layers: [
-            {
-              id: "satellite-layer",
-              type: "raster",
-              source: "satellite-tiles",
-              minzoom: 0,
-              maxzoom: 19,
-            },
-          ],
-        },
+        style: ESRI_WORLD_IMAGERY_STYLE,
       },
     ],
   },

@@ -4,11 +4,12 @@ import type maplibregl from "maplibre-gl";
 import useMapInstance from "@/composables/use-map-instance";
 import BaseMapControl from "@/components/map/basemap-control.vue";
 import MapZoomControl from "@/components/map/zoom-control.vue";
+import { COLORFUL_STYLE } from "@/config/basemaps";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const props = withDefaults(
   defineProps<{
-    mapStyle?: string;
+    mapStyle?: string | maplibregl.StyleSpecification;
     center?: [number, number];
     zoom?: number;
     interactive?: boolean;
@@ -19,9 +20,9 @@ const props = withDefaults(
     compactBasemap?: boolean;
   }>(),
   {
-    mapStyle: "https://tiles.openfreemap.org/styles/positron",
-    center: () => [0, 20],
-    zoom: 1.5,
+    mapStyle: () => COLORFUL_STYLE,
+    center: () => [-40, -20],
+    zoom: 2.8,
     interactive: true,
     scrollZoom: true,
     zoomControls: true,
@@ -73,7 +74,7 @@ defineExpose({ map, isLoaded, flyTo, mapContainer: mapContainerRef });
       v-if="basemapControls"
       :map="map"
       :compact="compactBasemap"
-      default-style-id="positron"
+      default-style-id="colorful"
       @change="(style) => map?.setStyle(style)"
     />
     <slot :map="map" :is-loaded="isLoaded" />

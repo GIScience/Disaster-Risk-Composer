@@ -18,6 +18,10 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{
+  (e: "logo-click"): void;
+}>();
+
 const router = useRouter();
 
 const { selectedCountry, selectedDisaster, riskViewMode } =
@@ -41,6 +45,7 @@ const homeTarget = computed(() => {
       <RouterLink
         :to="homeTarget"
         class="flex items-center gap-3 min-w-0 group shrink-0"
+        @click="emit('logo-click')"
       >
         <img :src="logo" alt="" class="h-8 object-contain shrink-0" />
       </RouterLink>

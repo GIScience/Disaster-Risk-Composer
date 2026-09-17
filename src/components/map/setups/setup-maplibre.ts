@@ -18,7 +18,7 @@ export const setupMaplibreMap = (
   // Set the RTL plugin if it hasn't been set yet
   if (maplibregl.getRTLTextPluginStatus() === "unavailable") {
     maplibregl.setRTLTextPlugin(
-      "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js",
+      `${import.meta.env.BASE_URL}vendor/mapbox-gl-rtl-text.min.js`,
       true,
     );
   }
@@ -59,6 +59,10 @@ export const setupMaplibreMap = (
   }
 
   map.keyboard.disableRotation();
+
+  // Re-applied on every style.load since it doesn't persist across
+  // setStyle() calls (e.g. switching basemaps).
+  map.on("style.load", () => map.setProjection({ type: "globe" }));
 
   if (onLoad) {
     map.on("load", () => onLoad(map));

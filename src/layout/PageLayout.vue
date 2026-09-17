@@ -24,6 +24,10 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{
+  (e: "logo-click"): void;
+}>();
+
 function setMetaTag(attr: "name" | "property", key: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(
     `meta[${attr}="${key}"]`,
@@ -60,7 +64,7 @@ watchEffect(() => {
     fullHeight ? 'h-screen overflow-hidden' : 'min-h-screen',
     className)"
 >
-    <Header>
+    <Header @logo-click="emit('logo-click')">
       <template v-if="$slots['header-actions']" #actions>
         <slot name="header-actions" />
       </template>

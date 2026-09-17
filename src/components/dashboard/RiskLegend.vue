@@ -1,20 +1,31 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import type { RiskViewMode } from "@/composables/useRiskLogic";
+
 const props = withDefaults(
   defineProps<{
     isMobile?: boolean;
     title?: string;
+    riskViewMode?: RiskViewMode;
   }>(),
   {
     title: "Risk Assessment:",
   },
 );
 
-const legendItems = [
-  { label: "Very High Risk", color: "#cc0130" },
-  { label: "High Risk", color: "#f6a44d" },
-  { label: "Moderate Risk", color: "#f9d5b6" },
-  { label: "Low Risk", color: "#FFFFFF" },
-];
+// "Risk" only applies to the total-risk layer - the other dimensions
+// (exposure, vulnerability, coping capacity) get plain severity labels since
+// their own title already says what's being measured.
+const suffix = computed(() =>
+  !props.riskViewMode || props.riskViewMode === "total" ? " Risk" : "",
+);
+
+const legendItems = computed(() => [
+  { label: `Very High${suffix.value}`, color: "#cc0130" },
+  { label: `High${suffix.value}`, color: "#f6a44d" },
+  { label: `Moderate${suffix.value}`, color: "#f9d5b6" },
+  { label: `Low${suffix.value}`, color: "#FFFFFF" },
+]);
 </script>
 
 <template>

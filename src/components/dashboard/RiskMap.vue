@@ -5,6 +5,7 @@ import * as pmtiles from "pmtiles";
 import { storeToRefs } from "pinia";
 import Map from "@/components/map/map.vue";
 import RiskLegend from "@/components/dashboard/RiskLegend.vue";
+import { COLORFUL_STYLE } from "@/config/basemaps";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { cn } from "@/utils/cn";
 import type { RiskViewMode } from "@/composables/useRiskLogic";
@@ -37,8 +38,66 @@ const emit = defineEmits<{
   (e: "click:info"): void;
 }>();
 
-const DEFAULT_CENTER: [number, number] = [0, 20];
-const DEFAULT_ZOOM = 1.5;
+// Matches Map's own default center/zoom (map.vue) - the view shown on first
+// load, since RiskMap never overrides those props on <Map>.
+const DEFAULT_CENTER: [number, number] = [-40, -20];
+const DEFAULT_ZOOM = 2.8;
+
+// Slow auto-spin on the world-overview globe, stopping as soon as the user
+// interacts or zooms into a country - matches the Climate Action Navigator.
+const SPIN_SECONDS_PER_REVOLUTION = 240;
+const MAX_SPIN_ZOOM = 5;
+let spinAnimationFrame: number | null = null;
+let spinLastTime = 0;
+
+function stopSpinning() {
+  if (spinAnimationFrame !== null) {
+    cancelAnimationFrame(spinAnimationFrame);
+    spinAnimationFrame = null;
+  }
+}
+
+function startSpinning() {
+  const mapInstance = map.value;
+  if (!mapInstance || spinAnimationFrame !== null) return;
+  spinLastTime = 0;
+  const spin = (timestamp: number) => {
+    if (!spinLastTime) spinLastTime = timestamp;
+    const deltaTime = (timestamp - spinLastTime) / 1000;
+    spinLastTime = timestamp;
+
+    if (mapInstance.getZoom() < MAX_SPIN_ZOOM) {
+      const center = mapInstance.getCenter();
+      center.lng -= (360 / SPIN_SECONDS_PER_REVOLUTION) * deltaTime;
+      mapInstance.setCenter(center);
+      spinAnimationFrame = requestAnimationFrame(spin);
+    } else {
+      spinAnimationFrame = null;
+    }
+  };
+  spinAnimationFrame = requestAnimationFrame(spin);
+}
+
+// Shared by the exposed resetView() (house button / header logo) and the
+// "country deselected" branch of updateLayer() below - eases back to the
+// world-overview and resumes spinning once it gets there. Uses easeTo
+// rather than flyTo: flyTo's fly-out-and-back arc briefly zooms out much
+// further than DEFAULT_ZOOM for a dramatic effect, which on the globe
+// shows empty space beyond the tiles that are actually loaded (a grey
+// flash) - easeTo interpolates center/zoom directly with no such overshoot.
+function resetToGlobalView() {
+  stopSpinning();
+  const mapInstance = map.value;
+  mapInstance?.easeTo({
+    center: DEFAULT_CENTER,
+    zoom: DEFAULT_ZOOM,
+    duration: 3000,
+    essential: true,
+  });
+  mapInstance?.once("moveend", () => {
+    if (!props.pmtilesUrl) startSpinning();
+  });
+}
 
 const activeDimension = computed(() =>
   dimensions.value.find((d) => d.value === props.riskViewMode),
@@ -93,14 +152,16 @@ function collectPcodeNames() {
 }
 
 const layerOpacity = ref(0.7);
-const isLayersCollapsed = ref(true);
+// Unfolded by default in the normal dashboard; folded by default when
+// embedded in an iframe or on mobile, where screen space is tight.
+const isLayersCollapsed = ref(props.isMobile || isEmbedded);
 
 const countryBounds = ref<maplibregl.LngLatBoundsLike | null>(null);
 // Tracks which pmtilesUrl we've already fit the view to, so re-adding the risk
 // layer after a basemap switch doesn't re-trigger a fitBounds/zoom.
 const boundsFittedForUrl = ref<string | null>(null);
 
-const styleUrl = "https://tiles.openfreemap.org/styles/positron";
+const styleUrl = COLORFUL_STYLE;
 
 const resizeHandler = () => {
   map.value?.resize();
@@ -108,6 +169,7 @@ const resizeHandler = () => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", resizeHandler);
+  stopSpinning();
 });
 
 function fitToCountryBounds(duration = 1200) {
@@ -134,6 +196,19 @@ function setupWorldLayer() {
       type: "geojson",
       data: `${import.meta.env.BASE_URL}data/world.json`,
       promoteId: "iso_a3",
+    });
+  }
+
+  // Separate, pre-deduplicated line source for the boundary layer below.
+  // Each country's own polygon traces its shared borders independently
+  // (from separately-sourced per-country ADM data), so drawing lines
+  // straight from "world" would stroke every internal border twice, once
+  // per neighbouring country. world-boundaries.json instead keeps only one
+  // copy of each shared border (see scripts/generate_world_boundaries.py).
+  if (!mapInstance.getSource("world-lines")) {
+    mapInstance.addSource("world-lines", {
+      type: "geojson",
+      data: `${import.meta.env.BASE_URL}data/world-boundaries.json`,
     });
   }
 
@@ -173,30 +248,84 @@ function setupWorldLayer() {
     });
   }
 
-  // Country outlines, drawn from our own source so they stay visible on
-  // basemaps (e.g. satellite) that don't carry their own boundary layers.
+  // Country outlines for the world-overview map, drawn from our own source
+  // so they stay visible on every basemap. Hidden once a country is
+  // selected (see updateWorldBoundariesVisibility below) so it doesn't
+  // compete with that country's own (more precise) boundary from
+  // updateLayer().
   if (!mapInstance.getLayer("world-boundaries")) {
     mapInstance.addLayer({
       id: "world-boundaries",
       type: "line",
-      source: "world",
+      source: "world-lines",
+      // Temporarily off for testing - the basemap's own always-visible
+      // country boundary lines (see alwaysShowCountryBoundaries in
+      // config/basemaps.ts) may be enough on their own.
+      layout: { visibility: "none" },
       paint: {
         "line-color": "#ca2333", // HeiGIT red
         "line-width": 1,
-        "line-opacity": 0.8,
+        "line-opacity": 0.6,
       },
     });
   }
 
-  // Only needed when the basemap itself has no national boundary lines
-  // (e.g. satellite) - hide it on styles like streets that already draw
-  // their own (see boundary_2/boundary_disputed below) to avoid doubling up.
-  const hasNativeBoundaries = !!mapInstance.getLayer("boundary_2");
-  mapInstance.setLayoutProperty(
-    "world-boundaries",
-    "visibility",
-    hasNativeBoundaries ? "none" : "visible",
-  );
+  // Country name labels, drawn from our own always-available data instead
+  // of the basemap's (now disabled, see alwaysShowCountryBoundaries in
+  // config/basemaps.ts): the basemap's label points simply don't exist in
+  // its vector tiles below zoom ~2, which isn't fixable via style overrides.
+  // Ours has no such tile-pyramid gating, so it's visible at every zoom,
+  // and also shows on the satellite basemap, which otherwise has no labels
+  // at all.
+  if (!mapInstance.getSource("world-labels")) {
+    mapInstance.addSource("world-labels", {
+      type: "geojson",
+      data: `${import.meta.env.BASE_URL}data/world-labels.json`,
+    });
+  }
+
+  // Tiered by country area so the world-overview isn't cluttered with all
+  // 191 names at once: large countries (Russia, Brazil, ...) label from
+  // zoom 0, progressively smaller ones join in as you zoom past 2 and 4.
+  const LABEL_TIERS: { id: string; filter: maplibregl.FilterSpecification; minzoom: number }[] = [
+    { id: "world-country-labels-large", filter: [">=", ["get", "area"], 100], minzoom: 0 },
+    { id: "world-country-labels-medium", filter: ["all", [">=", ["get", "area"], 10], ["<", ["get", "area"], 100]], minzoom: 2 },
+    { id: "world-country-labels-small", filter: ["<", ["get", "area"], 10], minzoom: 4 },
+  ];
+  for (const tier of LABEL_TIERS) {
+    if (mapInstance.getLayer(tier.id)) continue;
+    mapInstance.addLayer({
+      id: tier.id,
+      type: "symbol",
+      source: "world-labels",
+      filter: tier.filter,
+      minzoom: tier.minzoom,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["noto_sans_regular"],
+        "text-transform": "uppercase",
+        "text-size": 11,
+        "text-optional": true,
+      },
+      paint: {
+        "text-color": "rgb(51,51,68)",
+        "text-halo-color": "rgba(255,255,255,0.8)",
+        "text-halo-width": 2,
+        "text-halo-blur": 1,
+      },
+    });
+  }
+
+  updateWorldBoundariesVisibility();
+}
+
+// Hide the world-overview outlines once a country is selected and showing
+// its own boundary (from updateLayer()) - otherwise the two compete.
+// Temporarily disabled entirely for testing (see setupWorldLayer above).
+function updateWorldBoundariesVisibility() {
+  const mapInstance = map.value;
+  if (!mapInstance || !mapInstance.getLayer("world-boundaries")) return;
+  mapInstance.setLayoutProperty("world-boundaries", "visibility", "none");
 }
 
 function handleMapLoad(mapInstance: maplibregl.Map) {
@@ -204,10 +333,19 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
   updateLayer();
   setupWorldLayer();
 
+  mapInstance.on("mousedown", stopSpinning);
+  mapInstance.on("touchstart", stopSpinning);
+  mapInstance.on("wheel", stopSpinning);
+  if (!props.pmtilesUrl) startSpinning();
+
   // Tiles for the risk layer load incrementally (e.g. as the fit-bounds
   // animation pans/zooms in) - re-collect names every time more of them load.
   mapInstance.on("sourcedata", (e) => {
-    if (e.sourceId === floodLayerId && mapInstance.isSourceLoaded(floodLayerId)) {
+    if (
+      e.sourceId === floodLayerId &&
+      mapInstance.getSource(floodLayerId) &&
+      mapInstance.isSourceLoaded(floodLayerId)
+    ) {
       collectPcodeNames();
     }
   });
@@ -309,6 +447,8 @@ async function updateLayer() {
     return;
   }
 
+  updateWorldBoundariesVisibility();
+
   if (!props.pmtilesUrl) {
     if (mapInstance.getLayer("risk-layer-highlight"))
       mapInstance.removeLayer("risk-layer-highlight");
@@ -323,12 +463,14 @@ async function updateLayer() {
     if (boundsFittedForUrl.value !== null) {
       countryBounds.value = null;
       boundsFittedForUrl.value = null;
-      mapViewRef.value?.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, 3000);
+      resetToGlobalView();
     }
     return;
   }
 
   if (!props.pcodeField) return;
+
+  stopSpinning();
 
   const currentSource = mapInstance.getSource(floodLayerId);
   const sourceUrl = `pmtiles://${props.pmtilesUrl}`;
@@ -504,9 +646,7 @@ watch(
 );
 
 defineExpose({
-  resetView: () => {
-    mapViewRef.value?.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, 3000);
-  },
+  resetView: resetToGlobalView,
 });
 </script>
 
@@ -659,6 +799,7 @@ defineExpose({
       v-if="matchArray && matchArray.length > 0"
       :is-mobile="props.isMobile"
       :title="legendTitle"
+      :risk-view-mode="riskViewMode"
     />
   </div>
 </template>

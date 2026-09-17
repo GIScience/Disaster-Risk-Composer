@@ -9,13 +9,14 @@ import MapLegend from "@/components/story-map/MapLegend.vue";
 import type { MapLegendLayer } from "@/components/story-map/MapLegend.vue";
 import { cn } from "@/utils/cn";
 import type { ChoroplethStop, VectorCategoryStyle } from "@/types/story-map";
+import { COLORFUL_STYLE } from "@/config/basemaps";
 const props = withDefaults(
   defineProps<{
     center?: [number, number];
     zoom?: number;
     height?: string;
     caption?: string;
-    mapStyle?: string;
+    mapStyle?: string | maplibregl.StyleSpecification;
     layerId?: string;
     interactive?: boolean;
     rasterUrl?: string;
@@ -45,7 +46,7 @@ const props = withDefaults(
     center: () => [20, 10],
     zoom: 1.8,
     height: "440px",
-    mapStyle: "https://tiles.openfreemap.org/styles/positron",
+    mapStyle: () => COLORFUL_STYLE,
     interactive: true,
     layerId: "story-map-raster",
     mode: "rgb",

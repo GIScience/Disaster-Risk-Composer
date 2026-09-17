@@ -5,6 +5,30 @@ export interface Country {
   name: string;
 }
 
+const COUNTRIES_YAML_URL =
+  "https://hot.storage.heigit.org/heigit-hdx-public/oqapi_hdx/countries/countries.yaml";
+
+// Several components independently need the countries YAML (the list itself,
+// plus the availability check below). Sharing one in-flight request avoids
+// firing a HEAD and multiple GETs at the same URL at once, which Chrome logs
+// as a spurious net::ERR_ABORTED when it cancels the now-redundant HEAD.
+let countriesYamlTextPromise: Promise<string> | null = null;
+
+function fetchCountriesYamlText(): Promise<string> {
+  if (!countriesYamlTextPromise) {
+    countriesYamlTextPromise = fetch(COUNTRIES_YAML_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to fetch countries.yaml: ${res.status}`);
+        return res.text();
+      })
+      .catch((error) => {
+        countriesYamlTextPromise = null; // allow a later call to retry
+        throw error;
+      });
+  }
+  return countriesYamlTextPromise;
+}
+
 export async function fetchCountries(): Promise<Country[]> {
   try {
     // Fetch the pre-generated list of available countries
@@ -13,9 +37,7 @@ export async function fetchCountries(): Promise<Country[]> {
     const validCodes: string[] = await resJson.json();
 
     // Fetch the YAML metadata to get proper country names
-    const yamlUrl = "https://hot.storage.heigit.org/heigit-hdx-public/oqapi_hdx/countries/countries.yaml";
-    const respYaml = await fetch(yamlUrl);
-    const textYaml = await respYaml.text();
+    const textYaml = await fetchCountriesYamlText();
     const countryYamlData = jsyaml.load(textYaml) as Record<string, { slug: string }>;
 
     function prettifySlug(slug: string) {
@@ -48,9 +70,13 @@ export async function checkFileExists(url: string): Promise<boolean> {
 }
 
 // Used to verify the HeiGIT data bucket is actually reachable from this origin
-// (e.g. not blocked by a CORS misconfiguration) before relying on it.
+// (e.g. not blocked by a CORS misconfiguration) before relying on it. Reuses
+// the same request fetchCountries() needs anyway instead of a separate HEAD.
 export async function checkDataSourceAvailable(): Promise<boolean> {
-  return checkFileExists(
-    "https://hot.storage.heigit.org/heigit-hdx-public/oqapi_hdx/countries/countries.yaml",
-  );
+  try {
+    await fetchCountriesYamlText();
+    return true;
+  } catch {
+    return false;
+  }
 }
