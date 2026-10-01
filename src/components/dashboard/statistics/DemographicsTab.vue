@@ -119,7 +119,8 @@ watch(
       Dependency ratio:
       <span class="font-bold text-slate-900">{{ dependencyRatio.toFixed(1) }}</span>
       <span class="text-slate-500">
-        dependents per 100 working-age people</span
+        dependents (0–14 and 65+ years) per 100 working-age people (15–64
+        years)</span
       >
     </p>
     <div id="demographics-chart" class="w-full flex-1"></div>

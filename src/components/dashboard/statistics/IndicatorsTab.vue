@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { useRiskMapStore } from "@/store/riskMapStore";
-import { TooltipInfoList } from "@/config";
+import { describeIndicator } from "@/utils/indicatorDescription";
 import ConfirmDialog from "@/components/dashboard/modals/ConfirmDialog.vue";
 
 const riskMapStore = useRiskMapStore();
@@ -31,15 +31,11 @@ function confirmReset() {
 }
 
 function getTooltipInfo(col: string): string {
-  const matchedKey = Object.keys(TooltipInfoList)
-    .filter((key) => col.includes(key))
-    .sort((a, b) => b.length - a.length)[0] as
-    | keyof typeof TooltipInfoList
-    | undefined;
-
-  return matchedKey
-    ? TooltipInfoList[matchedKey]
-    : "No additional information available.";
+  const description = describeIndicator(col);
+  if (description) return description;
+  if (col.includes("_custom_") || riskMapStore.customIndicatorsReplaced)
+    return "Custom indicator from your uploaded data.";
+  return "No additional information available.";
 }
 </script>
 
@@ -188,10 +184,7 @@ function getTooltipInfo(col: string): string {
                   >{{ formatColName(col) }}
 
                   <v-tooltip
-                    :text="
-                      getTooltipInfo(col) ||
-                      'No additional information available.'
-                    "
+                    :text="getTooltipInfo(col)"
                     eager
                     location-strategy="connected"
                     location="top"
