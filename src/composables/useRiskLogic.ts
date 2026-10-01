@@ -5,6 +5,7 @@ import { checkFileExists, fetchCountries } from "../services/dataService";
 import {
   calculateDynamicRisk,
   isRankingColumn,
+  isOutputColumn,
   discoverCustomDimensionPrefixes,
 } from "../utils/riskCalculation";
 import {
@@ -385,10 +386,11 @@ export function useRiskLogic() {
       rawOriginalData.value,
     );
     const isIndicatorColumn = (col: string) =>
-      col.startsWith("exp_") ||
+      !isOutputColumn(col) &&
+      (col.startsWith("exp_") ||
       col.startsWith("vul_") ||
       col.startsWith("cop_") ||
-      customDimensionPrefixes.some((p) => col.startsWith(`${p}_`));
+      customDimensionPrefixes.some((p) => col.startsWith(`${p}_`)));
 
     const strippedRawData =
       mode === "replace"

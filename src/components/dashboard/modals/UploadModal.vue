@@ -11,7 +11,7 @@ import {
   DIMENSION_PREFIX_VALUES,
 } from "@/enums/dimensions";
 import { HAZARDS } from "@/enums/hazards";
-import { isRankingColumn } from "@/utils/riskCalculation";
+import { isOutputColumn, isRankingColumn } from "@/utils/riskCalculation";
 import { storeToRefs } from "pinia";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { downloadIndicatorCSVTemplate } from "@/utils/template";
@@ -327,7 +327,7 @@ async function parseEntry(entry: IndicatorFileEntry) {
     }
 
     const selectableColumns = columns.filter(
-      (c) => !isRankingColumn(c) && !isReservedColumn(c),
+      (c) => !isRankingColumn(c) && !isReservedColumn(c) && !isOutputColumn(c),
     );
     const dataColumns = selectableColumns.filter((c) => c !== detected);
     if (dataColumns.length === 0) {

@@ -3,6 +3,7 @@ import {
   getDimensionColumns,
   discoverCustomDimensionPrefixes,
   copingColumnHazard,
+  isOutputColumn,
 } from "@/utils/riskCalculation";
 import { DimensionPrefix, DIMENSION_PREFIX_VALUES } from "@/enums/dimensions";
 
@@ -196,6 +197,11 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
         if (excluded.has(k) || k.startsWith("risk_")) return false;
 
         if (k === componentCols.value.exp) return true;
+        if (k === componentCols.value.vul || k === componentCols.value.cop)
+          return true;
+        // Other pipeline outputs (sus_*, ranking_*, the other hazard's composites, coping_*) are
+        // results, not indicators - and ranking_* isn't recomputed, so it would go stale.
+        if (isOutputColumn(k)) return false;
 
         // Hide sub-indicators that do not match the short selected hazard (cyc, flo, dr, etc.)
         if (
@@ -220,19 +226,19 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
   const expCols = computed(() =>
     indicatorCols.value.filter(
       (c) =>
-        c !== componentCols.value.exp && c.startsWith("exp") && c !== "exp",
+        c !== componentCols.value.exp && c.startsWith("exp_"),
     ),
   );
   const vulCols = computed(() =>
     indicatorCols.value.filter(
       (c) =>
-        c !== componentCols.value.vul && c.startsWith("vul") && c !== "vul",
+        c !== componentCols.value.vul && c.startsWith("vul_"),
     ),
   );
   const copCols = computed(() =>
     indicatorCols.value.filter(
       (c) =>
-        c !== componentCols.value.cop && c.startsWith("cop") && c !== "cop",
+        c !== componentCols.value.cop && c.startsWith("cop_"),
     ),
   );
 

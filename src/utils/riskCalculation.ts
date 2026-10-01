@@ -5,6 +5,30 @@ import { HazardPrefix, resolveHazardPrefix } from "@/enums/hazards";
 const EXP_FLOOD_COL = `exp_${HazardPrefix.FLOOD}`;
 const EXP_CYCLONE_COL = `exp_${HazardPrefix.CYCLONE}`;
 
+// Composite/result columns written by the GAIA pipeline (and recomputed by calculateDynamicRisk).
+// They are outputs, never input indicators or custom dimensions - even where their name looks
+// like one (e.g. "exp_flood" starts with "exp_", "coping_flood" would otherwise become a custom
+// "coping" dimension). Add any new pipeline output column here.
+const OUTPUT_COLUMN_NAMES = new Set([
+  "vul",
+  "cop",
+  "exp_flood",
+  "exp_cyclone",
+  EXP_FLOOD_COL,
+  EXP_CYCLONE_COL,
+  "coping_flood",
+  "coping_cyclone",
+]);
+const OUTPUT_COLUMN_PREFIXES = ["sus_", "risk_", "rank_", "ranking"];
+
+export function isOutputColumn(column: string): boolean {
+  const lower = column.toLowerCase();
+  return (
+    OUTPUT_COLUMN_NAMES.has(lower) ||
+    OUTPUT_COLUMN_PREFIXES.some((prefix) => lower.startsWith(prefix))
+  );
+}
+
 // "rank"/"ranking" columns are always excluded from indicator/dimension discovery - the
 // Ranking tab is a read-only view of the already-computed risk score, never a weighted input.
 export const RESERVED_DIMENSION_PREFIXES = new Set([
@@ -58,6 +82,7 @@ export function discoverCustomDimensionPrefixes(data: any[]): string[] {
   const candidates = new Set<string>();
 
   for (const col of cols) {
+    if (isOutputColumn(col)) continue;
     const idx = col.indexOf("_");
     if (idx === -1) continue;
     const prefix = col.slice(0, idx);
@@ -123,8 +148,7 @@ export function calculateDynamicRisk(
     for (const col of cols) {
         const isTrackedPrefix = col.startsWith('exp_') || col.startsWith('vul_') || col.startsWith('cop_')
             || customDimensionPrefixes.some((p) => col.startsWith(`${p}_`));
-        if (!isTrackedPrefix) continue;
-        if (col === EXP_FLOOD_COL || col === EXP_CYCLONE_COL || col === 'vul' || col === 'cop' || col === 'exp_flood' || col === 'exp_cyclone') continue;
+        if (!isTrackedPrefix || isOutputColumn(col)) continue;
 
         let min = Infinity;
         let max = -Infinity;
@@ -172,9 +196,7 @@ export function calculateDynamicRisk(
         let cycloneSum = 0; let cycloneW = 0;
 
         for (const col of cols) {
-            if (col === EXP_FLOOD_COL || col === EXP_CYCLONE_COL || col === 'vul' || col === 'cop'
-                || customDimensionPrefixes.includes(col) || col.startsWith('risk_') || col.startsWith('sus_')) continue;
-            if (col === 'exp_flood' || col === 'exp_cyclone') continue;
+            if (isOutputColumn(col) || customDimensionPrefixes.includes(col)) continue;
 
             const w = getW(col);
             let rawValue = toNumber(row[col]);
