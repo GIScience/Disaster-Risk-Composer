@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, nextTick, watch } from "vue";
-import Plotly from "plotly.js-dist-min";
+import { loadPlotly } from "@/utils/plotly";
 import { getDimensionColumns } from "@/utils/riskCalculation";
 import { formatRegionLabel } from "@/utils/regionLabel";
 
@@ -20,6 +20,7 @@ const componentCols = computed(() =>
 );
 
 const renderComponents = async () => {
+  const Plotly = await loadPlotly();
   await nextTick();
   const graphDiv = document.getElementById("components-chart");
   if (!graphDiv || !props.data.length) return;

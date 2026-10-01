@@ -1,7 +1,6 @@
 import { watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { loadParquetData } from "../utils/duckdb";
 import { checkFileExists, fetchCountries } from "../services/dataService";
 import {
   calculateDynamicRisk,
@@ -203,6 +202,8 @@ export function useRiskLogic() {
         parquetUrl = `https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/${folder}/${countryCode}_ADM1_risk.parquet`;
       }
 
+      // DuckDB-WASM is only needed once a country is opened, so keep it out of the initial bundle.
+      const { loadParquetData } = await import("../utils/duckdb");
       const data = await loadParquetData(parquetUrl);
 
       const rawJSON = JSON.parse(
@@ -235,7 +236,9 @@ export function useRiskLogic() {
         selectedDisaster.value = riskCols[0] || "";
       }
 
-      refreshMapLayer();
+      // Show the dashboard's own scores from the start (not the parquet's precomputed ones), so
+      // they don't jump on the first weight change and every methodology fix applies right away.
+      loadAndCalculateWithWeights(indicatorWeights.value);
       pmtilesUrl.value = pmtUrl;
 
       reapplySavedCustomUpload(countryCode);
@@ -245,6 +248,9 @@ export function useRiskLogic() {
       pmtilesUrl.value = "";
       matchArray.value = [];
       lastLoadedData.value = [];
+      // The previously loaded country's data was just cleared, so selecting it again must
+      // reload instead of hitting the "already loaded" early return above.
+      lastLoadedCountry.value = "";
       viewMode.value = "HOME";
     } finally {
       isLoading.value = false;
@@ -273,7 +279,11 @@ export function useRiskLogic() {
     if (!lastLoadedData.value.length || !selectedDisaster.value) return;
 
     const rawJSON = JSON.parse(JSON.stringify(rawOriginalData.value));
-    const recalculated = calculateDynamicRisk(rawJSON, weights);
+    const recalculated = calculateDynamicRisk(
+      rawJSON,
+      weights,
+      selectedDisaster.value,
+    );
 
     lastLoadedData.value = recalculated;
     refreshMapLayer();
@@ -498,7 +508,8 @@ export function useRiskLogic() {
   watch(selectedDisaster, (newVal) => {
     syncRoute();
     if (!newVal || !lastLoadedData.value.length) return;
-    refreshMapLayer();
+    // Coping (and so the displayed "cop" score) is hazard-specific, so recompute.
+    loadAndCalculateWithWeights(indicatorWeights.value);
   });
 
   watch(riskViewMode, () => {

@@ -4,6 +4,8 @@ import RiskMap from "@/components/dashboard/RiskMap.vue";
 import RiskStatistics from "@/components/dashboard/RiskStatistics.vue";
 import AboutModal from "@/components/dashboard/modals/AboutModal.vue";
 import FloatingLogo from "@/components/FloatingLogo.vue";
+import Footer from "@/components/Footer.vue";
+import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
 import { useRiskLogic } from "@/composables/useRiskLogic";
 import logo from "@/assets/DIRC-Logo.svg";
 
@@ -16,6 +18,7 @@ const {
   pcodeNames,
   matchArray,
   isLoading,
+  error,
   lastLoadedData,
   highlightedPcode,
   indicatorWeights,
@@ -25,6 +28,10 @@ const {
   selectedCountryName,
   riskViewMode,
   riskViewLabel,
+  showCustomDataInfo,
+  keepCustomData,
+  discardCustomData,
+  customIndicatorsReplaced,
 } = useRiskLogic();
 
 const mapRef = ref<InstanceType<typeof RiskMap> | null>(null);
@@ -233,8 +240,29 @@ function selectDisaster(disaster: string) {
         </div>
       </transition>
 
+      <!-- Error Message -->
+      <transition name="fade">
+        <div
+          v-if="error"
+          class="absolute bottom-4 left-4 right-4 z-50 bg-red-50 border border-red-200 text-red-900 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-3"
+          role="alert"
+        >
+          <span class="text-red-600">⚠️</span>
+          <span class="text-xs font-medium flex-1">{{ error }}</span>
+          <button
+            @click="error = null"
+            class="text-red-400 hover:text-red-600"
+            aria-label="Dismiss error"
+          >
+            ✕
+          </button>
+        </div>
+      </transition>
+
       <FloatingLogo :is-mobile="true" />
     </main>
+
+    <Footer :is-mobile="true" />
 
     <!-- Bottom Sheet Drawer for Statistics -->
     <transition name="drawer">
@@ -293,8 +321,10 @@ function selectDisaster(disaster: string) {
                 :pcode-field="pcodeField"
                 :pcode-names="pcodeNames"
                 :is-mobile="true"
+                :custom-indicators-replaced="customIndicatorsReplaced"
                 @update:indicatorWeights="indicatorWeights = $event"
                 @region-hover="highlightedPcode = $event"
+                @reset-custom-data="discardCustomData"
               />
             </div>
           </div>
@@ -305,6 +335,12 @@ function selectDisaster(disaster: string) {
     <transition name="fade">
       <AboutModal v-if="showAboutModal" @close="showAboutModal = false" />
     </transition>
+    <CustomDataInfo
+      v-if="showCustomDataInfo"
+      @close="keepCustomData"
+      @use-custom="keepCustomData"
+      @use-default="discardCustomData"
+    />
   </div>
 </template>
 

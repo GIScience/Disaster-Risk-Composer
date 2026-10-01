@@ -1,7 +1,12 @@
 import { ref, watch, type ComputedRef } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { generateFilename } from "@/utils/filenameGenerator";
-import { parseWeightsCSVText, type WeightCsvEntry } from "@/utils/weightCsv";
+import { isInvertedCopingColumn } from "@/utils/riskCalculation";
+import {
+  parseWeightsCSVText,
+  sanitizeIndicatorName,
+  type WeightCsvEntry,
+} from "@/utils/weightCsv";
 
 interface IndicatorWeightsProps {
   indicatorWeights: Record<string, number>;
@@ -33,6 +38,12 @@ function getRawName(col: string, category: string): string {
     return col.replace(/^exp_/, "");
   }
   return col.replace(new RegExp(`^${category}_`), "");
+}
+
+// parseWeightsCSVText keys entries by sanitized (lowercased) name, so look columns up the same
+// way - otherwise mixed-case names like "RAI_total_pop" never match their own downloaded file.
+function getWeightLookupName(col: string, category: string): string {
+  return sanitizeIndicatorName(getRawName(col, category));
 }
 
 export function useIndicatorWeights(
@@ -132,13 +143,10 @@ export function useIndicatorWeights(
   function downloadWeightsCSV() {
     let csvContent = "variable_name,category,weight,direction,activated\n";
 
-    const processCols = (
-      cols: string[],
-      category: string,
-      direction: number,
-    ) => {
+    const processCols = (cols: string[], category: string) => {
       cols.forEach((col) => {
         const rawName = getRawName(col, category);
+        const direction = isInvertedCopingColumn(col) ? -1 : 1;
         const weight = getWeight(col);
         const activated = isSubIndicatorActive(col) ? "TRUE" : "FALSE";
         csvContent += `${rawName},${category},${weight},${direction},${activated}\n`;
@@ -147,7 +155,7 @@ export function useIndicatorWeights(
 
     indicatorDimensionGroups.value.forEach((dim) => {
       if (dim.cols.length > 0)
-        processCols(dim.cols, dim.key, dim.key === "cop" ? -1 : 1);
+        processCols(dim.cols, dim.key);
     });
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -170,8 +178,7 @@ export function useIndicatorWeights(
 
     const matchAndSet = (cols: string[], category: string) => {
       cols.forEach((col) => {
-        const rawName = getRawName(col, category);
-        const entry = csvData[rawName];
+        const entry = csvData[getWeightLookupName(col, category)];
         if (!entry || entry.category !== category) return;
 
         if (entry.activated === false) {
@@ -203,9 +210,7 @@ export function useIndicatorWeights(
     const unmatchedCols: string[] = [];
     indicatorDimensionGroups.value.forEach((dim) => {
       dim.cols.forEach((col) => {
-        const rawName = getRawName(col, dim.key);
-        console.log("Checking col", col, "rawName", rawName, "category", dim.key);
-        const entry = csvData[rawName];
+        const entry = csvData[getWeightLookupName(col, dim.key)];
         if (entry && entry.category === dim.key) {
           matched++;
         } else {

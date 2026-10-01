@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, nextTick, watch } from "vue";
-import Plotly from "plotly.js-dist-min";
+import { loadPlotly } from "@/utils/plotly";
 import { formatRegionLabel } from "@/utils/regionLabel";
 
 const props = defineProps<{
@@ -16,6 +16,7 @@ const emit = defineEmits<{
 
 
 const renderRanking = async () => {
+  const Plotly = await loadPlotly();
   await nextTick();
   const graphDiv = document.getElementById("ranking-chart");
   if (!graphDiv || !props.data.length || !props.selectedDisaster) return;

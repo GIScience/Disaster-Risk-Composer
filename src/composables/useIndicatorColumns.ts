@@ -2,6 +2,7 @@ import { computed } from "vue";
 import {
   getDimensionColumns,
   discoverCustomDimensionPrefixes,
+  copingColumnHazard,
 } from "@/utils/riskCalculation";
 import { DimensionPrefix, DIMENSION_PREFIX_VALUES } from "@/enums/dimensions";
 
@@ -203,6 +204,11 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
         ) {
           return false;
         }
+
+        // Same for coping columns tied to the other hazard (e.g. cyclone evacuation times while
+        // viewing flood) - they don't feed this hazard's risk score.
+        const copHazard = copingColumnHazard(k);
+        if (copHazard && !props.selectedDisaster.includes(copHazard)) return false;
         return true;
       })
       .sort((a, b) => {

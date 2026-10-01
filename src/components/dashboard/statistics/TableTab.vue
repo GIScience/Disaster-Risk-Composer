@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { generateFilename } from "@/utils/filenameGenerator";
+import { escapeCSVCell } from "@/utils/template";
 
 const props = defineProps<{
   data: any[];
@@ -105,13 +106,17 @@ const handleDownloadIndicatorData = () => {
     ),
   );
 
-  const csvContent =
-    "data:text/csv;charset=utf-8," +
-    [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+  // Escaped cells (admin names can contain commas/quotes) and a Blob instead of an encodeURI'd
+  // data: URI, which got cut off at the first "#" in the data.
+  const csvContent = [headers, ...rows]
+    .map((r) => r.map(escapeCSVCell).join(","))
+    .join("\n");
 
-  const encodedUri = encodeURI(csvContent);
+  const url = URL.createObjectURL(
+    new Blob([csvContent], { type: "text/csv;charset=utf-8;" }),
+  );
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
+  link.setAttribute("href", url);
   link.setAttribute(
     "download",
     generateFilename(`Risk_Data`, props.selectedCountry, "csv"),
@@ -119,6 +124,7 @@ const handleDownloadIndicatorData = () => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 };
 </script>
 

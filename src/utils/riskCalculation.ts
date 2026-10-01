@@ -16,6 +16,31 @@ export const RESERVED_DIMENSION_PREFIXES = new Set([
 ]);
 const RESERVED_PREFIXES = RESERVED_DIMENSION_PREFIXES;
 
+// Coping capacity columns are inverted (1 - value) by default, since for most of them a higher
+// value means better coping (more facilities, more people with access), and the dimension score
+// is the *lack* of coping capacity. These already measure a lack of coping capacity (higher =
+// worse) and so must not be inverted.
+const LACK_OF_COPING_COLUMN_PATTERNS = [
+  /_evac_time_minutes_(mean|median|max)$/,
+  /_pixels_at_risk$/,
+  /_dependency_ratio$/,
+];
+
+// Hazard-specific coping columns (flood return periods "RP10".."RP500", cyclone "kt34") only
+// feed that hazard's susceptibility; all other coping columns feed both.
+export function copingColumnHazard(column: string): "flood" | "cyclone" | null {
+  if (/^cop_RP\d+_/.test(column)) return "flood";
+  if (/^cop_kt34_/.test(column)) return "cyclone";
+  return null;
+}
+
+export function isInvertedCopingColumn(column: string): boolean {
+  return (
+    column.startsWith("cop_") &&
+    !LACK_OF_COPING_COLUMN_PATTERNS.some((pattern) => pattern.test(column))
+  );
+}
+
 // The Ranking tab is a read-only view of the already-computed risk score, never a weighted will not be selected
 export function isRankingColumn(column: string): boolean {
   return column.toLowerCase().startsWith("ranking");
@@ -71,15 +96,27 @@ export function getDimensionColumns(
     return { ...result, hazardPrefix };
 }
 
+/**
+ * `selectedDisaster` (e.g. "risk_flood") picks which hazard's coping score is written to the
+ * row's composite "cop" column (shown in the dashboard), since coping differs per hazard.
+ */
+// Number(null) and Number("") are 0, which would turn missing values into real zeros - treat
+// them as missing (NaN) so the per-dimension missing-value fallbacks below apply.
+function toNumber(value: unknown): number {
+  return value === null || value === undefined || value === "" ? NaN : Number(value);
+}
+
 export function calculateDynamicRisk(
     data: any[],
-    weights: Record<string, number>
+    weights: Record<string, number>,
+    selectedDisaster = "",
 ): any[] {
     if (!data.length) return data;
 
     const cols = Object.keys(data[0]);
     const customDimensionPrefixes = discoverCustomDimensionPrefixes(data);
     const susceptibilityDims = ['vul', 'cop', ...customDimensionPrefixes];
+    const displayedHazard = selectedDisaster.includes('cyclone') ? 'cyclone' : 'flood';
 
     const bounds: Record<string, { min: number, max: number }> = {};
 
@@ -92,7 +129,7 @@ export function calculateDynamicRisk(
         let min = Infinity;
         let max = -Infinity;
         for (const row of data) {
-            const v = Number(row[col]);
+            const v = toNumber(row[col]);
             if (isNaN(v)) continue;
             if (v < min) min = v;
             if (v > max) max = v;
@@ -127,6 +164,9 @@ export function calculateDynamicRisk(
 
         const dimSum: Record<string, number> = {};
         const dimW: Record<string, number> = {};
+        // Hazard-specific coping contributions, kept apart from the shared ones in dimSum.cop
+        const copHazardSum = { flood: 0, cyclone: 0 };
+        const copHazardW = { flood: 0, cyclone: 0 };
 
         let floodSum = 0; let floodW = 0;
         let cycloneSum = 0; let cycloneW = 0;
@@ -137,7 +177,7 @@ export function calculateDynamicRisk(
             if (col === 'exp_flood' || col === 'exp_cyclone') continue;
 
             const w = getW(col);
-            let rawValue = Number(row[col]);
+            let rawValue = toNumber(row[col]);
             let val = normalize(rawValue, col);
 
             let matchedDim: string | null = null;
@@ -150,8 +190,16 @@ export function calculateDynamicRisk(
             }
 
             if (matchedDim) {
-                if (isNaN(val)) val = matchedDim === 'cop' ? 0 : 1;
-                const contribution = matchedDim === 'cop' ? (1 - val) : val;
+                // Missing values count as the worst case for their dimension.
+                const inverted = isInvertedCopingColumn(col);
+                if (isNaN(val)) val = inverted ? 0 : 1;
+                const contribution = inverted ? (1 - val) : val;
+                const copHazard = matchedDim === 'cop' ? copingColumnHazard(col) : null;
+                if (copHazard) {
+                    copHazardSum[copHazard] += contribution * w;
+                    copHazardW[copHazard] += w;
+                    continue;
+                }
                 dimSum[matchedDim] = (dimSum[matchedDim] ?? 0) + contribution * w;
                 dimW[matchedDim] = (dimW[matchedDim] ?? 0) + w;
                 continue;
@@ -170,37 +218,45 @@ export function calculateDynamicRisk(
         // A dimension with no assigned columns (dimW <= 0) is dropped from the susceptibility
         // score rather than treated as 0 - a custom upload isn't required to cover every base
         // dimension, so susceptibility is the geometric mean of whichever dimensions actually
-        // have data for this row.
-        const dimScore: Record<string, number> = {};
-        const presentDims: string[] = [];
-        for (const dim of susceptibilityDims) {
-            const w = dimW[dim] ?? 0;
-            if (w <= 0) continue;
-            dimScore[dim] = (dimSum[dim] ?? 0) / w;
-            row[dim] = dimScore[dim];
-            presentDims.push(dim);
-        }
+        // have data for this row. Coping is scored per hazard: shared columns plus that hazard's
+        // own (e.g. flood evacuation times never affect cyclone susceptibility).
+        const susceptibilityFor = (hazard: 'flood' | 'cyclone') => {
+            const dimScore: Record<string, number> = {};
+            for (const dim of susceptibilityDims) {
+                let sum = dimSum[dim] ?? 0;
+                let w = dimW[dim] ?? 0;
+                if (dim === 'cop') {
+                    sum += copHazardSum[hazard];
+                    w += copHazardW[hazard];
+                }
+                if (w > 0) dimScore[dim] = sum / w;
+            }
+            const presentDims = Object.keys(dimScore);
+            const score = presentDims.length > 0
+                ? Math.pow(presentDims.reduce((acc, dim) => acc * dimScore[dim], 1), 1 / presentDims.length)
+                : null;
+            return { dimScore, score };
+        };
 
-        let susScore = 0;
-        if (presentDims.length > 0) {
-            const product = presentDims.reduce((acc, dim) => acc * dimScore[dim], 1);
-            susScore = Math.pow(product, 1 / presentDims.length);
-        }
+        const floodSus = susceptibilityFor('flood');
+        const cycloneSus = susceptibilityFor('cyclone');
+        const displayed = displayedHazard === 'cyclone' ? cycloneSus : floodSus;
+        for (const [dim, score] of Object.entries(displayed.dimScore)) row[dim] = score;
 
         if (floodW > 0) {
             let expFloScore = floodSum / floodW;
             row['exp_flood'] = expFloScore;
-            if (presentDims.length > 0) {
-                row['sus_flood'] = susScore;
-                row['risk_flood'] = Math.sqrt(expFloScore * susScore);
+            if (floodSus.score !== null) {
+                row['sus_flood'] = floodSus.score;
+                row['risk_flood'] = Math.sqrt(expFloScore * floodSus.score);
             }
         }
         if (cycloneW > 0) {
             let expCycScore = cycloneSum / cycloneW;
             row['exp_cyclone'] = expCycScore;
-            if (presentDims.length > 0) {
-                row['sus_cyclone'] = susScore;
-                row['risk_cyclone'] = Math.sqrt(expCycScore * susScore);
+            if (cycloneSus.score !== null) {
+                row['sus_cyclone'] = cycloneSus.score;
+                row['risk_cyclone'] = Math.sqrt(expCycScore * cycloneSus.score);
             }
         }
     }

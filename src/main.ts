@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import "./assets/styles/main.css";
 import vuetify from "@/plugins/vuetify";
-import { registerGlobalComponents } from "@/plugins/globalComponents";
 import 'maplibre-gl/dist/maplibre-gl.css'
 import App from './App.vue'
 import router from './router'
@@ -15,6 +14,4 @@ app.use(router);
 app.use(pinia);
 app.use(vuetify);
 
-// Register global components for markdown rendering
-registerGlobalComponents(app);
 app.mount("#app");

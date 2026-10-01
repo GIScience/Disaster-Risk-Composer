@@ -19,6 +19,15 @@ RUN --mount=type=cache,target=/root/.npm npm run build
 
 FROM nginx:alpine-slim
 RUN echo 'absolute_redirect off;' > /etc/nginx/conf.d/redirect.conf
+# Stock nginx serves everything uncompressed - the JS bundles and GeoJSON in
+# public/data shrink to roughly a third with gzip.
+RUN printf '%s\n' \
+  'gzip on;' \
+  'gzip_comp_level 6;' \
+  'gzip_min_length 1024;' \
+  'gzip_vary on;' \
+  'gzip_types text/css application/javascript application/json application/geo+json image/svg+xml;' \
+  > /etc/nginx/conf.d/gzip.conf
 COPY --from=build-step /app/dist /usr/share/nginx/html
 
 EXPOSE 80

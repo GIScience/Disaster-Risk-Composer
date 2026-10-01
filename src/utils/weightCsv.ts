@@ -1,3 +1,5 @@
+import { splitCSVText } from "@/utils/csv";
+
 export interface WeightCsvEntry {
   category: string;
   weight: number;
@@ -16,28 +18,16 @@ export function sanitizeIndicatorName(name: string) {
   return cleaned || "indicator";
 }
 
-// Strips a wrapping pair of double quotes from a CSV field (e.g. `"0.2"` -> `0.2`), unescaping
-// doubled quotes inside. Fields are otherwise split on raw "," (no support for commas embedded
-// inside quotes), which is enough for the "variable_name,category,weight,direction,activated"
-// shape this parser targets.
-function stripQuotes(field: string): string {
-  if (field.length >= 2 && field.startsWith('"') && field.endsWith('"')) {
-    return field.slice(1, -1).replace(/""/g, '"');
-  }
-  return field;
-}
-
 // Shared by the Weights tab's upload/download flow (useIndicatorWeights.ts) and the "replace"
 // upload flow (UploadModal.vue), so both parse the same "variable_name,category,weight,
 // direction,activated" CSV shape identically.
 export function parseWeightsCSVText(text: string): Record<string, WeightCsvEntry> {
-  const lines = text
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l);
+  // Same splitting as indicator uploads: BOM, quoted fields, and ";"/tab-delimited files from
+  // European-locale Excel (whose weights then use "," as the decimal separator).
+  const { delimiter, rows: lines } = splitCSVText(text);
   if (lines.length < 2) return {};
 
-  const headers = lines[0].split(",").map((h) => stripQuotes(h.trim()));
+  const headers = lines[0].map((h) => h.trim());
   const nameIdx = headers.indexOf("variable_name");
   const catIdx = headers.indexOf("category");
   const weightIdx = headers.indexOf("weight");
@@ -46,14 +36,17 @@ export function parseWeightsCSVText(text: string): Record<string, WeightCsvEntry
 
   const csvData: Record<string, WeightCsvEntry> = {};
   for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(",").map((p) => stripQuotes(p.trim()));
+    const parts = lines[i].map((p) => p.trim());
     if (parts.length <= Math.max(nameIdx, catIdx, weightIdx)) continue;
     const rawName = parts[nameIdx];
     const category = parts[catIdx];
-    const weight = parseFloat(parts[weightIdx]);
+    const weight = parseFloat(
+      delimiter === "," ? parts[weightIdx] : parts[weightIdx].replace(",", "."),
+    );
     const activated =
       actIdx !== -1 && parts.length > actIdx
-        ? parts[actIdx].toUpperCase() === "TRUE"
+        ? // German-locale Excel writes booleans as WAHR/FALSCH
+          ["TRUE", "WAHR", "1"].includes(parts[actIdx].toUpperCase())
         : null;
     if (rawName && category && !isNaN(weight)) {
       // Sanitized the same way indicator column names are (see sanitizeIndicatorName), so a

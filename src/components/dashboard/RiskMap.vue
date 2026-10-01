@@ -39,9 +39,13 @@ const emit = defineEmits<{
 }>();
 
 // Matches Map's own default center/zoom (map.vue) - the view shown on first
-// load, since RiskMap never overrides those props on <Map>.
+// load. Only the zoom is overridden on <Map>, for mobile (see below).
 const DEFAULT_CENTER: [number, number] = [-40, -20];
 const DEFAULT_ZOOM = 2.8;
+// At 2.8 the globe is far wider than a phone screen - zoom out so the whole
+// globe fits the narrow mobile viewport.
+const MOBILE_DEFAULT_ZOOM = 1.1;
+const globalViewZoom = props.isMobile ? MOBILE_DEFAULT_ZOOM : DEFAULT_ZOOM;
 
 // Slow auto-spin on the world-overview globe, stopping as soon as the user
 // interacts or zooms into a country - matches the Climate Action Navigator.
@@ -90,7 +94,7 @@ function resetToGlobalView() {
   const mapInstance = map.value;
   mapInstance?.easeTo({
     center: DEFAULT_CENTER,
-    zoom: DEFAULT_ZOOM,
+    zoom: globalViewZoom,
     duration: 3000,
     essential: true,
   });
@@ -183,6 +187,11 @@ function selectDimension(value: RiskViewMode) {
   fitToCountryBounds();
 }
 
+// Our own world-overview country outlines are off for now - the basemap's own
+// always-visible country boundary lines (see alwaysShowCountryBoundaries in
+// config/basemaps.ts) may be enough on their own.
+const SHOW_WORLD_BOUNDARIES = false;
+
 function setupWorldLayer() {
   const mapInstance = map.value;
   if (!mapInstance) return;
@@ -191,24 +200,14 @@ function setupWorldLayer() {
     props.availableCountries && props.availableCountries.length > 0;
   const validCountries = isLoaded ? props.availableCountries : ["NONE"];
 
+  // world.json is simplified for the globe view (all fills/hover only need coarse shapes):
+  //   mapshaper world.json -filter-fields iso_a3 -simplify interval=2000 keep-shapes \
+  //     -o precision=0.001 format=geojson
   if (!mapInstance.getSource("world")) {
     mapInstance.addSource("world", {
       type: "geojson",
       data: `${import.meta.env.BASE_URL}data/world.json`,
       promoteId: "iso_a3",
-    });
-  }
-
-  // Separate, pre-deduplicated line source for the boundary layer below.
-  // Each country's own polygon traces its shared borders independently
-  // (from separately-sourced per-country ADM data), so drawing lines
-  // straight from "world" would stroke every internal border twice, once
-  // per neighbouring country. world-boundaries.json instead keeps only one
-  // copy of each shared border (see scripts/generate_world_boundaries.py).
-  if (!mapInstance.getSource("world-lines")) {
-    mapInstance.addSource("world-lines", {
-      type: "geojson",
-      data: `${import.meta.env.BASE_URL}data/world-boundaries.json`,
     });
   }
 
@@ -248,20 +247,31 @@ function setupWorldLayer() {
     });
   }
 
+  // Separate, pre-deduplicated line source for the boundary layer below.
+  // Each country's own polygon traces its shared borders independently
+  // (from separately-sourced per-country ADM data), so drawing lines
+  // straight from "world" would stroke every internal border twice, once
+  // per neighbouring country. world-boundaries.json instead keeps only one
+  // copy of each shared border (see scripts/generate_world_boundaries.py).
+  // Only added while the layer is enabled, so its 4 MB file isn't downloaded
+  // for a layer that is never shown.
+  if (SHOW_WORLD_BOUNDARIES && !mapInstance.getSource("world-lines")) {
+    mapInstance.addSource("world-lines", {
+      type: "geojson",
+      data: `${import.meta.env.BASE_URL}data/world-boundaries.json`,
+    });
+  }
+
   // Country outlines for the world-overview map, drawn from our own source
   // so they stay visible on every basemap. Hidden once a country is
   // selected (see updateWorldBoundariesVisibility below) so it doesn't
   // compete with that country's own (more precise) boundary from
   // updateLayer().
-  if (!mapInstance.getLayer("world-boundaries")) {
+  if (SHOW_WORLD_BOUNDARIES && !mapInstance.getLayer("world-boundaries")) {
     mapInstance.addLayer({
       id: "world-boundaries",
       type: "line",
       source: "world-lines",
-      // Temporarily off for testing - the basemap's own always-visible
-      // country boundary lines (see alwaysShowCountryBoundaries in
-      // config/basemaps.ts) may be enough on their own.
-      layout: { visibility: "none" },
       paint: {
         "line-color": "#ca2333", // HeiGIT red
         "line-width": 1,
@@ -321,11 +331,15 @@ function setupWorldLayer() {
 
 // Hide the world-overview outlines once a country is selected and showing
 // its own boundary (from updateLayer()) - otherwise the two compete.
-// Temporarily disabled entirely for testing (see setupWorldLayer above).
+// No-op while SHOW_WORLD_BOUNDARIES is off, since the layer isn't added then.
 function updateWorldBoundariesVisibility() {
   const mapInstance = map.value;
   if (!mapInstance || !mapInstance.getLayer("world-boundaries")) return;
-  mapInstance.setLayoutProperty("world-boundaries", "visibility", "none");
+  mapInstance.setLayoutProperty(
+    "world-boundaries",
+    "visibility",
+    props.pmtilesUrl ? "none" : "visible",
+  );
 }
 
 function handleMapLoad(mapInstance: maplibregl.Map) {
@@ -788,6 +802,7 @@ defineExpose({
     <Map
       ref="mapViewRef"
       :map-style="styleUrl"
+      :zoom="globalViewZoom"
       :scroll-zoom="true"
       @load="handleMapLoad"
       interactive

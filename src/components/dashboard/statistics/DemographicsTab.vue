@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, nextTick, ref, watch } from "vue";
-import Plotly from "plotly.js-dist-min";
+import { loadPlotly } from "@/utils/plotly";
 
 const props = defineProps<{
   data: any[];
@@ -9,6 +9,7 @@ const props = defineProps<{
 const dependencyRatio = ref<number | null>(null);
 
 const renderDemographics = async () => {
+  const Plotly = await loadPlotly();
   await nextTick();
   const graphDiv = document.getElementById("demographics-chart");
   if (!graphDiv || !props.data.length) return;

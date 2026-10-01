@@ -27,5 +27,7 @@ export const downloadIndicatorCSVTemplate = (
 };
 
 // Wrap values containing commas, quotes, or newlines
-const escapeCSVCell = (value: string): string =>
-  /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+export const escapeCSVCell = (value: unknown): string => {
+  const text = String(value ?? "");
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+};
