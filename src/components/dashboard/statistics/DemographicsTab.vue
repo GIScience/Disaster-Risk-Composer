@@ -1,43 +1,62 @@
 <script setup lang="ts">
-import { onMounted, nextTick, watch } from "vue";
+import { onMounted, nextTick, ref, watch } from "vue";
 import Plotly from "plotly.js-dist-min";
 
 const props = defineProps<{
   data: any[];
 }>();
 
+const dependencyRatio = ref<number | null>(null);
+
 const renderDemographics = async () => {
   await nextTick();
   const graphDiv = document.getElementById("demographics-chart");
   if (!graphDiv || !props.data.length) return;
 
-  const cols = Object.keys(props.data[0]);
-  const demoCols = cols.filter(
-    (c) => c.startsWith("vul_") && !c.includes("perc") && !c.includes("rural"),
-  );
+  const cols = new Set(Object.keys(props.data[0]));
+  const sumCol = (col: string) =>
+    props.data.reduce((sum, row) => sum + (Number(row[col]) || 0), 0);
 
-  if (demoCols.length === 0) {
+  // Dependency ratio is a per-region ratio, not a head-count, so it can't be a
+  // pie slice - show it separately as a population-weighted average instead.
+  if (cols.has("vul_dependency_ratio") && cols.has("vul_total_pop")) {
+    let weighted = 0;
+    let weight = 0;
+    for (const row of props.data) {
+      const ratio = Number(row.vul_dependency_ratio);
+      const pop = Number(row.vul_total_pop);
+      if (isNaN(ratio) || isNaN(pop)) continue;
+      weighted += ratio * pop;
+      weight += pop;
+    }
+    dependencyRatio.value = weight > 0 ? weighted / weight : null;
+  } else {
+    dependencyRatio.value = null;
+  }
+
+  // Mutually exclusive age/sex groups (U5, WRA 15-49, 65+), so "Rest" is simply
+  // whatever remains of the total population.
+  const groups = [
+    { col: "vul_children_u5", label: "Children U5" },
+    { col: "vul_elderly", label: "Elderly (65+)" },
+    { col: "vul_wra_pop", label: "Women of Reproductive Age" },
+  ].filter((g) => cols.has(g.col));
+
+  if (groups.length === 0) {
     Plotly.purge(graphDiv as any);
     return;
   }
 
-  const totals: Record<string, number> = {};
-  demoCols.forEach((col) => {
-    totals[col] = props.data.reduce(
-      (sum, row) => sum + (Number(row[col]) || 0),
-      0,
-    );
-  });
+  const labels = groups.map((g) => g.label);
+  const values = groups.map((g) => sumCol(g.col));
 
-  // Remove total female/pop just to not skew the chart, or keep it as specific groups
-  const selectedDemoCols = demoCols.filter(
-    (c) => !c.includes("pop") || c.includes("rural_pop"),
-  );
-
-  const labels = selectedDemoCols.map((c) =>
-    c.replace("vul_", "").replace(/_/g, " ").toUpperCase(),
-  );
-  const values = selectedDemoCols.map((c) => totals[c]);
+  if (cols.has("vul_total_pop")) {
+    const rest = sumCol("vul_total_pop") - values.reduce((a, b) => a + b, 0);
+    if (rest > 0) {
+      labels.push("Rest");
+      values.push(rest);
+    }
+  }
 
   const trace = {
     labels: labels,
@@ -49,12 +68,10 @@ const renderDemographics = async () => {
     insidetextorientation: "radial",
     marker: {
       colors: [
-        "#e86b3e", // Shade (Dark Red)
-        "#f6a44d", // Tint (Soft Red/Rose)
-        "#ffd156", // Base (Midnight Navy)
-        "#f9d5b6", // Tint (Steel Blue)
-        "#cc0130", // Shade (Deep Night Blue)
-        "#cc0130", // Base (Your Main Red)
+        "#e86b3e", // Children U5
+        "#f6a44d", // Elderly
+        "#ffd156", // Women of reproductive age
+        "#f9d5b6", // Rest
       ],
     },
   };
@@ -98,6 +115,13 @@ watch(
     >
       Vulnerable Demographics
     </h3>
+    <p v-if="dependencyRatio !== null" class="px-2 text-sm text-slate-600">
+      Dependency ratio:
+      <span class="font-bold text-slate-900">{{ dependencyRatio.toFixed(1) }}</span>
+      <span class="text-slate-500">
+        dependents per 100 working-age people</span
+      >
+    </p>
     <div id="demographics-chart" class="w-full flex-1"></div>
   </section>
 </template>
