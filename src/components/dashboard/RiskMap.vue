@@ -453,6 +453,8 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
   onStyleLoad();
 }
 
+const DIM_LAYER_ID = "risk-layer-dim";
+
 async function updateLayer() {
   const mapInstance = map.value;
   if (!mapInstance) return;
@@ -466,6 +468,7 @@ async function updateLayer() {
   if (!props.pmtilesUrl) {
     if (mapInstance.getLayer("risk-layer-highlight"))
       mapInstance.removeLayer("risk-layer-highlight");
+    if (mapInstance.getLayer(DIM_LAYER_ID)) mapInstance.removeLayer(DIM_LAYER_ID);
     if (mapInstance.getLayer(floodLayerId))
       mapInstance.removeLayer(floodLayerId);
     if (mapInstance.getSource(floodLayerId))
@@ -492,6 +495,7 @@ async function updateLayer() {
   if (!currentSource || (currentSource as any).url !== sourceUrl) {
     if (mapInstance.getLayer("risk-layer-highlight"))
       mapInstance.removeLayer("risk-layer-highlight");
+    if (mapInstance.getLayer(DIM_LAYER_ID)) mapInstance.removeLayer(DIM_LAYER_ID);
     if (mapInstance.getLayer(floodLayerId))
       mapInstance.removeLayer(floodLayerId);
     if (mapInstance.getSource(floodLayerId))
@@ -515,6 +519,21 @@ async function updateLayer() {
       },
     });
 
+    // Greys out every other region while one is highlighted from the statistics panel, so the
+    // hovered region stands out. Drawn above the risk fill, below the red highlight outline.
+    mapInstance.addLayer({
+      id: DIM_LAYER_ID,
+      type: "fill",
+      source: floodLayerId,
+      "source-layer": "boundary",
+      paint: {
+        "fill-color": "#e8ebed", // Slate 500
+        "fill-opacity": 0.55,
+      },
+      layout: { visibility: props.highlightedPcode ? "visible" : "none" },
+      filter: ["!=", props.pcodeField, props.highlightedPcode || ""],
+    });
+
     mapInstance.addLayer({
       id: "risk-layer-highlight",
       type: "line",
@@ -522,7 +541,7 @@ async function updateLayer() {
       "source-layer": "boundary",
       paint: {
         "line-color": "#ca2333", // HeiGIT red
-        "line-width": 2,
+        "line-width": 1,
         "line-opacity": 0.9,
       },
       filter: ["==", props.pcodeField, props.highlightedPcode || ""],
@@ -602,6 +621,14 @@ watch(
   () => props.highlightedPcode,
   (newVal) => {
     const mapInstance = map.value;
+    if (mapInstance && mapInstance.getLayer(DIM_LAYER_ID)) {
+      mapInstance.setFilter(DIM_LAYER_ID, ["!=", props.pcodeField, newVal || ""]);
+      mapInstance.setLayoutProperty(
+        DIM_LAYER_ID,
+        "visibility",
+        newVal ? "visible" : "none",
+      );
+    }
     if (mapInstance && mapInstance.getLayer("risk-layer-highlight")) {
       if (newVal) {
         mapInstance.setFilter("risk-layer-highlight", [
