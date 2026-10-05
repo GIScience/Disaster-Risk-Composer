@@ -23,6 +23,8 @@ const resourceItems = computed(() =>
   })
 );
 
+const appVersion = __APP_VERSION__;
+
 const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferrer');
 </script>
 
@@ -33,7 +35,10 @@ const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferre
       <div>
         <div class="flex items-center justify-between px-8 py-5 bg-white z-10 shrink-0">
           <div>
-            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ header.title }}</h2>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">
+              {{ header.title }}
+              <span class="ml-1 text-xs font-medium text-slate-400 tracking-normal align-middle">v{{ appVersion }}</span>
+            </h2>
             <p class="text-xs text-slate-500 font-medium uppercase tracking-widest mt-1">{{ header.subtitle }}</p>
           </div>
           <v-btn icon="mdi-close" class="hover:bg-heigit-red-light hover:text-heigit-red cursor-pointer" variant="text" density="comfortable" @click="$emit('close')" />
