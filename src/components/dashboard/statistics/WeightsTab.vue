@@ -47,7 +47,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
       >
         <!-- Download/Upload Weights. Grid columns (not absolute positioning) so the buttons,
              the risk node and the link never overlap when the analysis panel is narrow. -->
-        <div class="flex flex-col items-start gap-2 min-w-0">
+        <div class="flex flex-col items-stretch gap-2 w-fit min-w-0">
           <v-btn
             @click="downloadWeightsCSV"
             variant="flat"
