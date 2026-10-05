@@ -120,11 +120,11 @@ function formatDisaster(col: string) {
     <transition name="collapse">
       <div
         v-if="isExpanded"
-        class="py-3 px-3 mt-0.5 flex flex-col md:flex-row gap-6 items-center justify-center relative"
+        class="py-3 short:py-1.5 px-3 short:pr-14 mt-0.5 flex flex-col md:flex-row gap-6 items-center justify-center relative"
       >
-        <div class="flex flex-col md:flex-row gap-4 w-full items-end py-1">
+        <div class="flex flex-col md:flex-row gap-4 w-full items-end py-1 short:items-center short:py-0">
           <div
-            class="flex-1 flex flex-col md:flex-row gap-4 items-end justify-center min-w-0"
+            class="flex-1 flex flex-col md:flex-row gap-4 items-end short:items-center justify-center min-w-0"
           >
             <!-- Home Button -->
             <button
@@ -151,11 +151,11 @@ function formatDisaster(col: string) {
 
             <!-- Country Search Dropdown -->
             <div
-              class="relative w-full md:max-w-72 md:flex-1 text-left"
+              class="relative w-full md:max-w-72 md:flex-1 text-left short:flex short:items-center short:gap-2"
               ref="dropdownRef"
             >
               <label
-                class="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-1"
+                class="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-1 short:mb-0 short:shrink-0"
                 >Target Country</label
               >
               <div
@@ -218,7 +218,7 @@ function formatDisaster(col: string) {
 
             <!-- Hazard Select Dropdown -->
             <div
-              class="relative w-full md:max-w-64 md:flex-1 text-left transition-all duration-500"
+              class="relative w-full md:max-w-64 md:flex-1 text-left transition-all duration-500 short:flex short:items-center short:gap-2"
               :class="{
                 'opacity-40 grayscale pointer-events-none': !selectedCountry,
                 'cursor-not-allowed': !selectedCountry,
@@ -226,7 +226,7 @@ function formatDisaster(col: string) {
               ref="hazardDropdownRef"
             >
               <label
-                class="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-1"
+                class="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-1 short:mb-0 short:shrink-0"
                 >Hazard</label
               >
               <div

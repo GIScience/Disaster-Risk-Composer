@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, nextTick, watch } from "vue";
 import { loadPlotly } from "@/utils/plotly";
+import { usePlotlyAutoResize } from "@/composables/usePlotlyAutoResize";
 import { getDimensionColumns } from "@/utils/riskCalculation";
 import { formatRegionLabel } from "@/utils/regionLabel";
 
@@ -18,6 +19,8 @@ const emit = defineEmits<{
 const componentCols = computed(() =>
   getDimensionColumns(props.data, props.selectedDisaster),
 );
+
+usePlotlyAutoResize("components-chart");
 
 const renderComponents = async () => {
   const Plotly = await loadPlotly();
@@ -40,6 +43,8 @@ const renderComponents = async () => {
   const displayLabels = pcodes.map((pcode) =>
     formatRegionLabel(pcode, props.pcodeNames),
   );
+  // Name and pcode on two lines, so the 5 labels fit side by side without rotating into the legend.
+  const tickLabels = displayLabels.map((label) => label.replace(" (", "<br>("));
   const { exp, vul, cop } = componentCols.value;
 
   const traces = [];
@@ -85,7 +90,7 @@ const renderComponents = async () => {
   }
 
   const layout = {
-    font: { family: "inherit", color: "#475569" },
+    font: { family: "Inter, Roboto, sans-serif", color: "#475569" },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     barmode: "group",
@@ -94,7 +99,8 @@ const renderComponents = async () => {
       gridcolor: "#e2e8f0",
       tickfont: { size: 10, color: "#475569" },
       tickvals: pcodes,
-      ticktext: displayLabels,
+      ticktext: tickLabels,
+      tickangle: 0,
       automargin: true,
     },
     yaxis: {
@@ -116,8 +122,9 @@ const renderComponents = async () => {
         ),
       ],
     },
-    margin: { t: 10, r: 10, b: 100, l: 10 },
-    legend: { orientation: "h" },
+    margin: { t: 40, r: 10, b: 10, l: 10 },
+    // Above the plot, so it can never collide with the region labels below it.
+    legend: { orientation: "h", x: 0, y: 1.02, xanchor: "left", yanchor: "bottom" },
   };
 
   try {
@@ -150,7 +157,7 @@ watch(
 </script>
 
 <template>
-  <section class="h-full min-h-[400px] flex flex-col">
+  <section class="h-full min-h-[400px] short:min-h-[280px] flex flex-col">
     <h3
       class="text-lg font-extrabold text-slate-900 mb-1 mt-2 px-2 tracking-tight"
     >

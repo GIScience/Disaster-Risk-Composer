@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, nextTick, watch } from "vue";
 import { loadPlotly } from "@/utils/plotly";
+import { usePlotlyAutoResize } from "@/composables/usePlotlyAutoResize";
 import { formatRegionLabel } from "@/utils/regionLabel";
 
 const props = defineProps<{
@@ -14,6 +15,8 @@ const emit = defineEmits<{
   (e: "region-hover", pcode: string | null): void;
 }>();
 
+
+usePlotlyAutoResize("ranking-chart");
 
 const renderRanking = async () => {
   const Plotly = await loadPlotly();
@@ -37,6 +40,16 @@ const renderRanking = async () => {
   const displayLabels = yValues.map((pcode) =>
     formatRegionLabel(pcode, props.pcodeNames),
   );
+  // Long names (e.g. "Antananarivo Atsimondrano") would otherwise be clipped at the chart's left
+  // edge in a narrow panel - shorten the axis label only, the hover keeps the full name.
+  const MAX_TICK_NAME = 18;
+  const tickLabels = yValues.map((pcode) => {
+    const name = props.pcodeNames[pcode];
+    if (!name) return pcode;
+    const short =
+      name.length > MAX_TICK_NAME ? `${name.slice(0, MAX_TICK_NAME - 1)}…` : name;
+    return `${short} (${pcode})`;
+  });
   const xValues = topData.map((d) => Number(d[props.selectedDisaster]));
 
   const trace = {
@@ -59,11 +72,13 @@ const renderRanking = async () => {
   };
 
   const layout = {
-    font: { family: "inherit", color: "#475569" },
+    font: { family: "Inter, Roboto, sans-serif", color: "#475569" },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     xaxis: {
       title: "Risk Score",
+      // Headroom so a value label pushed outside the longest bar isn't clipped.
+      range: [0, Math.max(...xValues, 0) * 1.12],
       gridcolor: "#e2e8f0",
       zerolinecolor: "#e2e8f0",
       automargin: true,
@@ -72,9 +87,9 @@ const renderRanking = async () => {
       automargin: true,
       tickfont: { size: 10, color: "#475569" },
       tickvals: yValues,
-      ticktext: displayLabels,
+      ticktext: tickLabels,
     },
-    margin: { t: 10, r: 10, b: 10, l: 10 },
+    margin: { t: 10, r: 10, b: 10, l: 20 },
   };
 
   try {
@@ -107,12 +122,12 @@ watch(
 </script>
 
 <template>
-  <section class="h-full min-h-[400px] flex flex-col">
+  <section class="h-full min-h-[400px] short:min-h-[280px] flex flex-col">
     <h3
       class="text-lg font-extrabold text-slate-900 mb-2 mt-2 px-2 tracking-tight"
     >
       Top 15 Regions
     </h3>
-    <div id="ranking-chart" class="flex-1 w-[43rem]"></div>
+    <div id="ranking-chart" class="flex-1 w-full min-w-0"></div>
   </section>
 </template>

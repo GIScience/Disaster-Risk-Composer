@@ -43,12 +43,11 @@ const uploadInput = ref<HTMLInputElement | null>(null);
       <!-- Final Risk Node Row - desktop only -->
       <div
         v-if="!isMobile"
-        class="relative flex items-center justify-center w-full max-w-4xl z-10"
+        class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full max-w-4xl px-4 z-10"
       >
-        <!-- Download/Upload Weights -->
-        <div
-          class="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col gap-2"
-        >
+        <!-- Download/Upload Weights. Grid columns (not absolute positioning) so the buttons,
+             the risk node and the link never overlap when the analysis panel is narrow. -->
+        <div class="flex flex-col items-start gap-2 min-w-0">
           <v-btn
             @click="downloadWeightsCSV"
             variant="flat"
@@ -91,7 +90,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
         </div>
 
         <!-- Methodology Link -->
-        <div class="absolute right-4 top-1/2 -translate-y-1/2">
+        <div class="min-w-0 text-right">
           <a
             href="https://giscience.github.io/gis-training-resource-center/en/GIS_AA/en_qgis_risk_assessment_plugin.html#methodology"
             target="_blank"

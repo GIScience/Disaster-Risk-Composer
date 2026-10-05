@@ -19,6 +19,11 @@ export default {
            "text": "#515161",
         }
       },
+      screens: {
+        // Laptop-height windows (e.g. a 14" MacBook browser is ~800px tall): tighter chrome so
+        // the map and analysis panel keep their room. Height-based, so it's independent of width.
+        short: { raw: "(max-height: 900px)" },
+      },
       fontFamily: {
         sans: ["Inter", "Roboto", "Archivo", "sans-serif"],
       },

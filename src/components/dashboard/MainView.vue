@@ -190,7 +190,7 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
         ]"
       >
         <div
-          class="flex-1 flex flex-col overflow-hidden p-6 h-full min-w-[320px]"
+          class="flex-1 flex flex-col overflow-hidden p-6 short:p-4 h-full min-w-[320px]"
         >
           <div class="max-w-3xl w-full mx-auto flex flex-col h-full space-y-4">
             <header class="shrink-0">

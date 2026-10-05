@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { onMounted, nextTick, ref, watch } from "vue";
 import { loadPlotly } from "@/utils/plotly";
+import { usePlotlyAutoResize } from "@/composables/usePlotlyAutoResize";
 
 const props = defineProps<{
   data: any[];
 }>();
 
 const dependencyRatio = ref<number | null>(null);
+
+usePlotlyAutoResize("demographics-chart");
 
 const renderDemographics = async () => {
   const Plotly = await loadPlotly();
@@ -78,7 +81,7 @@ const renderDemographics = async () => {
   };
 
   const layout = {
-    font: { family: "inherit", color: "#475569" },
+    font: { family: "Inter, Roboto, sans-serif", color: "#475569" },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     margin: { t: 10, r: 10, b: 100, l: 10 },
@@ -110,7 +113,7 @@ watch(
 </script>
 
 <template>
-  <section class="h-full min-h-[400px] flex flex-col">
+  <section class="h-full min-h-[400px] short:min-h-[280px] flex flex-col">
     <h3
       class="text-lg font-extrabold text-slate-900 mb-2 mt-2 px-2 tracking-tight"
     >

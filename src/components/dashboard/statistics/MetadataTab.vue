@@ -60,7 +60,7 @@ onMounted(() => {
     <h3 class="text-lg font-extrabold text-slate-900 mb-2 mt-2 tracking-tight">
       Data Sources
     </h3>
-    <div id="data-sources" class="flex-1 space-y-6 w-[43rem]">
+    <div id="data-sources" class="flex-1 space-y-6 w-full min-w-0">
       <div class="flex flex-wrap bg-slate-100 rounded-md shadow-sm w-fit">
         <v-btn
           v-for="(hazard, index) in HAZARDS"
