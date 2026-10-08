@@ -12,6 +12,7 @@ import {
 } from "@/enums/dimensions";
 import { HAZARDS } from "@/enums/hazards";
 import { isOutputColumn, isRankingColumn } from "@/utils/riskCalculation";
+import { regionIdLabel } from "@/utils/regionId";
 import { storeToRefs } from "pinia";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { downloadIndicatorCSVTemplate } from "@/utils/template";
@@ -283,11 +284,17 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+// "P-code" for OCHA countries, "NUTS code" for EU countries with NUTS boundaries.
+const idLabel = computed(() => regionIdLabel(props.pcodeField));
+
 function detectPcodeColumn(columns: string[]): string | null {
   const lowerTarget = props.pcodeField.toLowerCase();
   const exact = columns.find((c) => c.toLowerCase() === lowerTarget);
   if (exact) return exact;
-  const generic = columns.find((c) => c.toLowerCase() === "pcode");
+  // Generic names, for files not exported from this dashboard
+  const generic = columns.find((c) =>
+    ["pcode", "nuts_code"].includes(c.toLowerCase()),
+  );
   if (generic) return generic;
   return null;
 }
@@ -322,7 +329,7 @@ async function parseEntry(entry: IndicatorFileEntry) {
     const columns = Object.keys(rows[0]);
     const detected = detectPcodeColumn(columns);
     if (!detected) {
-      entry.parseError = `No PCODE column found. Add a column named "${props.pcodeField}" or "PCODE".`;
+      entry.parseError = `No ${idLabel.value} column found. Add a column named "${props.pcodeField}".`;
       return;
     }
 
@@ -332,7 +339,7 @@ async function parseEntry(entry: IndicatorFileEntry) {
     const dataColumns = selectableColumns.filter((c) => c !== detected);
     if (dataColumns.length === 0) {
       entry.parseError =
-        "This CSV only has the PCODE column. Add at least one data column to upload.";
+        `This CSV only has the ${idLabel.value} column. Add at least one data column to upload.`;
       return;
     }
 
@@ -485,7 +492,7 @@ function handleDownloadTemplate() {
   downloadIndicatorCSVTemplate(
     [],
     selectedCountryPcodeFieldMap.value,
-    "ADM2_PCODE",
+    props.pcodeField,
     `custom_Indicator_template`,
     selectedCountryName.value,
   );
@@ -559,7 +566,7 @@ function handleDownloadTemplate() {
               <v-icon icon="mdi-information-outline" size="16" class="mr-2" />
               <span class="text-caption text-sm">
                 Need the right format? The {{ selectedCountryName }} template
-                already has the ADM2_PCODE column.
+                already has the {{ pcodeField }} column.
               </span>
               <v-btn
                 variant="flat"
@@ -651,7 +658,7 @@ function handleDownloadTemplate() {
                       Indicator data
                     </div>
                     <div class="text-caption text-xs text-medium-emphasis">
-                      CSV(s) with a PCODE column named "{{ pcodeField }}", plus
+                      CSV(s) with a {{ idLabel }} column named "{{ pcodeField }}", plus
                       your indicator columns. Select multiple files to add
                       several indicators at once.
                     </div>
@@ -736,7 +743,7 @@ function handleDownloadTemplate() {
                       "
                     >
                       {{ matchCountFor(entry) }} of
-                      {{ entry.rows.length }} PCODEs match the
+                      {{ entry.rows.length }} {{ idLabel }}s match the
                       {{ selectedCountry }} boundaries.
                       <template v-if="!matchIsSufficientFor(entry)">
                         At least {{ Math.round(MATCH_THRESHOLD * 100) }}% need
@@ -984,7 +991,7 @@ function handleDownloadTemplate() {
                 v-if="entry.columns.length === 0"
                 class="text-caption text-medium-emphasis text-center py-3"
               >
-                No columns found besides the PCODE column.
+                No columns found besides the {{ idLabel }} column.
               </div>
             </div>
           </div>

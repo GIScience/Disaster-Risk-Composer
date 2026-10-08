@@ -33,7 +33,10 @@ export const setupMaplibreMap = (
     maxZoom: MAX_ZOOM_LEVEL,
     interactive: interactive,
     scrollZoom: scrollZoom,
-    attributionControl: attributionControl === false ? false : undefined,
+    // An explicit `undefined` overrides MapLibre's default and removes the attribution control
+    // entirely, so pass `{}` (the default control, compact on narrow maps) to keep the
+    // OpenStreetMap/VersaTiles/Esri and data-source credits visible.
+    attributionControl: attributionControl === false ? false : {},
     dragRotate: false,
     touchZoomRotate: false,
     pitchWithRotate: false,
@@ -49,7 +52,10 @@ export const setupMaplibreMap = (
 
   if (pmtiles) {
     try {
-      const protocol = new Protocol();
+      // metadata: true makes the TileJSON carry the archive's own "attribution" (e.g. the
+      // Eurostat GISCO notice in NUTS countries' PMTiles, which must be shown), so MapLibre's
+      // attribution control displays it whenever it is present.
+      const protocol = new Protocol({ metadata: true });
       maplibregl.addProtocol("pmtiles", protocol.tile);
     } catch (e: any) {
       if (!e.message?.includes("already exists")) {

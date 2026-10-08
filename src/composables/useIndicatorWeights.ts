@@ -2,6 +2,7 @@ import { ref, watch, type ComputedRef } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { generateFilename } from "@/utils/filenameGenerator";
 import { isInvertedCopingColumn } from "@/utils/riskCalculation";
+import { useRiskMapStore } from "@/store/riskMapStore";
 import {
   parseWeightsCSVText,
   sanitizeIndicatorName,
@@ -51,6 +52,7 @@ export function useIndicatorWeights(
   emit: IndicatorWeightsEmit,
   indicatorDimensionGroups: ComputedRef<DimensionGroup[]>,
 ) {
+  const riskMapStore = useRiskMapStore();
   const localWeights = ref<Record<string, number>>({
     ...props.indicatorWeights,
   });
@@ -69,6 +71,7 @@ export function useIndicatorWeights(
         newKeys.some((k) => !(k in localWeights.value));
       if (structurallyChanged) {
         localWeights.value = { ...newVal };
+        applyUploadDeactivated(newVal);
       }
     },
     { deep: true },
@@ -86,12 +89,30 @@ export function useIndicatorWeights(
   const disabledIndicators = ref<Set<string>>(new Set());
   const savedSliderValues = ref<Record<string, number>>({});
 
+  // Indicators switched off by an uploaded weight file ("activated = FALSE") show as off, and
+  // switching them on restores the file's weight. Read from the store so it also applies when
+  // this component is created after the upload (e.g. the mobile data drawer).
+  function applyUploadDeactivated(weights: Record<string, number>) {
+    const deactivated = riskMapStore.uploadDeactivated;
+    const disabled = new Set(
+      [...disabledIndicators.value].filter((c) => c in weights),
+    );
+    for (const [col, weight] of Object.entries(deactivated)) {
+      if (!(col in weights)) continue;
+      disabled.add(col);
+      savedSliderValues.value[col] = weight;
+    }
+    disabledIndicators.value = disabled;
+  }
+  applyUploadDeactivated(props.indicatorWeights);
+
   function isSubIndicatorActive(col: string) {
     return !disabledIndicators.value.has(col);
   }
 
   function toggleSubIndicator(col: string) {
     if (disabledIndicators.value.has(col)) {
+      delete riskMapStore.uploadDeactivated[col]; // user's choice now overrides the weight file
       disabledIndicators.value = new Set(
         [...disabledIndicators.value].filter((c) => c !== col),
       );
@@ -135,6 +156,7 @@ export function useIndicatorWeights(
     cols.forEach((c) => {
       newDisabled.delete(c);
       delete savedSliderValues.value[c];
+      delete riskMapStore.uploadDeactivated[c];
     });
     disabledIndicators.value = newDisabled;
     emit("update:indicatorWeights", newWeights);

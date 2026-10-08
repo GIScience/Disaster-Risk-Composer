@@ -43,6 +43,10 @@ export const useRiskMapStore = defineStore("riskMap", {
     // can omit tiny polygons - so this is a best-effort lookup, not guaranteed
     // complete; callers should fall back to the pcode when a name is missing).
     pcodeNames: {} as Record<string, string>,
+    // Custom indicators an uploaded weight file marks as "activated = FALSE": column -> the file's
+    // weight, restored when the user switches the indicator back on. Their weight in
+    // indicatorWeights is 0, and the Indicators/Weights tabs show them switched off.
+    uploadDeactivated: {} as Record<string, number>,
   }),
 
   getters: {
@@ -161,6 +165,7 @@ export const useRiskMapStore = defineStore("riskMap", {
     resetForNewCountry() {
       this.matchArray = [];
       this.indicatorWeights = {};
+      this.uploadDeactivated = {};
       this.uploadError = null;
       this.showCustomDataInfo = false;
       this.pendingCustomDataCountry = null;

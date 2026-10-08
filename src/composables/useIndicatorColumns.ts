@@ -78,11 +78,19 @@ function darkenHex(hex: string, amount = 0.3) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-function categorizeColumns(cols: string[]) {
+// Uploaded custom indicators get their own "Custom" group (checked first, so a custom column
+// named e.g. "rural_access" isn't filed under a native group); native columns that fit no
+// group end up under "Other".
+function categorizeColumns(cols: string[], isCustom: (col: string) => boolean) {
   const grouped: Record<string, string[]> = {};
+  const custom: string[] = [];
   const rest: string[] = [];
 
   for (const col of cols) {
+    if (isCustom(col)) {
+      custom.push(col);
+      continue;
+    }
     const lower = col.toLowerCase();
     let matched = false;
     for (const { key } of GROUP_DEFS) {
@@ -97,13 +105,16 @@ function categorizeColumns(cols: string[]) {
   }
 
   const result: { key: string; label: string; columns: string[] }[] = [];
+  if (custom.length) {
+    result.push({ key: "__custom__", label: "Custom", columns: custom });
+  }
   for (const g of GROUP_DEFS) {
     if (grouped[g.key]?.length) {
       result.push({ ...g, columns: grouped[g.key] });
     }
   }
   if (rest.length) {
-    result.push({ key: "__rest__", label: "Rest", columns: rest });
+    result.push({ key: "__rest__", label: "Other", columns: rest });
   }
   return result;
 }
@@ -286,7 +297,11 @@ export function useIndicatorColumns(props: IndicatorColumnsProps) {
         color,
         borderColor: darkenHex(color, 0.3),
         tintColor: hexToRgba(color, 0.05),
-        groups: categorizeColumns(dim.cols),
+        groups: categorizeColumns(
+          dim.cols,
+          // "append" uploads carry a "_custom_" infix; after a "replace" upload every column is custom
+          (col) => !!props.customIndicatorsReplaced || col.includes("_custom_"),
+        ),
       };
     });
   });

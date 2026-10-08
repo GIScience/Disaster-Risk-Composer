@@ -29,6 +29,11 @@ function fetchCountriesYamlText(): Promise<string> {
   return countriesYamlTextPromise;
 }
 
+// Where the OSM extract slug isn't the country's name
+const NAME_OVERRIDES: Record<string, string> = {
+  IRL: "Ireland", // slug "ireland-and-northern-ireland" covers the whole island
+};
+
 export async function fetchCountries(): Promise<Country[]> {
   try {
     // Fetch the pre-generated list of available countries
@@ -38,7 +43,17 @@ export async function fetchCountries(): Promise<Country[]> {
 
     // Fetch the YAML metadata to get proper country names
     const textYaml = await fetchCountriesYamlText();
-    const countryYamlData = jsyaml.load(textYaml) as Record<string, { slug: string }>;
+    // countries.yaml describes OSM extract regions: "slug" is a list for countries split into
+    // several extracts (e.g. DNK: [denmark, faroe-islands]), so take the first one.
+    const countryYamlData = jsyaml.load(textYaml) as Record<
+      string,
+      { slug?: string | string[] }
+    >;
+    const slugFor = (code: string): string | undefined => {
+      const slug = countryYamlData[code]?.slug;
+      const first = Array.isArray(slug) ? slug[0] : slug;
+      return typeof first === "string" ? first : undefined;
+    };
 
     function prettifySlug(slug: string) {
       if (!slug) return "";
@@ -46,10 +61,10 @@ export async function fetchCountries(): Promise<Country[]> {
     }
 
     const result = validCodes.map(code => {
-      const slug = countryYamlData[code]?.slug;
+      const slug = slugFor(code);
       return {
         code,
-        name: slug ? prettifySlug(slug) : code
+        name: NAME_OVERRIDES[code] ?? (slug ? prettifySlug(slug) : code),
       };
     });
 

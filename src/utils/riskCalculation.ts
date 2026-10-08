@@ -1,6 +1,7 @@
 import type { DimensionColumns } from "@/enums/dimensions";
 import { DIMENSION_PREFIX_VALUES } from "@/enums/dimensions";
 import { HazardPrefix, resolveHazardPrefix } from "@/enums/hazards";
+import { isRegionIdColumn, isRegionNameColumn } from "@/utils/regionId";
 
 const EXP_FLOOD_COL = `exp_${HazardPrefix.FLOOD}`;
 const EXP_CYCLONE_COL = `exp_${HazardPrefix.CYCLONE}`;
@@ -25,7 +26,10 @@ export function isOutputColumn(column: string): boolean {
   const lower = column.toLowerCase();
   return (
     OUTPUT_COLUMN_NAMES.has(lower) ||
-    OUTPUT_COLUMN_PREFIXES.some((prefix) => lower.startsWith(prefix))
+    OUTPUT_COLUMN_PREFIXES.some((prefix) => lower.startsWith(prefix)) ||
+    // Region IDs/names (ADM2_PCODE, NUTS3_CODE, ADM2_NAME, ...) are never indicators either.
+    isRegionIdColumn(column) ||
+    isRegionNameColumn(column)
   );
 }
 

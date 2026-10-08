@@ -2,6 +2,7 @@
 import { ref, computed, watch } from "vue";
 import { generateFilename } from "@/utils/filenameGenerator";
 import { escapeCSVCell } from "@/utils/template";
+import { regionIdLabel } from "@/utils/regionId";
 
 const props = defineProps<{
   data: any[];
@@ -164,7 +165,7 @@ const handleDownloadIndicatorData = () => {
               class="px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100 whitespace-nowrap border-b border-slate-200"
               @click="toggleSort(pcodeField)"
             >
-              PCODE
+              {{ regionIdLabel(pcodeField) }}
               <span v-if="sortKey === pcodeField">{{
                 sortOrder === "asc" ? "↑" : "↓"
               }}</span>

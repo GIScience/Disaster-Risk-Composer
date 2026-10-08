@@ -14,6 +14,7 @@ import {
   type RiskViewMode,
 } from "../enums/dimensions";
 import { useRiskMapStore } from "../store/riskMapStore";
+import { detectRegionIdColumn, regionIdLabel } from "../utils/regionId";
 import { useIsEmbedded } from "./use-is-embedded";
 import {
   stripDimensionPrefix,
@@ -127,8 +128,7 @@ export function useRiskLogic() {
     }
   });
 
-  function updateRiskLayer(riskColumn: string, data: any[], level: string) {
-    const field = `${level}_PCODE`;
+  function updateRiskLayer(riskColumn: string, data: any[], field: string) {
 
     const values = data
       .map((d) => Number(d[riskColumn]))
@@ -168,8 +168,7 @@ export function useRiskLogic() {
       store.setMatchArray([]);
       return;
     }
-    const level = pcodeField.value.split("_")[0];
-    updateRiskLayer(activeValueColumn, lastLoadedData.value, level);
+    updateRiskLayer(activeValueColumn, lastLoadedData.value, pcodeField.value);
   }
 
   async function updateCountryData(
@@ -213,15 +212,18 @@ export function useRiskLogic() {
         ),
       );
 
+      // OCHA countries use "<LEVEL>_PCODE", NUTS (EU) countries "NUTS<n>_CODE" - see regionId.ts.
+      const idField = detectRegionIdColumn(Object.keys(rawJSON[0] || {}), level);
+      if (!idField) throw new Error(`No region ID column found in ${parquetUrl}`);
+
       store.setRawOriginalData(JSON.parse(JSON.stringify(rawJSON)));
 
-      // Build a mapping of PCODE to its corresponding level key (e.g., ADM1_PCODE or ADM1_PCODE)
+      // Every region ID of this file, e.g. for the upload template
       store.setSelectedCountryPcodeFieldMap(
-        JSON.parse(JSON.stringify(rawJSON)).map((row: any) => row.ADM2_PCODE),
+        rawJSON.map((row: any) => String(row[idField])),
       );
 
-      const currentLevel = level;
-      pcodeField.value = `${currentLevel}_PCODE`;
+      pcodeField.value = idField;
       lastLoadedData.value = rawJSON;
       lastLoadedCountry.value = countryCode;
 
@@ -354,7 +356,7 @@ export function useRiskLogic() {
     const matchRate =
       payload.rows.length > 0 ? matchedCount / payload.rows.length : 0;
     if (matchRate < CUSTOM_UPLOAD_MATCH_THRESHOLD) {
-      const message = `Only ${matchedCount}/${payload.rows.length} PCODEs matched this dataset (need at least ${Math.round(CUSTOM_UPLOAD_MATCH_THRESHOLD * 100)}%).`;
+      const message = `Only ${matchedCount}/${payload.rows.length} ${regionIdLabel(pcodeField.value)}s matched this dataset (need at least ${Math.round(CUSTOM_UPLOAD_MATCH_THRESHOLD * 100)}%).`;
       uploadError.value = message;
       return { success: false, error: message };
     }
@@ -427,6 +429,8 @@ export function useRiskLogic() {
 
     const newWeights: Record<string, number> =
       mode === "append" ? { ...indicatorWeights.value } : {};
+    const deactivated: Record<string, number> =
+      mode === "append" ? { ...store.uploadDeactivated } : {};
     for (const [rawColumn, dimension] of columnAssignments) {
       const newColumn = columnNameMap.get(rawColumn)!;
       const rawName = sanitizeIndicatorName(rawColumn);
@@ -438,11 +442,19 @@ export function useRiskLogic() {
       // every entry and silently fell back to the 1.0 default.
       const lookupName = stripDimensionPrefix(rawName, dimension);
       const weightEntry = payload.weights?.[lookupName];
-      newWeights[newColumn] =
-        weightEntry && weightEntry.category === dimension
-          ? weightEntry.weight
-          : 1.0;
+      const entry =
+        weightEntry && weightEntry.category === dimension ? weightEntry : null;
+      if (entry?.activated === false) {
+        // Switched off in the weight file: excluded from the risk (weight 0), shown as off, and
+        // the file's weight comes back when the user switches it on again.
+        newWeights[newColumn] = 0;
+        deactivated[newColumn] = entry.weight;
+      } else {
+        newWeights[newColumn] = entry ? entry.weight : 1.0;
+        delete deactivated[newColumn];
+      }
     }
+    store.uploadDeactivated = deactivated;
     indicatorWeights.value = newWeights;
     loadAndCalculateWithWeights(newWeights);
 
@@ -466,6 +478,16 @@ export function useRiskLogic() {
     if (appliedAny) {
       pendingCustomDataCountry.value = countryCode;
       showCustomDataInfo.value = true;
+    } else {
+      // None of the saved uploads match this country's regions any more - e.g. after its
+      // boundaries switched from OCHA P-codes to NUTS codes. Drop them instead of failing on
+      // every visit.
+      uploadError.value = null;
+      try {
+        localStorage.removeItem(customUploadStorageKey(countryCode));
+      } catch {
+        // storage unavailable (e.g. blocked in the HDX iframe) - nothing to clean up
+      }
     }
   }
 

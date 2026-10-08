@@ -116,11 +116,13 @@ const map = computed<maplibregl.Map | null>(
 const floodLayerId = "risk-layer";
 const interactLayerId = "world-fills";
 
-// Admin-unit names live in the pmtiles vector tiles (as "<LEVEL>_NAME",
-// alongside the existing "<LEVEL>_PCODE") rather than in the parquet data.
-const nameField = computed(() =>
-  props.pcodeField ? props.pcodeField.replace(/_PCODE$/, "_NAME") : "",
-);
+// Admin-unit names live in the pmtiles vector tiles as "<LEVEL>_NAME" (e.g. "ADM2_NAME"), for
+// OCHA and NUTS countries alike, rather than in the parquet data. The level comes from the file
+// name, since the ID column ("ADM2_PCODE" vs "NUTS3_CODE") doesn't carry it for NUTS countries.
+const nameField = computed(() => {
+  const level = props.pmtilesUrl?.match(/_(ADM\d)\.pmtiles$/)?.[1];
+  return level ? `${level}_NAME` : "";
+});
 
 const HTML_ESCAPES: Record<string, string> = {
   "&": "&amp;",
@@ -165,6 +167,44 @@ const countryBounds = ref<maplibregl.LngLatBoundsLike | null>(null);
 // layer after a basemap switch doesn't re-trigger a fitBounds/zoom.
 const boundsFittedForUrl = ref<string | null>(null);
 
+// Safeguard against parquet and PMTiles of a country that don't describe the same regions (e.g.
+// tiles already rebuilt on NUTS boundaries while the parquet still holds old OCHA P-codes): the
+// map would stay empty or silently colour only part of the country. Checked once per country,
+// after the map has fitted the country and its tiles have loaded.
+const REGION_MATCH_THRESHOLD = 0.9;
+const regionMismatch = ref<{ matched: number; data: number; tiles: number } | null>(null);
+let regionCheckDoneFor: string | null = null;
+
+function checkRegionMatch() {
+  const mapInstance = map.value;
+  if (!mapInstance || !props.pmtilesUrl || !props.pcodeField) return;
+  if (!props.matchArray.length || regionCheckDoneFor === props.pmtilesUrl) return;
+  if (boundsFittedForUrl.value !== props.pmtilesUrl) return; // still flying to the country
+  if (!mapInstance.getSource(floodLayerId) || !mapInstance.isSourceLoaded(floodLayerId)) return;
+
+  const features = mapInstance.querySourceFeatures(floodLayerId, { sourceLayer: "boundary" });
+  if (!features.length) return;
+  regionCheckDoneFor = props.pmtilesUrl;
+
+  const tileIds = new Set<string>();
+  const anyIds = new Set<string>(); // in case the tiles use a different ID property entirely
+  for (const feature of features) {
+    const id = feature.properties?.[props.pcodeField];
+    if (id !== undefined && id !== null) tileIds.add(String(id));
+    anyIds.add(String(feature.id ?? JSON.stringify(feature.properties)));
+  }
+  const dataIds = new Set(props.matchArray.map((m) => String(m[0])));
+  let matched = 0;
+  dataIds.forEach((id) => {
+    if (tileIds.has(id)) matched += 1;
+  });
+  const tiles = tileIds.size || anyIds.size;
+  const ok =
+    matched >= REGION_MATCH_THRESHOLD * dataIds.size &&
+    matched >= REGION_MATCH_THRESHOLD * tiles;
+  regionMismatch.value = ok ? null : { matched, data: dataIds.size, tiles };
+}
+
 const styleUrl = COLORFUL_STYLE;
 
 const resizeHandler = () => {
@@ -174,7 +214,15 @@ const resizeHandler = () => {
 onBeforeUnmount(() => {
   window.removeEventListener("resize", resizeHandler);
   stopSpinning();
+  if (highlightClearTimer) clearTimeout(highlightClearTimer);
 });
+
+// Countries whose full extent includes far-off islands, which would make the initial zoom tiny.
+// Fit to the mainland instead; the islands are still on the map, just outside the first view.
+const MAINLAND_BOUNDS: Record<string, [[number, number], [number, number]]> = {
+  ESP: [[-9.4, 35.2], [4.4, 43.8]], // without the Canary Islands (incl. Balearics, Ceuta, Melilla)
+  PRT: [[-9.6, 36.9], [-6.1, 42.2]], // without the Azores and Madeira
+};
 
 function fitToCountryBounds(duration = 1200) {
   const mapInstance = map.value;
@@ -354,6 +402,8 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
 
   // Tiles for the risk layer load incrementally (e.g. as the fit-bounds
   // animation pans/zooms in) - re-collect names every time more of them load.
+  mapInstance.on("idle", checkRegionMatch);
+
   mapInstance.on("sourcedata", (e) => {
     if (
       e.sourceId === floodLayerId &&
@@ -385,7 +435,7 @@ function handleMapLoad(mapInstance: maplibregl.Map) {
         .setHTML(
           `
           <div class="p-3 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-2xl min-w-[120px]">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${name ? `${escapeHtml(name)} <span class="normal-case font-medium">(${pcode})</span>` : pcode}</div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${name ? `${escapeHtml(name)} <span class="normal-case font-medium">(${escapeHtml(String(pcode))})</span>` : escapeHtml(String(pcode))}</div>
             <div class="flex flex-col gap-1.5">
               <div class="flex items-center gap-2">
                 <div class="w-2.5 h-2.5 rounded-full ring-2 ring-slate-100" style="background-color: ${match[1]}"></div>
@@ -553,7 +603,12 @@ async function updateLayer() {
       const pmtilesFile = new pmtiles.PMTiles(props.pmtilesUrl);
       try {
         const metadata = (await pmtilesFile.getMetadata()) as any;
-        if (metadata?.antimeridian_adjusted_bounds) {
+        const countryCode = props.pmtilesUrl.match(/\/([A-Z]{3})_ADM\d\.pmtiles$/)?.[1];
+        const override = countryCode ? MAINLAND_BOUNDS[countryCode] : undefined;
+        if (override) {
+          countryBounds.value = override;
+          fitToCountryBounds(2000);
+        } else if (metadata?.antimeridian_adjusted_bounds) {
           const bounds = (metadata.antimeridian_adjusted_bounds as string)
             .split(",")
             .map(Number);
@@ -617,32 +672,45 @@ const onStyleLoad = () => {
   updateLayer();
 };
 
+// Moving the pointer across a chart briefly passes over gaps between bars/rows (highlight
+// becomes null, then the next region). Clearing only after a short pause keeps the grey overlay
+// from flickering off and on while the pointer travels; a new region applies immediately.
+const HIGHLIGHT_CLEAR_DELAY_MS = 150;
+let highlightClearTimer: ReturnType<typeof setTimeout> | null = null;
+
+function applyHighlight(pcode: string | null) {
+  const mapInstance = map.value;
+  if (mapInstance && mapInstance.getLayer(DIM_LAYER_ID)) {
+    mapInstance.setFilter(DIM_LAYER_ID, ["!=", props.pcodeField, pcode || ""]);
+    mapInstance.setLayoutProperty(
+      DIM_LAYER_ID,
+      "visibility",
+      pcode ? "visible" : "none",
+    );
+  }
+  if (mapInstance && mapInstance.getLayer("risk-layer-highlight")) {
+    mapInstance.setFilter("risk-layer-highlight", [
+      "==",
+      props.pcodeField,
+      pcode || "",
+    ]);
+  }
+}
+
 watch(
   () => props.highlightedPcode,
   (newVal) => {
-    const mapInstance = map.value;
-    if (mapInstance && mapInstance.getLayer(DIM_LAYER_ID)) {
-      mapInstance.setFilter(DIM_LAYER_ID, ["!=", props.pcodeField, newVal || ""]);
-      mapInstance.setLayoutProperty(
-        DIM_LAYER_ID,
-        "visibility",
-        newVal ? "visible" : "none",
-      );
+    if (highlightClearTimer) {
+      clearTimeout(highlightClearTimer);
+      highlightClearTimer = null;
     }
-    if (mapInstance && mapInstance.getLayer("risk-layer-highlight")) {
-      if (newVal) {
-        mapInstance.setFilter("risk-layer-highlight", [
-          "==",
-          props.pcodeField,
-          newVal,
-        ]);
-      } else {
-        mapInstance.setFilter("risk-layer-highlight", [
-          "==",
-          props.pcodeField,
-          "",
-        ]);
-      }
+    if (newVal) {
+      applyHighlight(newVal);
+    } else {
+      highlightClearTimer = setTimeout(() => {
+        highlightClearTimer = null;
+        applyHighlight(null);
+      }, HIGHLIGHT_CLEAR_DELAY_MS);
     }
   },
 );
@@ -654,7 +722,14 @@ watch(layerOpacity, (newVal) => {
   }
 });
 
-watch(() => props.pmtilesUrl, updateLayer);
+watch(
+  () => props.pmtilesUrl,
+  () => {
+    regionMismatch.value = null;
+    regionCheckDoneFor = null;
+    updateLayer();
+  },
+);
 watch(() => props.matchArray, updateLayer);
 
 watch(
@@ -836,6 +911,27 @@ defineExpose({
       :zoom-controls="props.showZoomControls && !isEmbedded"
       :compact-basemap="isEmbedded"
     />
+
+    <div
+      v-if="regionMismatch && pmtilesUrl"
+      role="status"
+      class="absolute z-20 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl shadow-lg px-4 py-2.5 text-sm flex gap-2.5 items-start"
+      :class="
+        props.isMobile
+          ? 'top-[10.5rem] left-4 right-4'
+          : 'bottom-9 left-1/2 -translate-x-1/2 w-[min(24rem,calc(100%-24rem))]'
+      "
+    >
+      <v-icon icon="mdi-database-alert-outline" size="20" class="text-amber-600 mt-0.5 shrink-0" />
+      <div>
+        Data for this region is being updated. For further information contact us at
+        <a
+          href="mailto:humanitarian_gi@heigit.org"
+          class="font-semibold underline underline-offset-2"
+          >humanitarian_gi@heigit.org</a
+        >.
+      </div>
+    </div>
 
     <RiskLegend
       v-if="matchArray && matchArray.length > 0"
