@@ -3,7 +3,7 @@ import { onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 /** Toggles `revealed` when an element scrolls into view. Respects reduced motion. */
 export function useReveal(
   el: Ref<HTMLElement | null>,
-  opts: { threshold?: number; repeat?: boolean } = {}
+  opts: { threshold?: number; repeat?: boolean; rootMargin?: string } = {}
 ) {
   const revealed = ref(false);
   let observer: IntersectionObserver | null = null;
@@ -25,7 +25,7 @@ export function useReveal(
           }
         }
       },
-      { threshold: opts.threshold ?? 0.15 }
+      { threshold: opts.threshold ?? 0.15, rootMargin: opts.rootMargin }
     );
     observer.observe(el.value);
   });

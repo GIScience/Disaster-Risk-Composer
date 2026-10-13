@@ -6,11 +6,4 @@ const router = createRouter({
   routes,
 });
 
-// TODO: remove once story maps are ready to launch
-router.beforeEach((to) => {
-  if (to.path.startsWith("/story-map")) {
-    return { name: "/NotFound" };
-  }
-});
-
 export default router;

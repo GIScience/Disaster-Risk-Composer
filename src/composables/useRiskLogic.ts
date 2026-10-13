@@ -111,7 +111,10 @@ export function useRiskLogic() {
     pcodeNames,
   } = storeToRefs(store);
 
-  if (!store.initialized) {
+  // The URL wins over the state kept from an earlier visit whenever it names a country - e.g. a
+  // link from a story map ("#/?country=MMR&dimension=exposure") or an HDX embed - not only on the
+  // very first visit of the session.
+  if (!store.initialized || route.query.country) {
     selectedCountry.value = (route.query.country as string) || "";
     selectedDisaster.value = (route.query.disaster as string) || "";
     const queryDimension = route.query.dimension as string;

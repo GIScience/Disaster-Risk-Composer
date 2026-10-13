@@ -155,6 +155,9 @@ function describeCycloneExposure(name: string): string | null {
       ? `Number of ${FACILITIES[match[1]]} exposed to ${cycloneEvent(match[3])}.`
       : `Share (%) of ${FACILITIES[match[1]]} exposed to ${cycloneEvent(match[3])}.`;
 
+  match = name.match(/^kt34_crops_km2_cat(\d)$/);
+  if (match) return `Cropland area (km²) exposed to ${cycloneEvent(match[1])}.`;
+
   return null;
 }
 

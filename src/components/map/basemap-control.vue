@@ -23,6 +23,8 @@ const props = withDefaults(
   defineProps<{
     map: maplibregl.Map | null;
     position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+    /** "corner": bottom-right corner, just above the attribution (maps without the HeiGIT logo). */
+    placement?: "default" | "corner";
     options?: BasemapOption[];
     defaultStyleId?: string;
     compact?: boolean;
@@ -125,7 +127,8 @@ watch(
   <div
     v-if="map"
     ref="controlRef"
-    class="absolute z-30 bottom-32 right-4 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border hover:bg-slate-200 border-slate-200 rounded-lg shadow-2xl animate-in"
+    :class="placement === 'corner' ? 'bottom-8 right-3' : 'bottom-32 right-4'"
+    class="absolute z-30 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white/80 backdrop-blur-xl border hover:bg-slate-200 border-slate-200 rounded-lg shadow-2xl animate-in"
     @click="openDropdown"
   >
     <button

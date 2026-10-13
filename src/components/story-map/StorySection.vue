@@ -12,13 +12,40 @@ import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
 import StoryMapFigure from "./StoryMapFigure.vue";
 import StoryEquation from "./StoryEquation.vue";
+import StoryCallouts from "./StoryCallouts.vue";
+import StoryLegend from "./StoryLegend.vue";
+import StoryDepthProfile from "./StoryDepthProfile.vue";
+import StoryWindProfile from "./StoryWindProfile.vue";
+import StoryCategoryOverlap from "./StoryCategoryOverlap.vue";
+import StoryAggregation from "./StoryAggregation.vue";
+import StoryScoreScale from "./StoryScoreScale.vue";
+import StoryIndicatorDecoder from "./StoryIndicatorDecoder.vue";
 import RichText from "./RichText.vue";
-import Icon from "./Icon.vue";
-import type { layerConfigType } from "@/types/story-map";
+import type { layerConfigType, StackLayer } from "@/types/story-map";
 
 const props = defineProps<{ section: Section }>();
+// The selected option can override the legend, the map's results box and the aggregation data type.
+const activeLegend = computed(() => overlaySelected.value?.legend ?? props.section.legend);
+const activeMap = computed(() =>
+  props.section.map
+    ? { ...props.section.map, results: overlaySelected.value?.results ?? props.section.map.results }
+    : undefined,
+);
+const aggregationKind = computed(() => overlaySelected.value?.dataKind ?? "raster");
+// Steps with a map or figure get the two-column row; text-only steps use the full width.
+const hasVisual = computed(
+  () =>
+    !!props.section.map ||
+    !!props.section.figure ||
+    props.section.visual === "depth-profile" ||
+    props.section.visual === "wind-profile" ||
+    props.section.visual === "score-scale",
+);
 const el = ref<HTMLElement | null>(null);
 const { revealed } = useReveal(el);
+// Start the map about one screen before the step scrolls into view, so it has finished loading
+// by the time the reader gets there.
+const { revealed: nearView } = useReveal(el, { threshold: 0, rootMargin: "100% 0px" });
 
 const defaultLayerConfig = computed(() =>
   props.section.control?.type === "segmented"
@@ -133,6 +160,34 @@ const noteBodyItems = computed(() =>
 
 // Legend layer names shown in MapLegend, e.g. "Flood Extent (10-years)".
 const layerLabel = computed(() => overlaySelected.value?.label);
+
+// Key figure split into number and unit ("27.2 M" → "27.2" + "M"), so the unit can be smaller
+const statParts = computed(() => {
+  const value = overlaySelected.value?.stat?.value ?? "";
+  const m = value.match(/^([\d.,]+%?)\s*(.*)$/);
+  return m ? { number: m[1], unit: m[2] } : { number: value, unit: "" };
+});
+
+// All options' layers on one map, the selected one highlighted (map.stackOptions /
+// map.stackBaseOptions)
+function toStack(control: Section["control"], selected: SegmentedOption | undefined) {
+  if (control?.type !== "segmented") return undefined;
+  return control.options
+    .filter((o) => o.layerConfig)
+    .map((o) => ({
+      ...o.layerConfig!,
+      label: o.layerConfig!.legendLabel ?? o.label,
+      active: o.value === selected?.value,
+    }));
+}
+const stackLayers = computed<StackLayer[] | undefined>(() =>
+  props.section.map?.stackOptions ? toStack(props.section.control, overlaySelected.value) : undefined,
+);
+const baseStackLayers = computed<StackLayer[] | undefined>(() =>
+  props.section.map?.stackBaseOptions
+    ? toStack(props.section.baseControl, baseSelected.value)
+    : undefined,
+);
 const baseLayerLabel = computed(() => {
   if (!baseSelected.value) return undefined;
   const baseLabel = props.section.equation?.baseLabel;
@@ -146,117 +201,170 @@ const baseLayerLabel = computed(() => {
   <section
     :id="section.id"
     ref="el"
-    class="story-section scroll-mt-24 h-full border-gray-200 bg-white border rounded-md"
+    class="story-section scroll-mt-24"
     :class="{ 'is-revealed': revealed }"
   >
     <div
-      class="flex flex-col gap-4 lg:flex-row lg:gap-2"
-      :class="section.map ? 'lg:min-h-[700px] lg:items-stretch' : 'lg:items-start'"
+      class="grid grid-cols-1"
+      :class="hasVisual ? 'lg:grid-cols-[22rem_minmax(0,1fr)]' : ''"
     >
-      <div
-        class="flex min-w-0 flex-col p-4"
-        :class="section.map ? 'lg:w-[26rem] xl:w-[33rem] lg:flex-none' : 'w-full'"
-      >
-        <!-- Title: always pinned to the top -->
+      <!-- Left: explanation and controls -->
+      <div class="flex min-w-0 flex-col gap-4 p-5">
         <div>
-          <h3
-            class="flex items-center gap-1.5 text-base font-bold text-gray-900"
-          >
-            <span class="text-gray-400">{{ section.number }}.</span>
+          <h3 class="flex items-center gap-1.5 text-[15px] font-bold text-gray-900">
+            <span>{{ section.number }}.</span>
             {{ section.title }}
-            <v-icon
-              v-if="section.hasInfoIcon"
-              :icon="section.icon"
-              class="h-3.5 w-3.5 text-heigit-red"
-            />
+            <v-icon icon="mdi-information-outline" size="16" class="text-heigit-red" />
           </h3>
           <p v-if="section.subtitle" class="mt-1 text-sm text-gray-500">
             {{ section.subtitle }}
           </p>
         </div>
 
-        <!-- Rest of the content: centered in the remaining column height -->
-        <div class="mt-4 flex flex-1 flex-col justify-center gap-4">
-          <!-- Figure -->
-          <StoryMapFigure
-            v-if="activeFigure"
-            class="mx-auto w-full rounded-md"
-            :figure="activeFigure"
+        <StoryControl
+          v-if="section.control"
+          :control="section.control"
+          @change-layer="(config) => (layerConfig = config)"
+          @change-note="(note) => (activeNote = note ?? section.note)"
+          @change-figure="(figure) => (activeFigure = figure ?? section.figure)"
+          @change-option="(option) => (overlaySelected = option)"
+        />
+
+        <!-- Key figure of the selected option -->
+        <div
+          v-if="overlaySelected?.stat"
+          class="flex items-center gap-3 rounded-lg bg-red-50 px-4 py-3"
+        >
+          <div
+            class="min-w-[6.25rem] flex-none whitespace-nowrap text-3xl font-black tabular-nums leading-none text-heigit-red"
+          >
+            {{ statParts.number }}<span v-if="statParts.unit" class="ml-0.5 text-xl">{{ statParts.unit }}</span>
+          </div>
+          <div class="text-xs font-medium leading-snug text-gray-700">
+            {{ overlaySelected.stat.label }}
+          </div>
+        </div>
+
+        <StoryEquation v-if="equationTerms" :terms="equationTerms" compact />
+
+        <StoryControl
+          v-if="section.baseControl"
+          :control="section.baseControl"
+          @change-layer="(config) => (baseLayerConfig = config)"
+          @change-option="(option) => (baseSelected = option)"
+        />
+
+        <!-- Legend as a list (choropleth steps) -->
+        <StoryLegend v-if="activeLegend" :legend="activeLegend" />
+
+        <!-- Info box -->
+        <div
+          v-if="activeNote"
+          class="flex gap-2.5 rounded-lg px-3.5 py-3 text-xs leading-relaxed"
+          :class="activeNote.variant === 'warning' ? 'bg-amber-50 text-amber-900' : 'bg-red-50/70 text-gray-700'"
+        >
+          <v-icon
+            icon="mdi-information-outline"
+            size="16"
+            class="mt-px flex-none"
+            :class="activeNote.variant === 'warning' ? 'text-amber-600' : 'text-heigit-red'"
           />
+          <div class="flex flex-col gap-1.5">
+            <RichText v-for="(paragraph, index) in noteBodyItems" :key="index" :text="paragraph" />
+          </div>
+        </div>
 
-          <!-- Map Layer Control -->
-          <StoryControl
-            v-if="section.control"
-            :control="section.control"
-            @change-layer="(config) => (layerConfig = config)"
-            @change-note="(note) => (activeNote = note ?? section.note)"
-            @change-figure="(figure) => (activeFigure = figure ?? section.figure)"
-            @change-option="(option) => (overlaySelected = option)"
-          />
+        <!-- Figure (no map in this step: shown on the right instead) -->
+        <StoryMapFigure
+          v-if="activeFigure && section.map"
+          class="w-full rounded-md"
+          :figure="activeFigure"
+        />
 
-          <!-- Equation strip: how the base and primary layers combine -->
-          <StoryEquation
-            v-if="equationTerms"
-            :terms="equationTerms"
-            compact
-          />
+        <StoryCategoryOverlap
+          v-if="section.explainer?.type === 'category-overlap'"
+          :caption="section.explainer.caption"
+        />
+        <StoryEquation v-if="section.flow" :terms="section.flow" compact />
+        <StoryCallouts v-if="section.callouts" :callouts="section.callouts" />
+        <StoryIndicatorDecoder v-if="section.decoder" :decoder="section.decoder" />
 
-          <!-- Base Layer Control -->
-          <StoryControl
-            v-if="section.baseControl"
-            :control="section.baseControl"
-            @change-layer="(config) => (baseLayerConfig = config)"
-            @change-option="(option) => (baseSelected = option)"
-          />
+        <div v-if="section.links?.length" class="flex flex-wrap gap-2">
+          <a
+            v-for="link in section.links"
+            :key="link.href"
+            :href="link.href"
+            :target="link.external ? '_blank' : undefined"
+            :rel="link.external ? 'noopener noreferrer' : undefined"
+            class="inline-flex items-center gap-1.5 rounded-lg bg-heigit-red px-4 py-2 text-sm font-semibold text-white no-underline shadow-sm transition-colors hover:bg-red-700"
+          >
+            <v-icon v-if="link.icon" :icon="link.icon" size="18" />
+            {{ link.label }}
+          </a>
+        </div>
 
-
-          <!-- Note -->
-          <template v-if="activeNote">
-            <div
-              v-for="(paragraph, index) in noteBodyItems"
-              :key="index"
-              class="flex gap-2 rounded-lg px-3 py-1 text-sm text-justify leading-relaxed"
-              :class="[
-                activeNote.variant === 'warning'
-                  ? 'text-amber-800'
-                  : 'text-gray-950',
-              ]"
-            >
-              <RichText :text="paragraph" />
-            </div>
-          </template>
-
-          <!-- Data source -->
-          <div v-if="section.dataset" class="flex items-center gap-2 text-sm">
-            <Icon :name="section.dataset.icon" class="h-4 w-4 text-emerald-500" />
-            <div>
-              <div class="font-medium text-gray-700">
-                {{ section.dataset.title }}
-              </div>
-              <div class="text-xs text-gray-400">
-                {{ section.dataset.source }}
-              </div>
-            </div>
+        <div
+          v-if="section.dataset"
+          class="mt-auto flex items-center gap-2 pt-1 text-xs"
+        >
+          <v-icon :icon="section.dataset.icon" size="18" class="text-gray-400" />
+          <div>
+            <div class="font-medium text-gray-700">{{ section.dataset.title }}</div>
+            <div class="text-gray-400">{{ section.dataset.source }}</div>
           </div>
         </div>
       </div>
 
-      <!-- Map -->
+      <!-- Right: map, or the step's figure when it has no map -->
       <StoryMapPanel
         v-if="section.map"
-        class="min-h-[700px] w-full min-w-0 flex-1"
-        :control="section.map"
+        class="h-[340px] w-full min-w-0 border-t border-gray-200 lg:h-auto lg:min-h-[340px] lg:border-l lg:border-t-0"
+        :control="activeMap!"
         :layer="layerConfig"
         :layer-label="layerLabel"
         :base-layer="baseLayerConfig"
         :base-layer-label="baseLayerLabel"
-        :legend="section.legend"
-        :visible="revealed"
+        :stack-layers="stackLayers"
+        :base-stack-layers="baseStackLayers"
+        :visible="nearView"
       >
         <template v-if="$slots.map" #default="{ layerId }">
           <slot name="map" :layer-id="layerId" />
         </template>
       </StoryMapPanel>
+      <div
+        v-else-if="section.visual === 'depth-profile'"
+        class="flex items-center justify-center border-t border-gray-200 bg-gray-50 p-6 lg:border-l lg:border-t-0"
+      >
+        <StoryDepthProfile class="w-full max-w-xl" />
+      </div>
+      <div
+        v-else-if="section.visual === 'wind-profile'"
+        class="flex items-center justify-center border-t border-gray-200 bg-gray-50 p-6 lg:border-l lg:border-t-0"
+      >
+        <StoryWindProfile class="w-full max-w-xl" />
+      </div>
+      <div
+        v-else-if="section.visual === 'score-scale' && section.visualValuesUrl"
+        class="flex items-center justify-center border-t border-gray-200 bg-gray-50 p-6 lg:border-l lg:border-t-0"
+      >
+        <StoryScoreScale
+          class="w-full max-w-2xl"
+          :values-url="section.visualValuesUrl"
+          :unit-label="section.visualUnitLabel"
+        />
+      </div>
+      <div
+        v-else-if="activeFigure"
+        class="flex items-center justify-center border-t border-gray-200 bg-gray-50 p-6 lg:border-l lg:border-t-0"
+      >
+        <StoryMapFigure class="w-full max-w-xl" :figure="activeFigure" />
+      </div>
+    </div>
+
+    <!-- Full-width visual below the row -->
+    <div v-if="section.visual === 'aggregation'" class="border-t border-gray-200 bg-gray-50 px-5 py-5">
+      <StoryAggregation :kind="aggregationKind" :hazard="section.visualHazard" />
     </div>
   </section>
 </template>

@@ -121,7 +121,9 @@ const sourceSpec = computed<RasterSourceSpecification | null>(() => {
     type: "raster",
     url: cogUrl.value,
     tileSize: 256,
-    volatile: true,
+    // Not volatile: keep decoded tiles in MapLibre's tile cache, so zooming back out or panning to
+    // an area seen before doesn't fetch, decode and colour the same tiles again.
+    volatile: false,
     minzoom: minZoom.value,
     maxzoom: maxZoom.value,
   };

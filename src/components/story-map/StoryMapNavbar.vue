@@ -23,7 +23,7 @@ function state(i: number): "done" | "active" | "todo" {
     <ol>
       <li v-for="(step, i) in steps" :key="step.sectionRef" class="flex gap-3">
         <!-- rail: badge + connector -->
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center pt-3">
           <button
             type="button"
             @click="emit('select', step.sectionRef)"
@@ -31,7 +31,7 @@ function state(i: number): "done" | "active" | "todo" {
             class="flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-semibold transition-colors"
             :class="
               state(i) === 'todo'
-                ? 'border-gray-300 bg-white text-gray-400'
+                ? 'border-gray-300 bg-white text-gray-500'
                 : 'border-heigit-red bg-heigit-red text-white'
             "
           >
@@ -46,19 +46,17 @@ function state(i: number): "done" | "active" | "todo" {
 
         <button
           type="button"
-          class="pb-14 text-left"
+          class="mb-2 flex-1 rounded-lg px-3 py-3 text-left transition-colors"
+          :class="state(i) === 'active' ? 'bg-red-50' : 'hover:bg-gray-100'"
           @click="emit('select', step.sectionRef)"
         >
           <h3
-            class="text-base font-semibold transition-colors"
+            class="text-sm font-semibold transition-colors"
             :class="state(i) === 'active' ? 'text-heigit-red' : 'text-gray-900'"
           >
             {{ step.title }}
           </h3>
-          <RichText
-            class="mt-1 text-sm leading-relaxed text-gray-500"
-            :text="step.body"
-          />
+          <RichText class="mt-1 text-xs leading-relaxed text-gray-600" :text="step.body" />
         </button>
       </li>
     </ol>

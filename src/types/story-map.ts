@@ -45,7 +45,49 @@ export interface StoryMapContent {
   backLink: LinkRef;
   sidebar: Sidebar;
   header: Header;
+  /** Optional: one real dashboard indicator taken apart, shown at the top of the page. */
+  anatomy?: Anatomy;
   sections: Section[];
+}
+
+/**
+ * An example indicator sentence split into parts. Parts with a `role` are shown as chips that
+ * jump to the step explaining them (`sectionRef`); plain parts are connecting words.
+ */
+export interface Anatomy {
+  intro: string;
+  parts: {
+    text: string;
+    role?: string;
+    sectionRef?: string;
+    /** One-line explanation shown on the part's card, e.g. "2% chance in any given year". */
+    hint?: string;
+    icon?: string;
+  }[];
+  /** The indicator's column name, as found in the dashboard data and downloads. */
+  column?: string;
+  outro?: string;
+}
+
+/**
+ * Interactive "decode any indicator of this group" block. Each subject has a column-name
+ * pattern with {scenario} and optionally {measure} placeholders; the resulting column is
+ * explained with the same describeIndicator() the dashboard uses for its tooltips.
+ */
+export interface IndicatorDecoder {
+  scenarioLabel: string;
+  scenarios: { value: string; label: string; selected?: boolean }[];
+  subjectLabel: string;
+  subjects: {
+    value: string;
+    label: string;
+    pattern: string;
+    measures?: { value: string; label: string }[];
+    selected?: boolean;
+  }[];
+  measureLabel?: string;
+  /** Where the indicator appears in the dashboard, e.g. "Indicators tab → Exposure". */
+  dashboardPath?: string;
 }
 export interface HeroConfig {
   image: string;
@@ -120,6 +162,23 @@ export interface Section {
   dataset?: Dataset;
   legend?: Legend;
   map?: MapConfig;
+  /** Optional blocks, rendered below the note in this order. */
+  flow?: EquationTerm[];
+  callouts?: Callout[];
+  decoder?: IndicatorDecoder;
+  links?: (LinkRef & { icon?: string })[];
+  /**
+   * Built-in interactive visual: "depth-profile" (flood cross-section with threshold, shown on
+   * the right) or "aggregation" (grid cells → district totals, shown full width below the row).
+   */
+  visual?: "depth-profile" | "wind-profile" | "aggregation" | "score-scale";
+  /** Data for the "score-scale" visual: [{ name, value }] per district. */
+  visualValuesUrl?: string;
+  visualUnitLabel?: string;
+  /** Hazard wording of the "aggregation" visual (default "flood"). */
+  visualHazard?: "flood" | "cyclone";
+  /** Small explanatory graphic in the text column, below the note. */
+  explainer?: { type: "category-overlap"; caption?: string };
 }
 
 export interface layerConfigType {
@@ -135,6 +194,18 @@ export interface layerConfigType {
   valuesUrl?: string;
   stops?: ChoroplethStop[];
   unit?: string;
+  /** Raster value range of the colour ramp (default 0-1), e.g. 0-100 for depth in cm. */
+  min?: number;
+  max?: number;
+  /**
+   * Zone rasters with one value (e.g. 1 = inside a wind zone): show one solid swatch with this
+   * label in the map legend instead of a Low-High gradient.
+   */
+  legendSwatch?: { value: number; label: string };
+  /** Name of this layer in a stacked map's legend, if it differs from the option label. */
+  legendLabel?: string;
+  /** Small line under the legend title, e.g. which scale the entries use. */
+  legendSubtitle?: string;
 }
 
 export interface VectorCategoryStyle {
@@ -164,6 +235,13 @@ export interface SegmentedOption {
   layerConfig?: layerConfigType;
   note?: Note;
   figure?: Figure;
+  /** Optional key figure shown large next to the control, e.g. { value: "2%", label: "chance each year" }. */
+  stat?: { value: string; label: string };
+  /** Per-option overrides of the section's legend and the map's results box. */
+  legend?: Legend;
+  results?: Results;
+  /** Data type shown by the "aggregation" visual: raster cells (default) or vector points. */
+  dataKind?: "raster" | "points";
 }
 export interface SliderControl {
   type: "slider";
@@ -219,7 +297,17 @@ export interface MapConfig {
   controls?: string[];
   results?: Results;
   showOpacityControl?: boolean;
+  /**
+   * Show the raster layers of all `control` options on the map at once: the selected option is
+   * highlighted, the others are faded (e.g. all cyclone categories in one map).
+   */
+  stackOptions?: boolean;
+  /** Same for the `baseControl` options: all base layers shown, the selected one highlighted. */
+  stackBaseOptions?: boolean;
 }
+
+/** One layer of a stacked map (see MapConfig.stackOptions). */
+export type StackLayer = layerConfigType & { label: string; active: boolean };
 export interface Results {
   title: string;
   unit: string;

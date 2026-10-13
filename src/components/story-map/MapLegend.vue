@@ -5,7 +5,21 @@ import type { VectorCategoryStyle } from "@/types/story-map";
 
 export interface MapLegendLayer {
   label?: string;
+  sublabel?: string;
   rasterColorScheme?: string;
+  rasterMin?: number;
+  rasterMax?: number;
+  /** Single-value zone raster: one solid swatch (colour of `value` on the ramp) with a label. */
+  swatch?: { value: number; label: string };
+  /** Stacked map: one swatch per layer, the active one highlighted. */
+  stack?: {
+    label: string;
+    colorScheme?: string;
+    min: number;
+    max: number;
+    value: number;
+    active: boolean;
+  }[];
   vectorCategories?: VectorCategoryStyle[];
 }
 
@@ -33,25 +47,56 @@ function gradientCssFor(colorScheme: string) {
   }
 }
 
+// Same colour the map gives the zone value (same scheme and range as the COG layer)
+function swatchCssFor(layer: MapLegendLayer) {
+  if (!layer.rasterColorScheme || !layer.swatch) return null;
+  try {
+    const [r, g, b] = colorScale({
+      colorScheme: layer.rasterColorScheme,
+      min: layer.rasterMin ?? 0,
+      max: layer.rasterMax ?? 1,
+      isContinuous: true,
+    })(layer.swatch.value);
+    return `rgb(${r}, ${g}, ${b})`;
+  } catch {
+    return null;
+  }
+}
+
 const visibleLayers = computed(() =>
   props.layers
     .map((layer) => ({
       label: layer.label,
+      sublabel: layer.sublabel,
       vectorCategories: layer.vectorCategories?.length
         ? layer.vectorCategories
         : undefined,
+      swatch: layer.swatch ? { label: layer.swatch.label, css: swatchCssFor(layer) } : null,
+      stack: layer.stack?.map((s) => ({
+        label: s.label,
+        active: s.active,
+        css: swatchCssFor({
+          rasterColorScheme: s.colorScheme,
+          rasterMin: s.min,
+          rasterMax: s.max,
+          swatch: { value: s.value, label: s.label },
+        }),
+      })),
       gradientCss: layer.rasterColorScheme
         ? gradientCssFor(layer.rasterColorScheme)
         : null,
     }))
-    .filter((layer) => layer.vectorCategories || layer.gradientCss),
+    .filter(
+      (layer) => layer.vectorCategories || layer.stack?.length || layer.swatch?.css || layer.gradientCss,
+    ),
 );
 </script>
 
 <template>
   <div
     v-if="visibleLayers.length"
-    class="absolute bottom-3 left-3 z-30 flex max-w-[8rem] flex-col gap-2.5 rounded-md bg-white/95 p-2.5 shadow-md backdrop-blur"
+    :class="visibleLayers.some((l) => l.stack?.length) ? 'w-52' : 'max-w-[9rem]'"
+    class="absolute right-14 top-3 z-30 flex flex-col gap-2.5 rounded-lg border border-gray-200 bg-white/95 p-2.5 shadow-sm backdrop-blur"
   >
     <div
       v-for="(layer, i) in visibleLayers"
@@ -63,6 +108,9 @@ const visibleLayers = computed(() =>
         class="mb-1.5 text-[10px] font-bold  tracking-widest text-slate-500"
       >
         {{ layer.label }}
+        <div v-if="layer.sublabel" class="mt-0.5 text-[10px] font-normal tracking-normal text-slate-400">
+          {{ layer.sublabel }}
+        </div>
       </div>
 
       <ul v-if="layer.vectorCategories" class="flex flex-col gap-1.5">
@@ -79,6 +127,26 @@ const visibleLayers = computed(() =>
           {{ category.label }}
         </li>
       </ul>
+
+      <ul v-else-if="layer.stack?.length" class="flex flex-col gap-1.5">
+        <li
+          v-for="s in layer.stack"
+          :key="s.label"
+          class="flex items-center gap-1.5 text-[11px] leading-tight transition-opacity"
+          :class="s.active ? 'font-bold text-slate-800' : 'text-slate-500'"
+        >
+          <span class="h-3 w-3 flex-none rounded-sm" :style="{ backgroundColor: s.css ?? undefined }" />
+          {{ s.label }}
+        </li>
+      </ul>
+
+      <div
+        v-else-if="layer.swatch?.css"
+        class="flex items-center gap-1.5 text-[11px] leading-tight text-slate-600"
+      >
+        <span class="h-3 w-3 flex-none rounded-sm" :style="{ backgroundColor: layer.swatch.css }" />
+        {{ layer.swatch.label }}
+      </div>
 
       <template v-else-if="layer.gradientCss">
         <div

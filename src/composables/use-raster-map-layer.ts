@@ -35,6 +35,8 @@ export function useRasterMapLayer(options: UseRasterMapLayerOptions) {
       source: sourceId.value,
       paint: {
         "raster-opacity": options.opacity(),
+        // Show tiles as soon as they're ready instead of fading them in over 300 ms
+        "raster-fade-duration": 0,
       },
     };
   });

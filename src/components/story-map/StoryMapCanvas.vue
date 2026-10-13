@@ -8,7 +8,7 @@ import ChoroplethLayer from "@/components/map/ChoroplethLayer.vue";
 import MapLegend from "@/components/story-map/MapLegend.vue";
 import type { MapLegendLayer } from "@/components/story-map/MapLegend.vue";
 import { cn } from "@/utils/cn";
-import type { ChoroplethStop, VectorCategoryStyle } from "@/types/story-map";
+import type { ChoroplethStop, StackLayer, VectorCategoryStyle } from "@/types/story-map";
 import { COLORFUL_STYLE } from "@/config/basemaps";
 const props = withDefaults(
   defineProps<{
@@ -23,6 +23,7 @@ const props = withDefaults(
     rasterColorScheme?: string;
     rasterMin?: number;
     rasterMax?: number;
+    rasterSwatch?: { value: number; label: string };
     mode?: "rgb" | "ramp" | "categorical";
     showOpacityControl?: boolean;
     vectorUrl?: string;
@@ -39,6 +40,10 @@ const props = withDefaults(
     baseRasterUrl?: string;
     baseRasterColorScheme?: string;
     baseMode?: "rgb" | "ramp" | "categorical";
+    baseRasterMin?: number;
+    baseRasterMax?: number;
+    baseRasterSwatch?: { value: number; label: string };
+    stackLayers?: StackLayer[];
     layerLabel?: string;
     baseLayerLabel?: string;
   }>(),
@@ -61,14 +66,56 @@ const layerOpacity = ref(1);
 
 let intersectionObserver: IntersectionObserver | null = null;
 
+// Stacked map: the selected layer is drawn in the darkest shade, the others in mid shades of the
+// same ramp (lighter for earlier options). The shades stay dark enough to stand out on the light
+// basemap, so the reader sees how the layers relate.
+const STACK_ACTIVE_SHADE = 1;
+const STACK_INACTIVE_OPACITY = 0.9;
+function stackRampMax(l: StackLayer, i: number) {
+  const shade = l.active ? STACK_ACTIVE_SHADE : 0.4 + 0.15 * i;
+  return (l.legendSwatch?.value ?? 1) / shade;
+}
+
 const legendLayers = computed<MapLegendLayer[]>(() => [
+  ...(props.stackLayers?.length
+    ? [
+        {
+          label: props.stackLayers[0].legendSwatch?.label,
+          sublabel: props.stackLayers[0].legendSubtitle,
+          stack: props.stackLayers.map((l, i) => ({
+            label: l.label,
+            colorScheme: l.colorScheme,
+            min: 0,
+            max: stackRampMax(l, i),
+            value: l.legendSwatch?.value ?? 1,
+            active: l.active,
+          })),
+        },
+      ]
+    : []),
   ...(props.baseRasterUrl && props.baseMode === "ramp"
-    ? [{ label: props.baseLayerLabel, rasterColorScheme: props.baseRasterColorScheme }]
+    ? [
+        {
+          label: props.baseLayerLabel,
+          rasterColorScheme: props.baseRasterColorScheme,
+          rasterMin: props.baseRasterMin,
+          rasterMax: props.baseRasterMax,
+          swatch: props.baseRasterSwatch,
+        },
+      ]
     : []),
   ...(props.vectorUrl
     ? [{ label: props.layerLabel, vectorCategories: props.vectorCategories }]
     : props.rasterUrl && props.mode === "ramp"
-      ? [{ label: props.layerLabel, rasterColorScheme: props.rasterColorScheme }]
+      ? [
+          {
+            label: props.layerLabel,
+            rasterColorScheme: props.rasterColorScheme,
+            rasterMin: props.rasterMin,
+            rasterMax: props.rasterMax,
+            swatch: props.rasterSwatch,
+          },
+        ]
       : []),
 ]);
 
@@ -159,6 +206,7 @@ onBeforeUnmount(() => {
         :map-style="mapStyle"
         :center="center"
         :zoom="zoom"
+        basemap-placement="corner"
         @load="handleMapLoad"
       >
         <template #default="{ map }">
@@ -171,14 +219,28 @@ onBeforeUnmount(() => {
             regardless of mount order, reloads, or how many sub-layers it has.
           -->
           <COGLayer
+            v-for="(l, i) in stackLayers ?? []"
+            :key="`stack-${i}`"
+            :map="map"
+            :source-url="l.sourceUrl!"
+            :layer-id="`${l.layerId}-stack-${i}`"
+            :color-scheme="l.colorScheme"
+            :opacity="layerOpacity * (l.active ? 1 : STACK_INACTIVE_OPACITY)"
+            :min="0"
+            :max="stackRampMax(l, i)"
+            continuous
+            mode="ramp"
+            :below-layer-id="baseLayerAnchorId"
+          />
+          <COGLayer
             v-if="baseRasterUrl"
             :map="map"
             :source-url="baseRasterUrl"
             :layer-id="baseLayerId"
             :color-scheme="baseRasterColorScheme"
             :opacity="layerOpacity"
-            :min="rasterMin"
-            :max="rasterMax"
+            :min="baseRasterMin"
+            :max="baseRasterMax"
             continuous
             :mode="baseMode"
             :below-layer-id="baseLayerAnchorId"

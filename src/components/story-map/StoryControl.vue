@@ -76,14 +76,14 @@ function handleSegChange(value: string) {
     <!-- pill variant -->
     <div
       v-else
-      class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1"
+      class="inline-flex max-w-full flex-wrap gap-0.5 rounded-lg border border-gray-200 bg-gray-50 p-1"
     >
       <button
         v-for="opt in control.options"
         :key="opt.value"
         type="button"
         @click="handleSegChange(opt.value)"
-        class="flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors"
+        class="flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors"
         :class="
           segValue === opt.value
             ? 'bg-heigit-red text-white shadow-sm'

@@ -18,6 +18,7 @@ const props = withDefaults(
     basemapControls?: boolean;
     attributionControls?: boolean;
     compactBasemap?: boolean;
+    basemapPlacement?: "default" | "corner";
   }>(),
   {
     mapStyle: () => COLORFUL_STYLE,
@@ -74,6 +75,7 @@ defineExpose({ map, isLoaded, flyTo, mapContainer: mapContainerRef });
       v-if="basemapControls"
       :map="map"
       :compact="compactBasemap"
+      :placement="basemapPlacement"
       default-style-id="colorful"
       @change="(style) => map?.setStyle(style)"
     />

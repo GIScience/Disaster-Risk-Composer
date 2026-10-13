@@ -97,28 +97,30 @@ const fillLayerSpec = computed<FillLayerSpecification | null>(() => {
     type: "fill",
     source: sourceId.value,
     "source-layer": props.sourceLayer,
+    // Same look as the dashboard's risk map (RiskMap.vue)
     paint: {
       "fill-color": fillColorExpression.value as never,
-      "fill-opacity": 0.75,
+      "fill-opacity": 0.7,
+      "fill-outline-color": "#94a3b8",
     },
   };
 });
 
-const outlineLayerSpec = computed<LineLayerSpecification | null>(() => {
+// Like the dashboard: while a district is hovered, every other district is greyed out...
+const outlineLayerSpec = computed<FillLayerSpecification | null>(() => {
   if (!sourceSpec.value) return null;
   return {
     id: outlineLayerId.value,
-    type: "line",
+    type: "fill",
     source: sourceId.value,
     "source-layer": props.sourceLayer,
-    paint: {
-      "line-color": "#94a3b8",
-      "line-width": 1,
-      "line-opacity": 0.6,
-    },
+    paint: { "fill-color": "#e8ebed", "fill-opacity": 0.55 },
+    layout: { visibility: "none" },
+    filter: ["!=", ["get", props.pcodeField], ""],
   };
 });
 
+// ...and the hovered district gets the red outline.
 const hoverLayerSpec = computed<LineLayerSpecification | null>(() => {
   if (!sourceSpec.value) return null;
   return {
@@ -128,16 +130,22 @@ const hoverLayerSpec = computed<LineLayerSpecification | null>(() => {
     "source-layer": props.sourceLayer,
     paint: {
       "line-color": "#ca2333",
-      "line-width": 2,
-      "line-opacity": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        1,
-        0,
-      ],
+      "line-width": 1,
+      "line-opacity": 0.9,
     },
+    filter: ["==", ["get", props.pcodeField], ""],
   };
 });
+
+// District names are in the tiles as "<LEVEL>_NAME"; the level comes from the file name.
+const nameField = computed(() => {
+  const level = props.sourceUrl.match(/_(ADM\d)\.pmtiles$/)?.[1];
+  return level ? `${level}_NAME` : "";
+});
+
+function escapeHtml(text: string) {
+  return text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
 
 watch(
   [() => props.map, sourceSpec, fillLayerSpec, outlineLayerSpec, hoverLayerSpec],
@@ -181,14 +189,22 @@ watch(
 
     let hoveredId: string | number | undefined = undefined;
 
-    const clearHover = () => {
-      if (hoveredId !== undefined) {
-        map.setFeatureState(
-          { source: sId, sourceLayer: props.sourceLayer, id: hoveredId },
-          { hover: false },
-        );
+    const showHover = (pcode: string | number | undefined) => {
+      const value = pcode === undefined ? "" : pcode;
+      // The map can already be torn down (e.g. while leaving the page); then there's nothing to update.
+      if (!map.style) return;
+      if (map.getLayer(outlineLayer.id)) {
+        map.setFilter(outlineLayer.id, ["!=", ["get", props.pcodeField], value]);
+        map.setLayoutProperty(outlineLayer.id, "visibility", pcode === undefined ? "none" : "visible");
       }
+      if (map.getLayer(hoverLayer.id)) {
+        map.setFilter(hoverLayer.id, ["==", ["get", props.pcodeField], value]);
+      }
+    };
+
+    const clearHover = () => {
       hoveredId = undefined;
+      showHover(undefined);
     };
 
     const setPointerCursor = () => {
@@ -200,13 +216,13 @@ watch(
       const pcode = feature.properties?.[props.pcodeField];
 
       if (hoveredId !== pcode) {
-        clearHover();
         hoveredId = pcode;
-        map.setFeatureState(
-          { source: sId, sourceLayer: props.sourceLayer, id: hoveredId },
-          { hover: true },
-        );
+        showHover(pcode);
       }
+      const name = nameField.value ? feature.properties?.[nameField.value] : undefined;
+      const title = name
+        ? `${escapeHtml(String(name))} <span class="normal-case font-medium">(${escapeHtml(String(pcode))})</span>`
+        : escapeHtml(String(pcode));
 
       const value = valuesByPcode.value.get(pcode);
       popup
@@ -214,7 +230,7 @@ watch(
         .setHTML(
           `
           <div class="p-3 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-2xl min-w-[120px]">
-            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${pcode}</div>
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">${title}</div>
             <div class="flex flex-col gap-1.5">
               <div class="flex items-center gap-2">
                 <div class="w-2.5 h-2.5 rounded-full ring-2 ring-slate-100" style="background-color: ${
@@ -222,7 +238,7 @@ watch(
                     ? colorForValue(value)
                     : props.fallbackColor
                 }"></div>
-                <div class="text-[11px] font-extrabold text-slate-600 uppercase tracking-tight">Count</div>
+                <div class="text-[11px] font-extrabold text-slate-600 uppercase tracking-tight">Exposed</div>
               </div>
               <div class="text-2xl font-black text-slate-900 tabular-nums">
                 ${
@@ -254,7 +270,7 @@ watch(
       map.off("mousemove", fillLayer.id, setPointerCursor);
       map.off("mousemove", fillLayer.id, handleMouseMove);
       map.off("mouseleave", fillLayer.id, handleMouseLeave);
-      clearHover();
+      hoveredId = undefined;
       popup.remove();
 
       try {
