@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Anatomy } from "@/types/story-map";
+import { useStoryText } from "@/composables/useStoryText";
 
 const props = defineProps<{ anatomy: Anatomy; sectionOrder?: string[] }>();
 const emit = defineEmits<{ (e: "select", sectionRef: string): void }>();
 
 // The question stays one plain sentence (readable, copyable, screen-reader friendly);
 // its parts are explained as cards below instead of being marked up inside the sentence.
-const sentence = computed(() => props.anatomy.parts.map((p) => p.text).join(""));
+const { t } = useStoryText();
+// Parts come trimmed from text.md: join them with spaces, but not before punctuation
+const sentence = computed(() =>
+  props.anatomy.parts
+    .map((p) => p.text.trim())
+    .reduce((s, part) => (!s ? part : /^[,.;:!?]/.test(part) ? s + part : `${s} ${part}`), ""),
+);
 // Cards follow the order of the steps they link to (not the word order of the sentence)
 const cards = computed(() => {
   const withRole = props.anatomy.parts.filter((p) => p.role);
@@ -23,7 +30,7 @@ const cards = computed(() => {
 <template>
   <div>
     <h2 class="text-lg font-bold leading-snug text-gray-900 sm:text-xl">
-      What does “{{ sentence }}” mean?
+      {{ t("anatomy.question", { sentence }) }}
     </h2>
 
     <div class="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
@@ -41,13 +48,13 @@ const cards = computed(() => {
         <span class="text-sm font-bold text-heigit-red">{{ part.text.trim() }}</span>
         <span v-if="part.hint" class="text-xs leading-snug text-gray-500">{{ part.hint }}</span>
         <span class="mt-auto pt-1 text-[11px] font-medium text-gray-400 group-hover:text-heigit-red">
-          See step →
+          {{ t("anatomy.seeStep") }}
         </span>
       </button>
     </div>
 
     <p v-if="anatomy.column" class="mt-3 text-xs text-gray-500">
-      In the data:
+      {{ t("decoder.inData") }}:
       <code class="rounded bg-gray-100 px-1.5 py-0.5 text-gray-700">{{ anatomy.column }}</code>
     </p>
   </div>

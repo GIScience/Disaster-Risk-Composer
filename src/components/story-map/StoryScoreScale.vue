@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { useStoryText } from "@/composables/useStoryText";
 
 /**
  * How the dashboard turns district counts into map colours, with the real districts of the
@@ -8,6 +9,7 @@ import { computed, onMounted, ref } from "vue";
  * four map colours. Hovering a dot shows the district.
  */
 const props = defineProps<{ valuesUrl: string; unitLabel?: string }>();
+const { t } = useStoryText();
 
 type Row = { name: string; value: number };
 const rows = ref<Row[]>([]);
@@ -30,12 +32,12 @@ const plotW = W - LEFT - RIGHT;
 const plotH = BOTTOM - TOP;
 
 // Same colours and quartile rule as the dashboard map (useRiskLogic.updateRiskLayer)
-const CLASSES = [
-  { label: "Low", color: "#ffffff" },
-  { label: "Moderate", color: "#f9d5b6" },
-  { label: "High", color: "#f6a44d" },
-  { label: "Very high", color: "#cc0130" },
-];
+const CLASSES = computed(() => [
+  { label: t("scoreScale.classes.low"), color: "#ffffff" },
+  { label: t("scoreScale.classes.moderate"), color: "#f9d5b6" },
+  { label: t("scoreScale.classes.high"), color: "#f6a44d" },
+  { label: t("scoreScale.classes.veryHigh"), color: "#cc0130" },
+]);
 
 const sorted = computed(() => [...rows.value].sort((a, b) => a.value - b.value));
 
@@ -76,7 +78,7 @@ const bars = computed(() => {
 
 // Labels for the four groups of districts under the bars
 const groups = computed(() =>
-  CLASSES.map((c, k) => {
+  CLASSES.value.map((c, k) => {
     const own = bars.value.filter((b) => b.cls === k);
     if (!own.length) return null;
     const x1 = own[0].x;
@@ -126,7 +128,7 @@ const fmt = (v: number) => v.toLocaleString("en");
           {{ s }}
         </text>
       </g>
-      <text :x="LEFT + plotW + 6" :y="TOP - 12" class="fill-[#cc0130] text-[10px]">score</text>
+      <text :x="LEFT + plotW + 6" :y="TOP - 12" class="fill-[#cc0130] text-[10px]">{{ t("scoreScale.score") }}</text>
 
       <!-- bars -->
       <rect
@@ -153,7 +155,7 @@ const fmt = (v: number) => v.toLocaleString("en");
           {{ g.label }}
         </text>
         <text :x="(g.x1 + g.x2) / 2" :y="BOTTOM + 35" text-anchor="middle" class="fill-slate-400 text-[10px]">
-          {{ g.count }} districts
+          {{ t("scoreScale.districts", { n: g.count }) }}
         </text>
       </g>
 
@@ -165,15 +167,13 @@ const fmt = (v: number) => v.toLocaleString("en");
         <rect x="-90" y="-40" width="180" height="34" rx="6" fill="#0f172a" />
         <text x="0" y="-26" text-anchor="middle" class="fill-white text-[11px] font-bold">{{ hovered.name }}</text>
         <text x="0" y="-12" text-anchor="middle" class="fill-slate-300 text-[10px]">
-          {{ fmt(hovered.value) }} · score {{ hovered.score.toFixed(2) }} · {{ CLASSES[hovered.cls].label }}
+          {{ fmt(hovered.value) }} · {{ t("scoreScale.score") }} {{ hovered.score.toFixed(2) }} · {{ CLASSES[hovered.cls].label }}
         </text>
       </g>
     </svg>
 
     <p class="mt-2 text-xs text-gray-500">
-      {{ unitLabel ?? "Count" }}, one bar per district, sorted. The colour groups are split at the
-      quartiles, so each holds about a quarter of the districts; districts with the same value stay
-      in the same group. Hover a bar to see the district.
+      {{ t("scoreScale.caption", { unit: unitLabel ?? t("scoreScale.unit") }) }}
     </p>
   </div>
 </template>

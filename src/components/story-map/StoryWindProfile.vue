@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useStoryText } from "@/composables/useStoryText";
 
 /**
  * Cyclone counterpart of StoryDepthProfile: a small scene in the wind. The user sets the wind
@@ -8,6 +9,7 @@ import { computed, ref } from "vue";
  * peak winds near its centre, far above the threshold at the edge of the wind zone.
  */
 const props = withDefaults(defineProps<{ thresholdKmh?: number }>(), { thresholdKmh: 63 });
+const { t, list } = useStoryText();
 
 const W = 640;
 const H = 250;
@@ -19,15 +21,12 @@ const counts = computed(() => speed.value >= props.thresholdKmh);
 const knots = computed(() => Math.round(speed.value / 1.852));
 const strength = computed(() => Math.min(speed.value / 200, 1)); // 0..1 for the scene
 
-// What the wind does at this speed (Beaufort scale descriptions, simplified)
+// What the wind does at this speed (Beaufort scale, simplified). The texts are the list
+// `wind.effects` in text.md, one per speed band: below 20, 50, 62, 89, 118 km/h, and above.
+const EFFECT_BANDS_KMH = [20, 50, 62, 89, 118];
 const effect = computed(() => {
-  const s = speed.value;
-  if (s < 20) return "Light wind: leaves and small twigs move.";
-  if (s < 50) return "Strong breeze: small trees sway, large branches move.";
-  if (s < 62) return "Near gale: whole trees move, walking against the wind is hard.";
-  if (s < 89) return "Gale: branches break off, loose objects fly around, roof tiles can come off.";
-  if (s < 118) return "Storm: trees are uprooted, buildings are damaged.";
-  return "Hurricane force: severe damage to buildings, trees and power lines.";
+  const band = EFFECT_BANDS_KMH.findIndex((max) => speed.value < max);
+  return list("wind.effects")[band === -1 ? EFFECT_BANDS_KMH.length : band] ?? "";
 });
 
 // Scene: the tree bends and the person leans into the wind (skew around their base)
@@ -76,13 +75,16 @@ const LEAVES = [
 const SCALE_X0 = 20;
 const SCALE_X1 = W - 20;
 const xOf = (kmh: number) => SCALE_X0 + (kmh / MAX_KMH) * (SCALE_X1 - SCALE_X0);
-const CATEGORIES = [
-  { label: "Cat 1", kmh: 119 },
-  { label: "Cat 2", kmh: 154 },
-  { label: "Cat 3", kmh: 178 },
-  { label: "Cat 4", kmh: 209 },
-  { label: "Cat 5", kmh: 252 },
-];
+// Where the Saffir-Simpson categories start (1-minute sustained wind)
+const CATEGORIES = computed(() =>
+  [
+    { n: 1, kmh: 119 },
+    { n: 2, kmh: 154 },
+    { n: 3, kmh: 178 },
+    { n: 4, kmh: 209 },
+    { n: 5, kmh: 252 },
+  ].map((c) => ({ ...c, label: t("wind.category", { n: c.n }) })),
+);
 </script>
 
 <template>
@@ -90,7 +92,7 @@ const CATEGORIES = [
     <!-- Status -->
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="text-sm text-gray-700">
-        Wind speed:
+        {{ t("wind.speed") }}:
         <span class="text-lg font-black tabular-nums text-gray-900">{{ speed }} km/h</span>
         <span class="ml-1 text-xs tabular-nums text-gray-500">({{ knots }} kt)</span>
       </div>
@@ -98,7 +100,7 @@ const CATEGORIES = [
         class="rounded-full px-3 py-1 text-xs font-bold"
         :class="counts ? 'bg-heigit-red text-white' : 'bg-gray-200 text-gray-600'"
       >
-        {{ counts ? "Counts as exposed" : "Not counted (below 34 kt)" }}
+        {{ counts ? t("wind.counts") : t("wind.notCounted") }}
       </span>
     </div>
 
@@ -219,20 +221,19 @@ const CATEGORIES = [
         stroke-dasharray="4 3"
       />
       <text :x="xOf(props.thresholdKmh)" y="10" text-anchor="middle" class="fill-[#cc0130] text-[12px] font-bold">
-        34 kt threshold
+        {{ t("wind.threshold") }}
       </text>
       <text :x="xOf(props.thresholdKmh)" y="50" text-anchor="middle" class="fill-[#cc0130] text-[11px]">
-        63 km/h
+        {{ props.thresholdKmh }} km/h
       </text>
     </svg>
     <p class="mt-1 text-[11px] leading-snug text-gray-500">
-      Cat 1–5: where the Saffir-Simpson categories start. They measure a storm's peak wind near
-      its centre; the wind zone reaches out to where the wind drops to 34 kt.
+      {{ t("wind.scaleNote") }}
     </p>
 
     <!-- Wind speed control -->
     <label class="mt-4 block text-xs font-medium text-gray-600">
-      Set the wind speed
+      {{ t("wind.setSpeed") }}
       <input
         v-model.number="speed"
         type="range"

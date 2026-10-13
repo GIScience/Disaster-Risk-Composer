@@ -4,22 +4,13 @@ import { useRoute, useRouter } from "vue-router";
 import PageLayout from "@/layout/PageLayout.vue";
 import StoryMap from "@/components/story-map/StoryMap.vue";
 import type { StoryMapConfig } from "@/types/story-map";
+import { storyMaps } from "@/content/story-maps";
 
 const route = useRoute();
 const router = useRouter();
 
-const modules = import.meta.glob<{ default: StoryMapConfig }>(
-  "@/content/story-maps/*.json",
-  {
-    eager: true,
-  },
-);
-
-const configsById: Record<string, StoryMapConfig> = {};
-for (const path in modules) {
-  const id = path.split("/").pop()!.replace(".json", "");
-  configsById[id] = modules[path].default;
-}
+// Built from the template, each hazard's config.json and its text.md
+const configsById = storyMaps;
 
 const config = ref<StoryMapConfig | null>(null);
 

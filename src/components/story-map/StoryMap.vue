@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { getCogMetadata } from "@geomatico/maplibre-cog-protocol";
+import { provideStoryText } from "@/composables/useStoryText";
+import { uiText } from "@/utils/story-map-content";
 import type { StoryMapConfig } from "@/types/story-map";
 import { useScrollSpy } from "@/composables/useScrollSpy";
 import StoryMapNavbar from "./StoryMapNavbar.vue";
@@ -10,6 +12,9 @@ import StoryAnatomy from "./StoryAnatomy.vue";
 import StoryEquation from "./StoryEquation.vue";
 
 const props = defineProps<{ config: StoryMapConfig }>();
+// Wording for the components below (from the text.md files)
+provideStoryText(() => props.config.ui);
+const t = (key: string) => uiText(props.config.ui, key);
 const sm = computed(() => props.config.storyMap);
 
 // Before the first tile of a Cloud-Optimized GeoTIFF can load, the COG library reads the file's
@@ -50,7 +55,7 @@ const { activeId, scrollTo } = useScrollSpy(
             class="inline-flex items-center gap-1.5 text-sm font-medium text-heigit-red no-underline hover:underline"
           >
             <v-icon icon="mdi-arrow-left" size="18" />
-            Back
+            {{ t("back") }}
           </a>
 
           <div class="mt-6 flex items-start gap-3">

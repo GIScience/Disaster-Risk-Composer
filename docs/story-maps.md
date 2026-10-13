@@ -1,27 +1,29 @@
-# Story Maps: JSON setup and update guide
+# Story Maps: setup and update guide
 
-This covers the **JSON-driven story map system**, served at `/story-map/:id`.
-
-> **Naming note:** the route `/story-map` uses the *renderer* components in
-> `src/components/story-map/` and `src/components/story-map/` (`StoryMapCanvas.vue`,
-> `MapLegend.vue`, `Map.vue`, `COGLayer.vue`, `VectorLayer.vue`, `ChoroplethLayer.vue`).
-> There is a separate, older **Markdown-driven** system at `/story-map-2/:id`
-> (`src/content/story-maps/*.md`, rendered by components in `src/components/story-map/`
-> such as `StoryMapNavbar.vue`/`StoryMapHero.vue`). The two systems share a folder name
-> but are unrelated — this doc is only about the JSON one.
+This covers the story map system served at `/story-map/:id`. For a short "where do I change
+what" guide, see [`src/content/story-maps/README.md`](../src/content/story-maps/README.md).
 
 ## 1. Where files live
 
 | Path | Purpose |
 |---|---|
-| `src/content/story-maps/*.json` | One file per story map. Filename (minus `.json`) is the URL id, e.g. `flood-exposure.json` → `/story-map/flood-exposure`. |
-| `src/types/story-map.ts` | TypeScript source of truth for the JSON schema (`StoryMapConfig`). |
-| `src/pages/story-map/index.vue` | Listing page — auto-discovers every JSON file via `import.meta.glob` and renders a card per story map. No registration step needed; drop a new JSON file in and it appears. |
-| `src/pages/story-map/[id]/[[section]].vue` | Detail page — loads the matching JSON by id and passes it to `<StoryMap>`. |
-| `src/components/story-map/StoryMap.vue` and siblings | Renderer. You should not need to touch these for a content update — only for new interaction types. |
+| `src/content/story-maps/_template/template.json` | Structure shared by every story map (population layers, district boundaries, steps 3–6 setup, icons). |
+| `src/content/story-maps/_template/text.md` | Wording shared by every story map (buttons, chart labels, "Back to Dashboard"). |
+| `src/content/story-maps/<id>/config.json` | What is special about one hazard: layers, data files, colours, numbers, which steps and buttons exist. No prose. The folder name is the URL id, e.g. `flood-exposure/` → `/story-map/flood-exposure`. |
+| `src/content/story-maps/<id>/text.md` | Every text shown on that story map, in page order. |
+| `src/content/story-maps/index.ts` | Loader: merges template → config → shared text → hazard text into one `StoryMapConfig`. |
+| `src/utils/story-map-content.ts` | The merge and the `text.md` parser. |
+| `src/types/story-map.ts` | TypeScript source of truth for the merged shape (`StoryMapConfig`). |
+| `src/pages/story-map/index.vue` | Listing page: shows a card for every story map folder. |
+| `src/pages/story-map/[id]/[[section]].vue` | Detail page: passes the merged config to `<StoryMap>`. |
+| `src/components/story-map/StoryMap.vue` and siblings | Renderer (layout and styling). Wording inside the graphics comes from `ui` in the `text.md` files via `useStoryText()`. |
 | `public/data/*.json`, `public/data/*.geojson` | Data files referenced by `sourceUrl`/`valuesUrl` for vector/choropleth layers (see §4). |
 
-Adding a new story map = adding a new JSON file with a unique filename. There is no manifest to update.
+Adding a new story map = adding a new folder with `config.json` and `text.md`. There is no
+manifest to update.
+
+> The shapes below describe the **merged** result. In the files, text fields (titles, notes,
+> labels …) live in `text.md`, everything else in `config.json` or the template.
 
 ## 2. Top-level shape
 
@@ -280,16 +282,16 @@ A section only shows a map if it has a `map` object:
 
 To swap in fresh data without touching the JSON's structure:
 
-1. **Raster layers** (flood extent, population COGs): replace the file at the existing `sourceUrl`, or upload a new COG and update `sourceUrl` in the relevant `layerConfig`. Keep it a COG in EPSG:3857 with values pre-scaled to the `0–1` range the renderer expects for ramps.
-2. **Choropleth values**: regenerate the `public/data/*.json` file referenced by `valuesUrl`, keeping the `[{ "pcode": ..., "value": ... }]` shape and the same `pcode` values used in the vector tileset's `pcodeField`. Update `stops[].max` if the new data's range no longer matches the old breakpoints (and update the matching `legend.items` in the section so the legend stays in sync — the two are not linked automatically).
+1. **Raster layers** (flood extent, population COGs): replace the file at the existing `sourceUrl`, or upload a new COG and update `sourceUrl` in the relevant `layerConfig`. Keep it a COG in EPSG:3857, and set `min`/`max` in the `layerConfig` to the value range of the ramp.
+2. **Choropleth values**: regenerate the `public/data/*.json` file referenced by `valuesUrl`, keeping the `[{ "pcode": ..., "value": ... }]` shape and the same `pcode` values used in the vector tileset's `pcodeField`. Update `stops[].max` if the new data's range no longer matches the old breakpoints (and update the matching legend entries in `text.md` so the legend stays in sync — the two are not linked automatically).
 3. **Facility/POI points**: edit or replace the GeoJSON in `public/data/`, keeping the `categoryProperty` values consistent with `categories[].value` in the JSON.
-4. **Copy/text-only edits** (titles, notes, sidebar steps, footer callouts): edit the story map's `.json` file directly — no other file needs to change.
+4. **Copy/text-only edits** (titles, notes, sidebar steps, footer callouts, legend entries, graphic labels): edit the story map's `text.md` — no other file needs to change. Numbers quoted in the text (e.g. "about 1.9 million children") must be updated there by hand when the data changes.
 
 ## 5. Adding a brand-new story map
 
-1. Copy an existing file (e.g. `src/content/story-maps/flood-exposure.json`) as a starting template — the structures are consistent across the ones in this repo.
-2. Rename it to `<your-id>.json`; the filename becomes the URL slug.
-3. Update `meta`, `hero`, `sidebar`, `header`, `sections`, and `footer` for the new content.
+1. Copy an existing folder (e.g. `src/content/story-maps/cyclone-exposure/`) as a starting point.
+2. Rename it to `<your-id>/`; the folder name becomes the URL slug.
+3. Update `meta`, layers and data files in `config.json`, and rewrite `text.md`.
 4. If it's a new `category`, add the value to the `categories` array in `src/pages/story-map/index.vue`.
 5. Add any new images/SVGs to `public/`, and any new data files to `public/data/`.
 6. Run the dev server and open `/story-map/<your-id>` to check it renders, then check `/story-map` to confirm the new card shows up with correct title/image/category.
@@ -301,4 +303,5 @@ To swap in fresh data without touching the JSON's structure:
 - `header.equation` (top-level, not per-section) is unused by the current renderer.
 - Choropleth `stops` and the section's `legend.items` are two separate lists that must be kept manually in sync.
 - Slider controls don't drive map layers yet — use `segmented` for anything that needs to change the map.
-- Raster ramp `min`/`max` are fixed at `0`/`1` by the renderer regardless of what's in the JSON — normalize source COG values accordingly.
+- Raster ramps use `layerConfig.min`/`max` (default `0`/`1`), e.g. `0`–`100` for flood depth in cm.
+- Every `{path}` in a `text.md` heading must point to an existing element; otherwise the story map fails to load with an error naming the path.

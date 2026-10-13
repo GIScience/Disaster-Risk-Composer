@@ -38,6 +38,7 @@ defineProps<{
       :rasterSwatch="layer.legendSwatch"
       :rasterUrl="stackLayers || layer.type === 'vector' || layer.type === 'choropleth' ? undefined : layer.sourceUrl"
       :stackLayers="stackLayers ?? baseStackLayers"
+      :stackLegend="control.stackLegend"
       :layer-id="layer.layerId"
       :raster-color-scheme="layer.colorScheme"
       :mode="layer.mode"

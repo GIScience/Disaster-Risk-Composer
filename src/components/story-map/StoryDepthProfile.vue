@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useStoryText } from "@/composables/useStoryText";
 
 /**
  * People of every group in the data standing side by side in flood water. The user sets the
@@ -7,6 +8,7 @@ import { computed, ref } from "vue";
  * the slider moves the water level.
  */
 const props = withDefaults(defineProps<{ threshold?: number }>(), { threshold: 30 });
+const { t } = useStoryText();
 
 const W = 640;
 const H = 275;
@@ -18,10 +20,10 @@ const MAX_CM = 150;
 // "adult" is the base icon, "child" the same shape with child proportions (larger head),
 // "senior" slightly bent forward with a walking stick.
 type Kind = "child" | "adult" | "senior";
-const PEOPLE: { label: string; heightM: number; kind: Kind }[] = [
-  { label: "Child", heightM: 1.0, kind: "child" },
-  { label: "Adult", heightM: 1.7, kind: "adult" },
-  { label: "Older person", heightM: 1.6, kind: "senior" },
+const PEOPLE: { heightM: number; kind: Kind }[] = [
+  { heightM: 1.0, kind: "child" },
+  { heightM: 1.7, kind: "adult" },
+  { heightM: 1.6, kind: "senior" },
 ];
 const ICON_H = 182; // icon units from top of head to feet
 
@@ -38,6 +40,7 @@ const ticks = [50, 100, 150].map((cm) => ({ cm, y: GROUND - (cm / 100) * PX_PER_
 const people = computed(() =>
   PEOPLE.map((p, i) => ({
     ...p,
+    label: t(`depth.people.${p.kind}`),
     cx: MARGIN + slotW * (i + 0.5),
     h: p.heightM * PX_PER_M,
   })),
@@ -49,14 +52,14 @@ const people = computed(() =>
     <!-- Status -->
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <div class="text-sm text-gray-700">
-        Water depth:
+        {{ t("depth.waterDepth") }}:
         <span class="text-lg font-black tabular-nums text-gray-900">{{ depthCm }} cm</span>
       </div>
       <span
         class="rounded-full px-3 py-1 text-xs font-bold"
         :class="counts ? 'bg-heigit-red text-white' : 'bg-gray-200 text-gray-600'"
       >
-        {{ counts ? "Counts as exposed" : `Not counted (below ${props.threshold} cm)` }}
+        {{ counts ? t("depth.counts") : t("depth.notCounted", { threshold: props.threshold }) }}
       </span>
     </div>
 
@@ -128,7 +131,7 @@ const people = computed(() =>
         {{ props.threshold }} cm
       </text>
       <text :x="MARGIN - 38" :y="thresholdY + 12" text-anchor="end" class="fill-[#cc0130] text-[12px]">
-        threshold
+        {{ t("depth.threshold") }}
       </text>
 
       <!-- group labels -->
@@ -141,7 +144,7 @@ const people = computed(() =>
 
     <!-- Water level control -->
     <label class="mt-4 block text-xs font-medium text-gray-600">
-      Set the flood depth
+      {{ t("depth.setDepth") }}
       <input
         v-model.number="depthCm"
         type="range"

@@ -1,0 +1,319 @@
+{
+  "storyMap": {
+    "sidebar": {
+      "steps": [
+        {
+          "sectionRef": "sec-who",
+          "number": 3
+        },
+        {
+          "sectionRef": "sec-count",
+          "number": 4
+        },
+        {
+          "sectionRef": "sec-score",
+          "number": 5
+        },
+        {
+          "sectionRef": "sec-decoder",
+          "number": 6
+        }
+      ],
+      "aside": {
+        "variant": "info",
+        "icon": "mdi-information-outline"
+      }
+    },
+    "anatomy": {
+      "parts": [
+        {
+          "sectionRef": "sec-who",
+          "role": "Who",
+          "icon": "mdi-baby-face-outline"
+        },
+        {
+          "sectionRef": "sec-count",
+          "role": "Where",
+          "icon": "mdi-map-outline"
+        }
+      ]
+    },
+    "sections": [
+      {
+        "id": "sec-who",
+        "number": 3,
+        "control": {
+          "type": "segmented",
+          "id": "population-group",
+          "options": [
+            {
+              "value": "children_u5",
+              "icon": "mdi-baby-face-outline",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-children-under5",
+                "colorScheme": "BrewerGreens9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_children_u5_2030_constrained_cog.tif"
+              },
+              "selected": true
+            },
+            {
+              "value": "elderly",
+              "icon": "mdi-human-male-female",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-elderly",
+                "colorScheme": "BrewerGreens9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_elderly_2030_constrained_cog.tif"
+              }
+            },
+            {
+              "value": "female_pop",
+              "icon": "mdi-human-female",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-female-all",
+                "colorScheme": "BrewerGreens9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_female_pop_2030_constrained_cog.tif"
+              }
+            },
+            {
+              "value": "total",
+              "icon": "mdi-account-group",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "pop-total",
+                "colorScheme": "BrewerGreens9",
+                "mode": "ramp",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_pop_total_pop_2030_constrained_cog.tif"
+              }
+            },
+            {
+              "value": "facilities",
+              "icon": "mdi-map-marker-multiple",
+              "layerConfig": {
+                "type": "vector",
+                "sourceUrl": "/data/myanmar_gaia_pois.geojson",
+                "categoryProperty": "amenity",
+                "categories": [
+                  {
+                    "value": "school",
+                    "icon": "mdi-school",
+                    "color": "#2563eb"
+                  },
+                  {
+                    "value": "hospital",
+                    "icon": "mdi-hospital-box",
+                    "color": "#dc2626"
+                  },
+                  {
+                    "value": "clinic",
+                    "icon": "mdi-medical-bag",
+                    "color": "#059669"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "baseControl": {
+          "type": "segmented"
+        },
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information"
+        },
+        "map": {
+          "controls": [
+            "home",
+            "zoom-in",
+            "zoom-out"
+          ],
+          "showOpacityControl": true
+        }
+      },
+      {
+        "id": "sec-count",
+        "number": 4,
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information"
+        },
+        "map": {
+          "layerId": "adm2-exposure-choropleth",
+          "center": [
+            96,
+            19
+          ],
+          "zoom": 5.2,
+          "controls": [
+            "home",
+            "zoom-in",
+            "zoom-out"
+          ]
+        },
+        "visual": "aggregation",
+        "control": {
+          "type": "segmented",
+          "id": "count-subject",
+          "options": [
+            {
+              "value": "children_u5",
+              "icon": "mdi-baby-face-outline",
+              "selected": true,
+              "layerConfig": {
+                "type": "choropleth",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/mmr/MMR_ADM2.pmtiles",
+                "sourceLayer": "boundary",
+                "pcodeField": "ADM2_PCODE"
+              },
+              "dataKind": "raster",
+              "legend": {
+                "type": "graduated",
+                "items": [
+                  {
+                    "color": "#ffffff"
+                  },
+                  {
+                    "color": "#f9d5b6"
+                  },
+                  {
+                    "color": "#f6a44d"
+                  },
+                  {
+                    "color": "#cc0130"
+                  }
+                ]
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information"
+              }
+            },
+            {
+              "value": "facilities",
+              "icon": "mdi-map-marker-multiple",
+              "layerConfig": {
+                "type": "choropleth",
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/mmr/MMR_ADM2.pmtiles",
+                "sourceLayer": "boundary",
+                "pcodeField": "ADM2_PCODE"
+              },
+              "dataKind": "points",
+              "legend": {
+                "type": "graduated",
+                "items": [
+                  {
+                    "color": "#ffffff"
+                  },
+                  {
+                    "color": "#f9d5b6"
+                  },
+                  {
+                    "color": "#f6a44d"
+                  },
+                  {
+                    "color": "#cc0130"
+                  }
+                ]
+              },
+              "note": {
+                "variant": "info",
+                "icon": "mdi-information"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "sec-score",
+        "number": 5,
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information"
+        },
+        "links": [
+          {
+            "key": "open-in-the-dashboard",
+            "icon": "mdi-open-in-app"
+          }
+        ],
+        "visual": "score-scale"
+      },
+      {
+        "id": "sec-decoder",
+        "number": 6,
+        "decoder": {
+          "subjects": [
+            {
+              "value": "children_u5",
+              "selected": true
+            },
+            {
+              "value": "pop_u15"
+            },
+            {
+              "value": "elderly"
+            },
+            {
+              "value": "female_pop"
+            },
+            {
+              "value": "wra_pop"
+            },
+            {
+              "value": "dependency"
+            },
+            {
+              "value": "education",
+              "measures": [
+                {
+                  "value": "count"
+                }
+              ]
+            },
+            {
+              "value": "hospitals",
+              "measures": [
+                {
+                  "value": "count"
+                }
+              ]
+            },
+            {
+              "value": "primary_healthcare",
+              "measures": [
+                {
+                  "value": "count"
+                }
+              ]
+            },
+            {
+              "value": "crops"
+            }
+          ]
+        }
+      }
+    ],
+    "backLink": {
+      "href": "#/"
+    }
+  },
+  "footer": {
+    "callouts": [
+      {
+        "key": "positive",
+        "variant": "positive",
+        "icon": "mdi-check-circle"
+      },
+      {
+        "key": "warning",
+        "variant": "warning",
+        "icon": "mdi-alert"
+      }
+    ]
+  }
+}

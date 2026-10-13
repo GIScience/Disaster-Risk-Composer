@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { colorScale } from "@geomatico/maplibre-cog-protocol";
 import type { VectorCategoryStyle } from "@/types/story-map";
+import { useStoryText } from "@/composables/useStoryText";
 
 export interface MapLegendLayer {
   label?: string;
@@ -10,7 +11,7 @@ export interface MapLegendLayer {
   rasterMin?: number;
   rasterMax?: number;
   /** Single-value zone raster: one solid swatch (colour of `value` on the ramp) with a label. */
-  swatch?: { value: number; label: string };
+  swatch?: { value: number; label?: string };
   /** Stacked map: one swatch per layer, the active one highlighted. */
   stack?: {
     label: string;
@@ -27,6 +28,7 @@ const props = defineProps<{
   layers: MapLegendLayer[];
 }>();
 
+const { t } = useStoryText();
 const GRADIENT_STOPS = 8;
 
 function gradientCssFor(colorScheme: string) {
@@ -156,8 +158,8 @@ const visibleLayers = computed(() =>
         <div
           class="mt-1 flex justify-between text-[0.38rem] font-bold uppercase tracking-widest text-slate-500"
         >
-          <span>Low</span>
-          <span>High</span>
+          <span>{{ t("legend.low") }}</span>
+          <span>{{ t("legend.high") }}</span>
         </div>
       </template>
     </div>

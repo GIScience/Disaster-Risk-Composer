@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import PageLayout from "@/layout/PageLayout.vue";
-import type { StoryMapConfig } from "@/types/story-map";
 import StoryMapPreviewCard from "@/components/story-map/StoryMapPreviewCard.vue";
 import { cn } from "@/utils/cn";
 import { fetchCountries, type Country } from "@/services/dataService";
 
-const modules = import.meta.glob<{ default: StoryMapConfig }>(
-  "@/content/story-maps/*.json",
-  {
-    eager: true,
-  },
-);
+import { storyMaps as storyMapConfigs } from "@/content/story-maps";
 
 const countries = ref<Country[]>([]);
 
@@ -21,11 +15,10 @@ onMounted(async () => {
 
 const noOfCountries = computed(() => countries.value.length);
 
-const storyMaps = Object.entries(modules)
-  .map(([path, mod]) => {
-    const id = path.split("/").pop()!.replace(".json", "");
-    const hero = mod.default.storyMap.hero;
-    const category = mod.default.meta.category || "other";
+const storyMaps = Object.entries(storyMapConfigs)
+  .map(([id, config]) => {
+    const hero = config.storyMap.hero;
+    const category = config.meta.category || "other";
     return {
       id,
       image: hero.image,

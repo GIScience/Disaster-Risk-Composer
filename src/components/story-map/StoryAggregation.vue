@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useStoryText } from "@/composables/useStoryText";
 
 /**
  * kind "raster": people from a population grid (WorldPop) - every cell carries a count.
@@ -10,16 +11,10 @@ const props = withDefaults(
   defineProps<{ kind?: "raster" | "points"; hazard?: "flood" | "cyclone" }>(),
   { kind: "raster", hazard: "flood" },
 );
-// Wording and colour of the hazard area in the facilities view
-const zone = computed(() =>
-  props.hazard === "cyclone"
-    ? { name: "the wind zone", label: "wind zone in purple", fill: "#ddd6fe" }
-    : {
-        name: "water deeper than 30 cm",
-        label: "flood deeper than 30 cm in blue",
-        fill: "#bfdbfe",
-      },
-);
+// Wording comes from text.md (ui.aggregation.*), so each hazard describes its own hazard area
+const { t } = useStoryText();
+// Colour of the hazard area in the facilities view
+const zone = computed(() => ({ fill: props.hazard === "cyclone" ? "#ddd6fe" : "#bfdbfe" }));
 
 /**
  * How grid cells become district numbers: (1) people per ~100 m cell with the hazard area on top
@@ -50,11 +45,9 @@ const DISTRICT = [
   "ACCCCCBB",
   "CCCCCCCB",
 ];
-const DISTRICTS = [
-  { id: "A", name: "District A" },
-  { id: "B", name: "District B" },
-  { id: "C", name: "District C" },
-];
+const DISTRICTS = computed(() =>
+  ["A", "B", "C"].map((id) => ({ id, name: t("aggregation.district", { id }) })),
+);
 
 const hovered = ref<string | null>(null);
 
@@ -173,7 +166,7 @@ function cellColor(v: number, counted = true, shallow = false) {
 }
 
 const totals = computed(() =>
-  DISTRICTS.map((d) => ({
+  DISTRICTS.value.map((d) => ({
     ...d,
     total:
       props.kind === "points"
@@ -216,13 +209,7 @@ function labelPos(id: string) {
     <figure class="m-0">
       <figcaption class="mb-2 text-xs font-semibold text-gray-700">
         <span class="text-heigit-red">1.</span>
-        {{
-          kind === "points"
-            ? `Facilities as points, ${zone.label}`
-            : hazard === "cyclone"
-              ? "Children per grid cell, wind zone edge in purple"
-              : "Children per grid cell, flood deeper than 30 cm in blue"
-        }}
+        {{ t(`aggregation.${kind}.caption`) }}
       </figcaption>
       <svg
         :viewBox="`0 0 ${COLS * CELL} ${ROWS * CELL + 24}`"
@@ -264,18 +251,18 @@ function labelPos(id: string) {
             <!-- key under the grid -->
             <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
               <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
-              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">deeper than 30 cm</text>
+              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
               <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
-              <text x="145" y="4" class="fill-slate-500 text-[10px]">shallower</text>
+              <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
             </g>
           </template>
           <template v-else>
             <!-- key under the grid -->
             <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
               <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
-              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">34 kt edge</text>
+              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
               <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
-              <text x="135" y="4" class="fill-slate-500 text-[10px]">storm track</text>
+              <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
             </g>
           </template>
         </template>
@@ -314,9 +301,9 @@ function labelPos(id: string) {
             <!-- key under the grid -->
             <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
               <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
-              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">deeper than 30 cm</text>
+              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
               <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
-              <text x="145" y="4" class="fill-slate-500 text-[10px]">shallower</text>
+              <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
             </g>
           </template>
           <!-- wind zone over the grid: its 34-knot edge and the storm track -->
@@ -332,28 +319,22 @@ function labelPos(id: string) {
             <!-- key under the grid -->
             <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
               <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
-              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">34 kt edge</text>
+              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
               <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
-              <text x="135" y="4" class="fill-slate-500 text-[10px]">storm track</text>
+              <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
             </g>
           </template>
         </template>
       </svg>
       <p class="mt-1.5 text-[11px] leading-snug text-gray-500">
-        {{
-          kind === "points"
-            ? `Vector data (OpenStreetMap): each facility is a point. Red = inside ${zone.name}.`
-            : hazard === "cyclone"
-              ? "Raster data (WorldPop): every ~100 m cell holds a number. A cell counts if its centre lies in the wind zone."
-              : "Raster data (WorldPop): every ~100 m cell holds a number. A cell counts if the water there is deeper than 30 cm."
-        }}
+        {{ t(`aggregation.${kind}.note`) }}
       </p>
     </figure>
 
     <!-- 2. borders -->
     <figure class="m-0">
       <figcaption class="mb-2 text-xs font-semibold text-gray-700">
-        <span class="text-heigit-red">2.</span> District borders laid over
+        <span class="text-heigit-red">2.</span> {{ t("aggregation.borders") }}
       </figcaption>
       <svg :viewBox="`-2 -2 ${COLS * CELL + 4} ${ROWS * CELL + 4}`" class="w-full rounded">
         <template v-if="kind === 'points'">
@@ -461,13 +442,7 @@ function labelPos(id: string) {
     <figure class="m-0">
       <figcaption class="mb-2 text-xs font-semibold text-gray-700">
         <span class="text-heigit-red">3.</span>
-        {{
-          kind === "points"
-            ? "Exposed facilities counted per district"
-            : hazard === "cyclone"
-              ? "Cells in the wind zone added up per district"
-              : "Flooded cells added up per district"
-        }}
+        {{ t(`aggregation.${kind}.totals`) }}
       </figcaption>
       <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
         <li
@@ -491,8 +466,7 @@ function labelPos(id: string) {
         </li>
       </ul>
       <p class="mt-3 text-[11px] leading-snug text-gray-500">
-        Hover a district to see its {{ kind === "points" ? "facilities" : "cells" }}. This total is
-        the number the dashboard shows for the district.
+        {{ t(`aggregation.${kind}.hoverHint`) }}
       </p>
     </figure>
   </div>

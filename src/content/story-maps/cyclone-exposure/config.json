@@ -1,0 +1,493 @@
+{
+  "meta": {
+    "id": "cyclone-exposure-story-map",
+    "type": "story-map",
+    "category": "cyclone",
+    "version": 2,
+    "locale": "en",
+    "updatedAt": "2026-10-13",
+    "notes": "Built on the flood template around one decoded indicator (exp_cyc_kt34_children_u5_cat3). Definitions and wind-zone rasters from the GAIA hand-off (docs/cyclone-storymap-handoff.md)."
+  },
+  "storyMap": {
+    "hero": {
+      "image": "/floods.jpeg"
+    },
+    "sidebar": {
+      "icon": "mdi-weather-hurricane",
+      "steps": [
+        {
+          "number": 1,
+          "sectionRef": "sec-cyclone"
+        },
+        {
+          "number": 2,
+          "sectionRef": "sec-wind"
+        },
+        {
+          "sectionRef": "sec-who"
+        },
+        {
+          "sectionRef": "sec-count"
+        },
+        {
+          "sectionRef": "sec-score"
+        },
+        {
+          "sectionRef": "sec-decoder"
+        }
+      ]
+    },
+    "header": {
+      "equation": {
+        "terms": [
+          {
+            "kind": "operand",
+            "icon": "mdi-weather-windy",
+            "key": "cyclone-winds"
+          },
+          {
+            "kind": "operator",
+            "symbol": "+"
+          },
+          {
+            "kind": "operand",
+            "icon": "mdi-account-group",
+            "key": "people-places"
+          },
+          {
+            "kind": "operator",
+            "symbol": "="
+          },
+          {
+            "kind": "result",
+            "icon": "mdi-weather-hurricane",
+            "key": "exposure"
+          }
+        ]
+      }
+    },
+    "anatomy": {
+      "parts": [
+        {
+          "sectionRef": "sec-who"
+        },
+        {
+          "key": "exposed-to"
+        },
+        {
+          "role": "Which cyclone",
+          "sectionRef": "sec-cyclone",
+          "icon": "mdi-weather-hurricane"
+        },
+        {
+          "key": "with-winds-of-at-least"
+        },
+        {
+          "role": "How strong",
+          "sectionRef": "sec-wind",
+          "icon": "mdi-weather-windy"
+        },
+        {
+          "key": "counted"
+        },
+        {
+          "sectionRef": "sec-count"
+        }
+      ]
+    },
+    "sections": [
+      {
+        "id": "sec-cyclone",
+        "number": 1,
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information"
+        },
+        "dataset": {
+          "icon": "mdi-database-outline"
+        },
+        "control": {
+          "type": "segmented",
+          "id": "cyclone-category",
+          "options": [
+            {
+              "value": "1",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "cyclone-zone-cat1",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 3.5,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat1_cog_3857.tif"
+              },
+              "stat": {}
+            },
+            {
+              "value": "2",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "cyclone-zone-cat2",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 1.7,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat2_cog_3857.tif"
+              },
+              "stat": {}
+            },
+            {
+              "value": "3",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "cyclone-zone-cat3",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 1.1,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat3_cog_3857.tif"
+              },
+              "stat": {},
+              "selected": true
+            }
+          ]
+        },
+        "map": {
+          "layerId": "cyclone-zone",
+          "controls": [
+            "home",
+            "zoom-in",
+            "zoom-out"
+          ],
+          "showOpacityControl": true,
+          "stackOptions": true,
+          "stackLegend": {}
+        },
+        "explainer": {
+          "type": "category-overlap"
+        }
+      },
+      {
+        "id": "sec-wind",
+        "number": 2,
+        "note": {
+          "variant": "info",
+          "icon": "mdi-information"
+        },
+        "visual": "wind-profile"
+      },
+      {
+        "id": "sec-who",
+        "control": {
+          "options": [
+            {
+              "value": "children_u5"
+            },
+            {
+              "value": "elderly"
+            },
+            {
+              "value": "female_pop"
+            },
+            {
+              "value": "total"
+            },
+            {
+              "value": "facilities",
+              "layerConfig": {
+                "layerId": "cyclone-facilities-pois",
+                "categories": [
+                  {
+                    "value": "school"
+                  },
+                  {
+                    "value": "hospital"
+                  },
+                  {
+                    "value": "clinic"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "map": {
+          "layerId": "cyclone-population",
+          "stackBaseOptions": true,
+          "stackLegend": {}
+        },
+        "baseControl": {
+          "id": "overlay-cyclone-category",
+          "options": [
+            {
+              "value": "1",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "who-cyclone-zone-cat1",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 3.5,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat1_cog_3857.tif"
+              }
+            },
+            {
+              "value": "2",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "who-cyclone-zone-cat2",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 1.7,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat2_cog_3857.tif"
+              }
+            },
+            {
+              "value": "3",
+              "layerConfig": {
+                "type": "cog",
+                "layerId": "who-cyclone-zone-cat3",
+                "colorScheme": "BrewerPurples9",
+                "mode": "ramp",
+                "min": 0,
+                "max": 1.1,
+                "legendSwatch": {
+                  "value": 1
+                },
+                "sourceUrl": "https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/storymaps_data/MMR_cyclone_kt34_cat3_cog_3857.tif"
+              },
+              "selected": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "sec-count",
+        "visualHazard": "cyclone",
+        "control": {
+          "options": [
+            {
+              "value": "children_u5",
+              "layerConfig": {
+                "layerId": "adm2-cyc-exposure-children",
+                "valuesUrl": "/data/mmr-adm2-exp-cyc-children-u5-cat3.json",
+                "stops": [
+                  {
+                    "max": 0.5,
+                    "color": "#ffffff"
+                  },
+                  {
+                    "max": 25000,
+                    "color": "#f9d5b6"
+                  },
+                  {
+                    "max": 100000,
+                    "color": "#f6a44d"
+                  },
+                  {
+                    "max": 10000000,
+                    "color": "#cc0130"
+                  }
+                ]
+              },
+              "results": {
+                "rows": [
+                  {
+                    "name": "Yangon (North)",
+                    "value": 240197
+                  },
+                  {
+                    "name": "Yangon (East)",
+                    "value": 162234
+                  },
+                  {
+                    "name": "Yangon (South)",
+                    "value": 126831
+                  },
+                  {
+                    "name": "Pathein",
+                    "value": 116263
+                  }
+                ],
+                "link": {
+                  "href": "#/?country=MMR&disaster=risk_cyclone&dimension=exposure"
+                }
+              }
+            },
+            {
+              "value": "facilities",
+              "layerConfig": {
+                "layerId": "adm2-cyc-exposure-facilities",
+                "valuesUrl": "/data/mmr-adm2-exp-cyc-facilities-cat3.json",
+                "stops": [
+                  {
+                    "max": 0.5,
+                    "color": "#ffffff"
+                  },
+                  {
+                    "max": 50.5,
+                    "color": "#f9d5b6"
+                  },
+                  {
+                    "max": 200.5,
+                    "color": "#f6a44d"
+                  },
+                  {
+                    "max": 100000,
+                    "color": "#cc0130"
+                  }
+                ]
+              },
+              "results": {
+                "rows": [
+                  {
+                    "name": "Minbu",
+                    "value": 881
+                  },
+                  {
+                    "name": "Yangon (East)",
+                    "value": 704
+                  },
+                  {
+                    "name": "Pakokku",
+                    "value": 677
+                  },
+                  {
+                    "name": "Gangaw",
+                    "value": 414
+                  }
+                ],
+                "link": {
+                  "href": "#/?country=MMR&disaster=risk_cyclone&dimension=exposure"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "sec-score",
+        "links": [
+          {
+            "key": "open-in-the-dashboard",
+            "href": "#/?country=MMR&disaster=risk_cyclone&dimension=exposure"
+          }
+        ],
+        "visualValuesUrl": "/data/mmr-adm2-exp-cyc-children-u5-cat3-named.json"
+      },
+      {
+        "id": "sec-decoder",
+        "decoder": {
+          "scenarios": [
+            {
+              "value": "1"
+            },
+            {
+              "value": "2"
+            },
+            {
+              "value": "3",
+              "selected": true
+            }
+          ],
+          "subjects": [
+            {
+              "value": "children_u5",
+              "pattern": "exp_cyc_kt34_children_u5_cat{scenario}"
+            },
+            {
+              "value": "pop_u15",
+              "pattern": "exp_cyc_kt34_pop_u15_cat{scenario}"
+            },
+            {
+              "value": "elderly",
+              "pattern": "exp_cyc_kt34_elderly_cat{scenario}"
+            },
+            {
+              "value": "female_pop",
+              "pattern": "exp_cyc_kt34_female_pop_cat{scenario}"
+            },
+            {
+              "value": "wra_pop",
+              "pattern": "exp_cyc_kt34_wra_pop_cat{scenario}"
+            },
+            {
+              "value": "total_pop",
+              "pattern": "exp_cyc_kt34_total_pop_cat{scenario}"
+            },
+            {
+              "value": "dependency",
+              "pattern": "exp_cyc_kt34_dependency_ratio_cat{scenario}"
+            },
+            {
+              "value": "education",
+              "pattern": "exp_cyc_kt34_education_{measure}_cat{scenario}",
+              "measures": [
+                {
+                  "value": "count"
+                },
+                {
+                  "value": "perc"
+                }
+              ]
+            },
+            {
+              "value": "hospitals",
+              "pattern": "exp_cyc_kt34_hospitals_{measure}_cat{scenario}",
+              "measures": [
+                {
+                  "value": "count"
+                },
+                {
+                  "value": "perc"
+                }
+              ]
+            },
+            {
+              "value": "primary_healthcare",
+              "pattern": "exp_cyc_kt34_primary_healthcare_{measure}_cat{scenario}",
+              "measures": [
+                {
+                  "value": "count"
+                },
+                {
+                  "value": "perc"
+                }
+              ]
+            },
+            {
+              "value": "crops",
+              "pattern": "exp_cyc_kt34_crops_km2_cat{scenario}"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "footer": {
+    "callouts": [
+      {
+        "key": "positive"
+      },
+      {
+        "key": "warning"
+      }
+    ]
+  }
+}

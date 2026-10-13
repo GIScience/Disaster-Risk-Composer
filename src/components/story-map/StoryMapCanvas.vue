@@ -8,6 +8,7 @@ import ChoroplethLayer from "@/components/map/ChoroplethLayer.vue";
 import MapLegend from "@/components/story-map/MapLegend.vue";
 import type { MapLegendLayer } from "@/components/story-map/MapLegend.vue";
 import { cn } from "@/utils/cn";
+import { useStoryText } from "@/composables/useStoryText";
 import type { ChoroplethStop, StackLayer, VectorCategoryStyle } from "@/types/story-map";
 import { COLORFUL_STYLE } from "@/config/basemaps";
 const props = withDefaults(
@@ -23,7 +24,7 @@ const props = withDefaults(
     rasterColorScheme?: string;
     rasterMin?: number;
     rasterMax?: number;
-    rasterSwatch?: { value: number; label: string };
+    rasterSwatch?: { value: number; label?: string };
     mode?: "rgb" | "ramp" | "categorical";
     showOpacityControl?: boolean;
     vectorUrl?: string;
@@ -42,8 +43,9 @@ const props = withDefaults(
     baseMode?: "rgb" | "ramp" | "categorical";
     baseRasterMin?: number;
     baseRasterMax?: number;
-    baseRasterSwatch?: { value: number; label: string };
+    baseRasterSwatch?: { value: number; label?: string };
     stackLayers?: StackLayer[];
+    stackLegend?: { title: string; subtitle?: string };
     layerLabel?: string;
     baseLayerLabel?: string;
   }>(),
@@ -59,6 +61,7 @@ const props = withDefaults(
   },
 );
 
+const { t } = useStoryText();
 const el = ref<HTMLElement | null>(null);
 const isVisible = ref(false);
 const isLoaded = ref(false);
@@ -80,8 +83,8 @@ const legendLayers = computed<MapLegendLayer[]>(() => [
   ...(props.stackLayers?.length
     ? [
         {
-          label: props.stackLayers[0].legendSwatch?.label,
-          sublabel: props.stackLayers[0].legendSubtitle,
+          label: props.stackLegend?.title,
+          sublabel: props.stackLegend?.subtitle,
           stack: props.stackLayers.map((l, i) => ({
             label: l.label,
             colorScheme: l.colorScheme,
@@ -181,7 +184,7 @@ onBeforeUnmount(() => {
             )
           "
         >
-          Opacity:
+          {{ t("map.opacity") }}:
           <span class="font-extrabold text-slate-700">
             {{ Math.round(layerOpacity * 100) }}%
           </span>

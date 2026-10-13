@@ -2,8 +2,10 @@
 import { computed, ref, watch } from "vue";
 import type { IndicatorDecoder } from "@/types/story-map";
 import { describeIndicator } from "@/utils/indicatorDescription";
+import { useStoryText } from "@/composables/useStoryText";
 
 const props = defineProps<{ decoder: IndicatorDecoder }>();
+const { t } = useStoryText();
 
 const scenario = ref(
   (props.decoder.scenarios.find((s) => s.selected) ?? props.decoder.scenarios[0]).value,
@@ -27,7 +29,7 @@ const column = computed(() =>
     .replace("{measure}", measure.value),
 );
 const description = computed(
-  () => describeIndicator(column.value) ?? "No description available for this combination.",
+  () => describeIndicator(column.value) ?? t("decoder.noDescription"),
 );
 // How the Indicators tab labels the column
 const dashboardLabel = computed(() =>
@@ -64,7 +66,7 @@ const dashboardLabel = computed(() =>
         v-if="subject.measures?.length"
         class="flex flex-col gap-1 text-xs font-semibold uppercase tracking-wider text-gray-500"
       >
-        {{ decoder.measureLabel ?? "Measure" }}
+        {{ decoder.measureLabel ?? t("decoder.measure") }}
         <select
           v-model="measure"
           class="rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm font-normal normal-case tracking-normal text-gray-900"
@@ -79,10 +81,10 @@ const dashboardLabel = computed(() =>
     <div class="mt-4 rounded-lg border border-red-100 bg-white p-4" aria-live="polite">
       <p class="text-base font-semibold leading-relaxed text-gray-900">{{ description }}</p>
       <dl class="mt-3 grid gap-x-4 gap-y-1 text-xs text-gray-500 sm:grid-cols-[auto_1fr]">
-        <dt>In the data</dt>
+        <dt>{{ t("decoder.inData") }}</dt>
         <dd><code class="rounded bg-gray-100 px-1.5 py-0.5 text-gray-700">{{ column }}</code></dd>
-        <dt>In the dashboard</dt>
-        <dd>{{ decoder.dashboardPath ?? "Indicators tab" }} → “{{ dashboardLabel }}”</dd>
+        <dt>{{ t("decoder.inDashboard") }}</dt>
+        <dd>{{ decoder.dashboardPath ?? t("decoder.dashboardPath") }} → “{{ dashboardLabel }}”</dd>
       </dl>
     </div>
   </div>

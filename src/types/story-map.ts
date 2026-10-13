@@ -1,15 +1,11 @@
 
 export interface StoryMapConfig {
   meta: Meta;
-  app: AppConfig;
+  app?: AppConfig;
   storyMap: StoryMapContent;
   footer: FooterConfig;
-  hero: {
-    title: string;
-    subtitle: string;
-    alt: string;
-    image: string;
-  };
+  /** Wording used inside the components (from the `ui` part of the text.md files). */
+  ui?: Record<string, unknown>;
 }
 
 export interface Meta {
@@ -55,8 +51,10 @@ export interface StoryMapContent {
  * jump to the step explaining them (`sectionRef`); plain parts are connecting words.
  */
 export interface Anatomy {
-  intro: string;
+  intro?: string;
   parts: {
+    /** Identifies the part in text.md (parts without a sectionRef). */
+    key?: string;
     text: string;
     role?: string;
     sectionRef?: string;
@@ -122,7 +120,8 @@ export interface Aside {
 }
 
 export interface Header {
-  title: string;
+  /** Shown only when the story map has no `anatomy` question. */
+  title?: string;
   description: string;
   equation: { terms: EquationTerm[] };
 }
@@ -201,11 +200,9 @@ export interface layerConfigType {
    * Zone rasters with one value (e.g. 1 = inside a wind zone): show one solid swatch with this
    * label in the map legend instead of a Low-High gradient.
    */
-  legendSwatch?: { value: number; label: string };
+  legendSwatch?: { value: number; label?: string };
   /** Name of this layer in a stacked map's legend, if it differs from the option label. */
   legendLabel?: string;
-  /** Small line under the legend title, e.g. which scale the entries use. */
-  legendSubtitle?: string;
 }
 
 export interface VectorCategoryStyle {
@@ -304,6 +301,8 @@ export interface MapConfig {
   stackOptions?: boolean;
   /** Same for the `baseControl` options: all base layers shown, the selected one highlighted. */
   stackBaseOptions?: boolean;
+  /** Legend title (and optional subtitle) of the stacked layers. */
+  stackLegend?: { title: string; subtitle?: string };
 }
 
 /** One layer of a stacked map (see MapConfig.stackOptions). */
@@ -321,7 +320,7 @@ export interface ResultRow {
 
 export interface FooterConfig {
   callouts: Callout[];
-  figure: Figure;
+  figure?: Figure;
 }
 export interface Callout {
   variant: "positive" | "warning";
