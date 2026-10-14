@@ -71,7 +71,7 @@ const filteredStoryMaps = computed(() => {
           <span class="text-heigit-red">comes to life</span>
         </h1>
         <p class="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
-          Interactive walkthroughs of how Disaster Risk Composer(DIRC)
+          Interactive walkthroughs of how the Disaster Risk Composer
           quantifies humanitarian risk. Explore the data, the methodology, and
           the result.
         </p>
