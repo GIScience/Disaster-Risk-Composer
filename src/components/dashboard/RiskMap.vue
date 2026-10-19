@@ -10,6 +10,7 @@ import { useRiskMapStore } from "@/store/riskMapStore";
 import { cn } from "@/utils/cn";
 import type { RiskViewMode } from "@/composables/useRiskLogic";
 import { useIsEmbedded } from "@/composables/use-is-embedded";
+import { countryCodeFromBoundaryUrl, excludedRegionIds } from "@/config/excludedRegions";
 
 const riskMapStore = useRiskMapStore();
 const { dimensions } = storeToRefs(riskMapStore);
@@ -172,6 +173,20 @@ const boundsFittedForUrl = ref<string | null>(null);
 // map would stay empty or silently colour only part of the country. Checked once per country,
 // after the map has fitted the country and its tiles have loaded.
 const REGION_MATCH_THRESHOLD = 0.9;
+// Districts the dashboard leaves out (config/excludedRegions.ts, e.g. Taiwan in China's
+// boundaries) are hidden from every district layer, optionally combined with another filter.
+function withoutExcluded(
+  filter?: maplibregl.ExpressionSpecification,
+): maplibregl.ExpressionSpecification {
+  const ids = excludedRegionIds(countryCodeFromBoundaryUrl(props.pmtilesUrl));
+  const keep: maplibregl.ExpressionSpecification = [
+    "!",
+    ["in", ["to-string", ["get", props.pcodeField]], ["literal", ids]],
+  ];
+  if (!filter) return ids.length ? keep : ["boolean", true];
+  return ids.length ? ["all", keep, filter] : filter;
+}
+
 const regionMismatch = ref<{ matched: number; data: number; tiles: number } | null>(null);
 let regionCheckDoneFor: string | null = null;
 
@@ -567,6 +582,7 @@ async function updateLayer() {
         "fill-opacity": Number(layerOpacity.value),
         "fill-outline-color": "#94a3b8", // Grey for subnational boundaries
       },
+      filter: withoutExcluded(),
     });
 
     // Greys out every other region while one is highlighted from the statistics panel, so the
@@ -581,7 +597,7 @@ async function updateLayer() {
         "fill-opacity": 0.55,
       },
       layout: { visibility: props.highlightedPcode ? "visible" : "none" },
-      filter: ["!=", props.pcodeField, props.highlightedPcode || ""],
+      filter: withoutExcluded(["!=", ["get", props.pcodeField], props.highlightedPcode || ""]),
     });
 
     mapInstance.addLayer({
@@ -594,7 +610,7 @@ async function updateLayer() {
         "line-width": 1,
         "line-opacity": 0.9,
       },
-      filter: ["==", props.pcodeField, props.highlightedPcode || ""],
+      filter: withoutExcluded(["==", ["get", props.pcodeField], props.highlightedPcode || ""]),
     });
 
     // Fit bounds - only for a genuinely new dataset, not when the layer is
@@ -603,7 +619,7 @@ async function updateLayer() {
       const pmtilesFile = new pmtiles.PMTiles(props.pmtilesUrl);
       try {
         const metadata = (await pmtilesFile.getMetadata()) as any;
-        const countryCode = props.pmtilesUrl.match(/\/([A-Z]{3})_ADM\d\.pmtiles$/)?.[1];
+        const countryCode = countryCodeFromBoundaryUrl(props.pmtilesUrl);
         const override = countryCode ? MAINLAND_BOUNDS[countryCode] : undefined;
         if (override) {
           countryBounds.value = override;
@@ -681,7 +697,10 @@ let highlightClearTimer: ReturnType<typeof setTimeout> | null = null;
 function applyHighlight(pcode: string | null) {
   const mapInstance = map.value;
   if (mapInstance && mapInstance.getLayer(DIM_LAYER_ID)) {
-    mapInstance.setFilter(DIM_LAYER_ID, ["!=", props.pcodeField, pcode || ""]);
+    mapInstance.setFilter(
+      DIM_LAYER_ID,
+      withoutExcluded(["!=", ["get", props.pcodeField], pcode || ""]),
+    );
     mapInstance.setLayoutProperty(
       DIM_LAYER_ID,
       "visibility",
@@ -689,11 +708,10 @@ function applyHighlight(pcode: string | null) {
     );
   }
   if (mapInstance && mapInstance.getLayer("risk-layer-highlight")) {
-    mapInstance.setFilter("risk-layer-highlight", [
-      "==",
-      props.pcodeField,
-      pcode || "",
-    ]);
+    mapInstance.setFilter(
+      "risk-layer-highlight",
+      withoutExcluded(["==", ["get", props.pcodeField], pcode || ""]),
+    );
   }
 }
 

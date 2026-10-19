@@ -3,6 +3,8 @@ import jsyaml from "js-yaml";
 export interface Country {
   code: string;
   name: string;
+  /** OSM extract name from countries.yaml (e.g. "ivory-coast"); HDX dataset URLs are built from it. */
+  slug?: string;
 }
 
 const COUNTRIES_YAML_URL =
@@ -29,10 +31,25 @@ function fetchCountriesYamlText(): Promise<string> {
   return countriesYamlTextPromise;
 }
 
-// Where the OSM extract slug isn't the country's name
+// Where the OSM extract slug isn't the country's name (fallback only, see labelNames below)
 const NAME_OVERRIDES: Record<string, string> = {
   IRL: "Ireland", // slug "ireland-and-northern-ireland" covers the whole island
 };
+
+// Country names shown on the world map (public/data/world-labels.json, made by
+// scripts/generate_world_labels.py). The dropdown uses the same names, so map and list agree.
+async function fetchLabelNames(): Promise<Record<string, string>> {
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}data/world-labels.json`);
+    if (!res.ok) return {};
+    const data = (await res.json()) as {
+      features: { properties: { iso_a3: string; name: string } }[];
+    };
+    return Object.fromEntries(data.features.map((f) => [f.properties.iso_a3, f.properties.name]));
+  } catch {
+    return {};
+  }
+}
 
 export async function fetchCountries(): Promise<Country[]> {
   try {
@@ -40,6 +57,7 @@ export async function fetchCountries(): Promise<Country[]> {
     const resJson = await fetch(`${import.meta.env.BASE_URL}data/available_countries.json`);
     if (!resJson.ok) throw new Error("Failed to load available_countries.json");
     const validCodes: string[] = await resJson.json();
+    const labelNames = await fetchLabelNames();
 
     // Fetch the YAML metadata to get proper country names
     const textYaml = await fetchCountriesYamlText();
@@ -64,7 +82,8 @@ export async function fetchCountries(): Promise<Country[]> {
       const slug = slugFor(code);
       return {
         code,
-        name: NAME_OVERRIDES[code] ?? (slug ? prettifySlug(slug) : code),
+        slug,
+        name: labelNames[code] ?? NAME_OVERRIDES[code] ?? (slug ? prettifySlug(slug) : code),
       };
     });
 

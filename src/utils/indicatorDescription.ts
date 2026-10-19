@@ -50,8 +50,17 @@ function floodEvent(returnPeriod: string): string {
   return `a 1-in-${years}-year flood (${chance}% chance each year)`;
 }
 
-function cycloneEvent(category: string): string {
-  return `Category ${category} cyclone winds`;
+// GAIA's three cyclone classes ("cat1-3" in the column names) group the five Saffir-Simpson
+// categories; they are called intensities so they aren't mistaken for the categories.
+const CYCLONE_INTENSITY_CATEGORIES: Record<string, string> = {
+  "1": "Category 1",
+  "2": "Categories 2–3",
+  "3": "Categories 4–5",
+};
+
+function cycloneEvent(intensity: string): string {
+  const categories = CYCLONE_INTENSITY_CATEGORIES[intensity];
+  return `intensity ${intensity} cyclone winds${categories ? ` (Saffir-Simpson ${categories})` : ""}`;
 }
 
 function hazardEvent(hazardKey: string): string {

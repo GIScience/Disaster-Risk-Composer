@@ -67,8 +67,8 @@ const filteredStoryMaps = computed(() => {
         <h1
           class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
         >
-          See how humanitarian risk
-          <span class="text-heigit-red">comes to life</span>
+          Understand how we estimate risk
+          <span class="text-heigit-red">from different hazards</span>
         </h1>
         <p class="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
           Interactive walkthroughs of how the Disaster Risk Composer

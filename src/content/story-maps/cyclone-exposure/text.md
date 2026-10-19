@@ -20,7 +20,7 @@ Storm over a settlement
 Cyclone exposure, explained
 
 ## Subtitle {subtitle}
-What does “children under 5 exposed to category 3 cyclone winds” actually mean? This page takes one dashboard indicator apart, step by step.
+What does “children under 5 exposed to intensity 3 cyclone winds” actually mean? This page takes one dashboard indicator apart, step by step.
 
 # Sidebar {storyMap.sidebar}
 
@@ -30,10 +30,10 @@ Cyclone Exposure Story Map
 ## Subtitle {subtitle}
 Understand how cyclone exposure indicators are produced and what they mean.
 
-## Sidebar step: Choose a cyclone category {steps.sec-cyclone}
+## Sidebar step: Choose a cyclone intensity {steps.sec-cyclone}
 
 ### Title {title}
-Choose a cyclone category
+Choose a cyclone intensity
 
 ### Text {body}
 Storm strength on the Saffir-Simpson scale.
@@ -87,7 +87,7 @@ Exposure shows who has been in the path of strong cyclone winds since 2004, not 
 # Header {storyMap.header}
 
 ## Description {description}
-It estimates how many children under 5 live in places that a Category 4 or 5 storm reached since 2004, with winds of at least 34 knots (about 63 km/h). In the dashboard these strongest storms are grouped as “category 3”. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
+It estimates how many children under 5 live in places that the strongest storms since 2004, Saffir-Simpson Categories 4 and 5, reached with winds of at least 34 knots (about 63 km/h). The dashboard groups the five storm categories into three intensities: intensity 1 = Category 1, intensity 2 = Categories 2–3, intensity 3 = Categories 4–5. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
 
 ## Equation: Cyclone winds {equation.terms.cyclone-winds}
 
@@ -128,13 +128,13 @@ One population group; others work the same way.
 ### Words in the question {text}
 exposed to
 
-## Question part: category 3 cyclones {parts.sec-cyclone}
+## Question part: intensity 3 cyclones {parts.sec-cyclone}
 
 ### Words in the question {text}
-category 3 cyclones
+intensity 3 cyclones
 
 ### Hint {hint}
-Category 4–5 storms, the strongest, e.g. cyclones Nargis (2008) and Mocha (2023).
+Saffir-Simpson Categories 4–5, the strongest storms, e.g. cyclones Nargis (2008) and Mocha (2023).
 
 ## Question part: with winds of at least {parts.with-winds-of-at-least}
 
@@ -162,18 +162,18 @@ per district
 ### Hint {hint}
 All exposed children in a district added up.
 
-# Step 1: Choose a cyclone category {storyMap.sections.sec-cyclone}
+# Step 1: Choose a cyclone intensity {storyMap.sections.sec-cyclone}
 
 ## Title {title}
-Choose a cyclone category
+Choose a cyclone intensity
 
 ## Subtitle {subtitle}
-Every place that 34-knot winds reached is sorted into one category: that of the strongest storm that reached it. The map shows all three; switch the category to highlight one.
+Every place that 34-knot winds reached gets one intensity: that of the strongest storm that reached it. The map shows all three; switch the intensity to highlight one.
 
 ## Info box {note.body}
-The category is the storm's **peak wind near its centre** on the Saffir-Simpson scale (e.g. 119–153 km/h for Category 1), not the wind at each place. Weaker tropical storms are not included.
+**Intensity 1** = Saffir-Simpson Category 1, **intensity 2** = Categories 2–3, **intensity 3** = Categories 4–5. The Saffir-Simpson category describes the storm's **peak wind near its centre** (e.g. 119–153 km/h for Category 1), not the wind at each place. Weaker tropical storms are not included.
 
-The zones come from **6 storms** between 2004 and 2023. Stronger storms have larger wind fields, so Category 3 covers the largest area.
+The zones come from **6 storms** between 2004 and 2023. Stronger storms have larger wind fields, so intensity 3 covers the largest area.
 
 ## Dataset {dataset.title}
 Historical cyclone tracks, 2004–2023
@@ -181,13 +181,13 @@ Historical cyclone tracks, 2004–2023
 ## Dataset source {dataset.source}
 IBTrACS v04r01, NOAA NCEI
 
-## Button: Category 1 {control.options.1}
+## Button: Intensity 1 {control.options.1}
 
 ### Label {label}
-Category 1
+Intensity 1
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 1 storm
+Intensity 1: Category 1 storm
 
 ### Key figure {stat.value}
 5.9 M
@@ -195,13 +195,13 @@ Category 1 storm
 ### Key figure text {stat.label}
 people live where the strongest storm since 2004 was a Saffir-Simpson Category 1. The smallest zone.
 
-## Button: Category 2 {control.options.2}
+## Button: Intensity 2 {control.options.2}
 
 ### Label {label}
-Category 2
+Intensity 2
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 2–3 storms
+Intensity 2: Category 2–3 storms
 
 ### Key figure {stat.value}
 7.8 M
@@ -209,13 +209,13 @@ Category 2–3 storms
 ### Key figure text {stat.label}
 people live where the strongest storm was a Saffir-Simpson Category 2 or 3.
 
-## Button: Category 3 {control.options.3}
+## Button: Intensity 3 {control.options.3}
 
 ### Label {label}
-Category 3
+Intensity 3
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 4–5 storms
+Intensity 3: Category 4–5 storms
 
 ### Key figure {stat.value}
 27.2 M
@@ -230,7 +230,7 @@ Wind zone (34 kt or more)
 Strongest storm that reached the place, by Saffir-Simpson category
 
 ## Graphic caption {explainer.caption}
-Where zones overlap, the **strongest storm wins**. Unlike flood scenarios, the categories don't overlap, so they add up: 5.9 M + 7.8 M + 27.2 M ≈ **40.9 M people** (about 3 in 4) live in the wind zone.
+Where zones overlap, the **strongest storm wins**. Unlike flood scenarios, the intensities don't overlap, so they add up: 5.9 M + 7.8 M + 27.2 M ≈ **40.9 M people** (about 3 in 4) live in the wind zone.
 
 # Step 1 graphic: overlapping storms {ui.overlap}
 
@@ -244,13 +244,13 @@ Cat 1 storm
 Cat 4 storm
 
 ## Right title {after}
-One class per place
+One intensity per place
 
 ## Right: weaker class {weakClass}
-Category 1
+Intensity 1
 
 ## Right: stronger class {strongClass}
-Category 3
+Intensity 3
 
 # Step 2: Apply the wind threshold {storyMap.sections.sec-wind}
 
@@ -263,7 +263,7 @@ Not every windy place is dangerous. A wind-speed threshold splits the area into 
 ## Info box {note.body}
 Only places with winds of **at least 34 knots** (63 km/h) count as exposed. From this speed on, branches break, loose objects fly around and walking becomes dangerous. Set the wind speed to see what it means.
 
-For every piece of the storm track, the track data reports how far 34-knot winds reached (the mean of four directions). The corridor along the track is the wind zone. Every place inside is then sorted into one category (step 1). Inside the zone, the wind is only known to be at least 34 knots.
+For every piece of the storm track, the track data reports how far 34-knot winds reached (the mean of four directions). The corridor along the track is the wind zone. Every place inside then gets one intensity (step 1). Inside the zone, the wind is only known to be at least 34 knots.
 
 # Step 2 graphic: wind scene {ui.wind}
 
@@ -302,7 +302,7 @@ Set the wind speed
 Overlay people or facilities
 
 ## Subtitle {subtitle}
-Choose a group, then a cyclone category.
+Choose a group, then a cyclone intensity.
 
 ## Button: Children under 5 {control.options.children_u5}
 
@@ -349,29 +349,29 @@ Wind zone (34 kt or more)
 ## Subtitle {map.stackLegend.subtitle}
 Strongest storm that reached the place, by Saffir-Simpson category
 
-## Second row button: Category 1 {baseControl.options.1}
+## Second row button: Intensity 1 {baseControl.options.1}
 
 ### Label {label}
-Category 1
+Intensity 1
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 1 storm
+Intensity 1: Category 1 storm
 
-## Second row button: Category 2 {baseControl.options.2}
+## Second row button: Intensity 2 {baseControl.options.2}
 
 ### Label {label}
-Category 2
+Intensity 2
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 2–3 storms
+Intensity 2: Category 2–3 storms
 
-## Second row button: Category 3 {baseControl.options.3}
+## Second row button: Intensity 3 {baseControl.options.3}
 
 ### Label {label}
-Category 3
+Intensity 3
 
 ### Map legend entry {layerConfig.legendLabel}
-Category 4–5 storms
+Intensity 3: Category 4–5 storms
 
 # Step 4: Aggregate to districts {storyMap.sections.sec-count}
 
@@ -379,7 +379,7 @@ Category 4–5 storms
 Aggregate to districts
 
 ## Subtitle {subtitle}
-Category 3 cyclones. Choose what to count.
+Intensity 3 cyclones (Saffir-Simpson Categories 4–5). Choose what to count.
 
 ## Button: Children under 5 {control.options.children_u5}
 
@@ -512,20 +512,20 @@ Every cyclone exposure indicator in the dashboard follows the same pattern.
 ## Label of the first dropdown {decoder.scenarioLabel}
 Cyclone
 
-## Dropdown 1 option: Category 1 {decoder.scenarios.1}
+## Dropdown 1 option: Intensity 1 {decoder.scenarios.1}
 
 ### Label {label}
-Category 1
+Intensity 1
 
-## Dropdown 1 option: Category 2 {decoder.scenarios.2}
-
-### Label {label}
-Category 2
-
-## Dropdown 1 option: Category 3 {decoder.scenarios.3}
+## Dropdown 1 option: Intensity 2 {decoder.scenarios.2}
 
 ### Label {label}
-Category 3
+Intensity 2
+
+## Dropdown 1 option: Intensity 3 {decoder.scenarios.3}
+
+### Label {label}
+Intensity 3
 
 ## Label of the second dropdown {decoder.subjectLabel}
 Who or what
@@ -617,7 +617,7 @@ What this indicator tells us
 ## List {positive.items}
 - where many people live in places that strong cyclone winds have reached
 - which districts to look at first, compared with others in the same country
-- how the picture changes for different groups and cyclone categories
+- how the picture changes for different groups and cyclone intensities
 
 ## Title {warning.title}
 What this indicator does not tell us

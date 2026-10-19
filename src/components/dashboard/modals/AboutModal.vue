@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { header, introHtml, methodology, method, limitationsTitle, limitations, resources, contact } from '@/content/resources.json';
+import { header, introHtml, methodology, method, limitationsTitle, limitations, mapsDisclaimer, resources, contact } from '@/content/resources.json';
 import { useRiskMapStore } from '@/store/riskMapStore';
 
 defineEmits<{
@@ -11,15 +11,32 @@ const riskMapStore = useRiskMapStore();
 
 const HDX_ORG_LINK = 'https://data.humdata.org/organization/heidelberg-institute-for-geoinformation-technology';
 
+// HDX dataset URLs use the OSM extract name (countries.yaml slug, e.g. "ivory-coast"), not the
+// displayed country name. These countries share one dataset with a neighbour:
+const HDX_SHARED_DATASETS: Record<string, string> = {
+  HTI: 'haiti-and-domrep',
+  DOM: 'haiti-and-domrep',
+  SEN: 'senegal-and-gambia',
+  GMB: 'senegal-and-gambia',
+};
+// No HDX dataset yet (EU countries added with the NUTS boundaries): link to HeiGIT's HDX page
+const HDX_NO_DATASET = new Set([
+  'AUT', 'BEL', 'CZE', 'DEU', 'DNK', 'ESP', 'EST', 'FIN', 'FRA',
+  'HRV', 'IRL', 'ITA', 'LTU', 'LVA', 'NLD', 'PRT', 'SVN', 'SWE',
+]);
+
+const hdxSlug = computed(() => {
+  const code = riskMapStore.selectedCountry;
+  if (!code || HDX_NO_DATASET.has(code)) return '';
+  return HDX_SHARED_DATASETS[code] ?? riskMapStore.selectedCountrySlug;
+});
+
 const resourceItems = computed(() =>
   resources.items.map((resource) => {
-    if (resource.link.includes('{{ country }}') && !riskMapStore.selectedCountry) {
-      return { ...resource, link: HDX_ORG_LINK };
-    }
-    return {
-      ...resource,
-      link: resource.link.replace('{{ country }}', riskMapStore.selectedCountryName.toLowerCase()),
-    };
+    if (!resource.link.includes('{{ country }}')) return resource;
+    return hdxSlug.value
+      ? { ...resource, link: resource.link.replace('{{ country }}', hdxSlug.value) }
+      : { ...resource, link: HDX_ORG_LINK };
   })
 );
 
@@ -107,6 +124,11 @@ const openLink = (url: string) => window.open(url, '_blank', 'noopener,noreferre
               <strong>{{ limitation.title }}:</strong> {{ limitation.description }}
             </li>
           </ul>
+        </section>
+
+        <section>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">{{ mapsDisclaimer.title }}</h3>
+          <p class="text-sm text-slate-500">{{ mapsDisclaimer.text }}</p>
         </section>
 
         <section>

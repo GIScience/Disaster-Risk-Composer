@@ -50,6 +50,10 @@
       "description": "The model does not account for local knowledge and practices."
     }
   ],
+  "mapsDisclaimer": {
+    "title": "Maps",
+    "text": "The boundaries and names shown and the designations used on the maps do not imply official endorsement or acceptance by HeiGIT."
+  },
   "resources": {
     "title": "Further Resources",
     "items": [
@@ -61,7 +65,7 @@
       {
         "title": "HDX",
         "description": "Explore the Humanitarian Data Exchange for additional datasets.",
-        "link": "https://data.humdata.org/m/dataset/{{ country }}---risk-assessment-indicators"
+        "link": "https://data.humdata.org/dataset/{{ country }}---risk-assessment-indicators"
       }
     ]
   },

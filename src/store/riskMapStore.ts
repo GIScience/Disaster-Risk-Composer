@@ -69,6 +69,9 @@ export const useRiskMapStore = defineStore("riskMap", {
         ""
       );
     },
+    selectedCountrySlug(state): string {
+      return state.countries.find((c) => c.code === state.selectedCountry)?.slug || "";
+    },
     existingPcodes(state): string[] {
       if (!state.pcodeField) return [];
       return state.lastLoadedData.map((d) => String(d[state.pcodeField]));

@@ -16,6 +16,7 @@ import {
 import { useRiskMapStore } from "../store/riskMapStore";
 import { detectRegionIdColumn, regionIdLabel } from "../utils/regionId";
 import { useIsEmbedded } from "./use-is-embedded";
+import { excludedRegionIds } from "@/config/excludedRegions";
 import {
   stripDimensionPrefix,
   sanitizeIndicatorName,
@@ -209,15 +210,20 @@ export function useRiskLogic() {
       const { loadParquetData } = await import("../utils/duckdb");
       const data = await loadParquetData(parquetUrl);
 
-      const rawJSON = JSON.parse(
+      const parsed = JSON.parse(
         JSON.stringify(data, (_, value) =>
           typeof value === "bigint" ? Number(value) : value,
         ),
       );
 
       // OCHA countries use "<LEVEL>_PCODE", NUTS (EU) countries "NUTS<n>_CODE" - see regionId.ts.
-      const idField = detectRegionIdColumn(Object.keys(rawJSON[0] || {}), level);
+      const idField = detectRegionIdColumn(Object.keys(parsed[0] || {}), level);
       if (!idField) throw new Error(`No region ID column found in ${parquetUrl}`);
+
+      // Drop districts the dashboard leaves out (e.g. Taiwan in China's files), before anything
+      // is computed from the data - see config/excludedRegions.ts.
+      const excluded = new Set(excludedRegionIds(countryCode));
+      const rawJSON = parsed.filter((row: any) => !excluded.has(String(row[idField])));
 
       store.setRawOriginalData(JSON.parse(JSON.stringify(rawJSON)));
 
