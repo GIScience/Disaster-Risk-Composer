@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cyclone Exposure Story Map – text for review</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; color: #1f2937; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; }
+  th, td { border: 1px solid #d1d5db; padding: 6px 8px; vertical-align: top; text-align: left; }
+  th { background: #f3f4f6; }
+  td p { margin: 0 0 0.4em; }
+  .note { background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 14px; }
+</style>
+</head>
+<body>
+<h1>Cyclone Exposure Story Map – text for review</h1>
+<div class="note">
+<p><strong>Please don't edit this page, comment instead:</strong> select a passage and add an inline comment, or leave a comment at the bottom.</p>
+<p>This page is generated from the dashboard's story map texts (version of 2026-10-20, a76853e + uncommitted changes) and is replaced when the texts change. See the texts in context: <a href="https://disaster-risk-composer.heigit.org/#/story-map/cyclone-exposure">https://disaster-risk-composer.heigit.org/#/story-map/cyclone-exposure</a> (if the story maps aren't published there yet: <a href="https://staging-dirc.heigitk8s.de/#/story-map/cyclone-exposure">https://staging-dirc.heigitk8s.de/#/story-map/cyclone-exposure</a>, only reachable via the HeiGIT VPN). Words in curly braces, such as {n}, are filled in by the page.</p>
+</div>
+<p><strong>0 texts new or changed</strong> since the last version (marked in the last column).</p>
+<h2>Overview card (story map list)</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Image description</td><td><p>Storm over a settlement</p>
+</td><td></td></tr>
+<tr><td>Title</td><td><p>Cyclone exposure, explained</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>What does “children under 5 exposed to intensity 3 cyclone winds” actually mean? This page takes one dashboard indicator apart, step by step.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Sidebar</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Cyclone Exposure Story Map</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Understand how cyclone exposure indicators are produced and what they mean.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Choose a cyclone intensity › Title</td><td><p>Choose a cyclone intensity</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Choose a cyclone intensity › Text</td><td><p>Storm strength on the Saffir-Simpson scale.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Apply the wind threshold › Title</td><td><p>Apply the wind threshold</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Apply the wind threshold › Text</td><td><p>Only winds of <strong>34 knots</strong> or more count.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Overlay people or facilities › Title</td><td><p>Overlay people or facilities</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Overlay people or facilities › Text</td><td><p>Who or what is in the wind zone.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Aggregate to districts › Title</td><td><p>Aggregate to districts</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Aggregate to districts › Text</td><td><p>From map pixels to one number per district.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: From count to colour › Title</td><td><p>From count to colour</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: From count to colour › Text</td><td><p>How the dashboard ranks districts.</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Decode any indicator › Title</td><td><p>Decode any indicator</p>
+</td><td></td></tr>
+<tr><td>Sidebar step: Decode any indicator › Text</td><td><p>Try other combinations.</p>
+</td><td></td></tr>
+<tr><td>About box: title</td><td><p>About this story map</p>
+</td><td></td></tr>
+<tr><td>About box: text</td><td><p>Exposure shows who has been in the path of strong cyclone winds since 2004, not who will be affected or who needs help. Example: Myanmar.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Header</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Description</td><td><p>It estimates how many children under 5 live in places that the strongest storms since 2004, Saffir-Simpson Categories 4 and 5, reached with winds of at least 34 knots (about 63 km/h). The dashboard groups the five storm categories into three intensities: intensity 1 = Category 1, intensity 2 = Categories 2–3, intensity 3 = Categories 4–5. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.</p>
+</td><td></td></tr>
+<tr><td>Equation: Cyclone winds › Label</td><td><p>Cyclone winds</p>
+</td><td></td></tr>
+<tr><td>Equation: Cyclone winds › Small text</td><td><p>where strong winds reach</p>
+</td><td></td></tr>
+<tr><td>Equation: People &amp; places › Label</td><td><p>People &amp; places</p>
+</td><td></td></tr>
+<tr><td>Equation: People &amp; places › Small text</td><td><p>who or what is there</p>
+</td><td></td></tr>
+<tr><td>Equation: Exposure › Label</td><td><p>Exposure</p>
+</td><td></td></tr>
+<tr><td>Equation: Exposure › Small text</td><td><p>who is in the wind zone</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Header question and cards</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Question part: children under 5 › Words in the question</td><td><p>children under 5</p>
+</td><td></td></tr>
+<tr><td>Question part: children under 5 › Hint</td><td><p>One population group; others work the same way.</p>
+</td><td></td></tr>
+<tr><td>Question part: exposed to › Words in the question</td><td><p>exposed to</p>
+</td><td></td></tr>
+<tr><td>Question part: intensity 3 cyclones › Words in the question</td><td><p>intensity 3 cyclones</p>
+</td><td></td></tr>
+<tr><td>Question part: intensity 3 cyclones › Hint</td><td><p>Saffir-Simpson Categories 4–5, the strongest storms, e.g. cyclones Nargis (2008) and Mocha (2023).</p>
+</td><td></td></tr>
+<tr><td>Question part: with winds of at least › Words in the question</td><td><p>with winds of at least</p>
+</td><td></td></tr>
+<tr><td>Question part: 34 knots › Words in the question</td><td><p>34 knots</p>
+</td><td></td></tr>
+<tr><td>Question part: 34 knots › Hint</td><td><p>About 63 km/h. Weaker winds don't count.</p>
+</td><td></td></tr>
+<tr><td>Question part: , counted › Words in the question</td><td><p>, counted</p>
+</td><td></td></tr>
+<tr><td>Question part: per district › Words in the question</td><td><p>per district</p>
+</td><td></td></tr>
+<tr><td>Question part: per district › Hint</td><td><p>All exposed children in a district added up.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 1: Choose a cyclone intensity</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Choose a cyclone intensity</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Every place that 34-knot winds reached gets one intensity: that of the strongest storm that reached it. The map shows all three; switch the intensity to highlight one.</p>
+</td><td></td></tr>
+<tr><td>Info box</td><td><p><strong>Intensity 1</strong> = Saffir-Simpson Category 1, <strong>intensity 2</strong> = Categories 2–3, <strong>intensity 3</strong> = Categories 4–5. The Saffir-Simpson category describes the storm's <strong>peak wind near its centre</strong> (e.g. 119–153 km/h for Category 1), not the wind at each place. Weaker tropical storms are not included.</p>
+<p>The zones come from <strong>6 storms</strong> between 2004 and 2023. Stronger storms have larger wind fields, so intensity 3 covers the largest area.</p>
+</td><td></td></tr>
+<tr><td>Dataset</td><td><p>Historical cyclone tracks, 2004–2023</p>
+</td><td></td></tr>
+<tr><td>Dataset source</td><td><p>IBTrACS v04r01, NOAA NCEI</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 1 › Label</td><td><p>Intensity 1</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 1 › Map legend entry</td><td><p>Intensity 1: Category 1 storm</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 1 › Key figure</td><td><p>5.9 M</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 1 › Key figure text</td><td><p>people live where the strongest storm since 2004 was a Saffir-Simpson Category 1. The smallest zone.</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 2 › Label</td><td><p>Intensity 2</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 2 › Map legend entry</td><td><p>Intensity 2: Category 2–3 storms</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 2 › Key figure</td><td><p>7.8 M</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 2 › Key figure text</td><td><p>people live where the strongest storm was a Saffir-Simpson Category 2 or 3.</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 3 › Label</td><td><p>Intensity 3</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 3 › Map legend entry</td><td><p>Intensity 3: Category 4–5 storms</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 3 › Key figure</td><td><p>27.2 M</p>
+</td><td></td></tr>
+<tr><td>Button: Intensity 3 › Key figure text</td><td><p>people, about half of Myanmar, live where a Saffir-Simpson Category 4 or 5 storm reached, e.g. cyclones Nargis (2008) or Mocha (2023). This is the zone in our example.</p>
+</td><td></td></tr>
+<tr><td>Map legend title</td><td><p>Wind zone (34 kt or more)</p>
+</td><td></td></tr>
+<tr><td>Map legend subtitle</td><td><p>Strongest storm that reached the place, by Saffir-Simpson category</p>
+</td><td></td></tr>
+<tr><td>Graphic caption</td><td><p>Where zones overlap, the <strong>strongest storm wins</strong>. Unlike flood scenarios, the intensities don't overlap, so they add up: 5.9 M + 7.8 M + 27.2 M ≈ <strong>40.9 M people</strong> (about 3 in 4) live in the wind zone.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 1 graphic: overlapping storms</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Left title</td><td><p>Zones of two storms</p>
+</td><td></td></tr>
+<tr><td>Left: weaker storm</td><td><p>Cat 1 storm</p>
+</td><td></td></tr>
+<tr><td>Left: stronger storm</td><td><p>Cat 4 storm</p>
+</td><td></td></tr>
+<tr><td>Right title</td><td><p>One intensity per place</p>
+</td><td></td></tr>
+<tr><td>Right: weaker class</td><td><p>Intensity 1</p>
+</td><td></td></tr>
+<tr><td>Right: stronger class</td><td><p>Intensity 3</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 2: Apply the wind threshold</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Apply the wind threshold</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Not every windy place is dangerous. A wind-speed threshold splits the area into two parts: places that are considered in the indicator, and places that are left out.</p>
+</td><td></td></tr>
+<tr><td>Info box</td><td><p>Only places with winds of <strong>at least 34 knots</strong> (63 km/h) count as exposed. From this speed on, branches break, loose objects fly around and walking becomes dangerous. Set the wind speed to see what it means.</p>
+<p>For every piece of the storm track, the track data reports how far 34-knot winds reached (the mean of four directions). The corridor along the track is the wind zone. Every place inside then gets one intensity (step 1). Inside the zone, the wind is only known to be at least 34 knots.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 2 graphic: wind scene</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Line above the graphic</td><td><p>Wind speed</p>
+</td><td></td></tr>
+<tr><td>Badge: above the threshold</td><td><p>Counts as exposed</p>
+</td><td></td></tr>
+<tr><td>Badge: below the threshold</td><td><p>Not counted (below 34 kt)</p>
+</td><td></td></tr>
+<tr><td>What the wind does (one line per speed band: below 20, 50, 62, 89, 118 km/h, and above)</td><td><ul>
+<li>Light wind: leaves and small twigs move.</li>
+<li>Strong breeze: small trees sway, large branches move.</li>
+<li>Near gale: whole trees move, walking against the wind is hard.</li>
+<li>Gale: branches break off, loose objects fly around, roof tiles can come off.</li>
+<li>Storm: trees are uprooted, buildings are damaged.</li>
+<li>Hurricane force: severe damage to buildings, trees and power lines.</li>
+</ul>
+</td><td></td></tr>
+<tr><td>Scale: threshold label</td><td><p>34 kt threshold</p>
+</td><td></td></tr>
+<tr><td>Scale: category ticks</td><td><p>Cat {n}</p>
+</td><td></td></tr>
+<tr><td>Note under the scale</td><td><p>Cat 1–5: where the Saffir-Simpson categories start. They measure a storm's peak wind near its centre; the wind zone reaches out to where the wind drops to 34 kt.</p>
+</td><td></td></tr>
+<tr><td>Slider label</td><td><p>Set the wind speed</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 3: Overlay people or facilities</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Overlay people or facilities</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Choose a group, then a cyclone intensity.</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Label</td><td><p>Children under 5</p>
+</td><td></td></tr>
+<tr><td>Button: Older people › Label</td><td><p>Older people</p>
+</td><td></td></tr>
+<tr><td>Button: Women › Label</td><td><p>Women</p>
+</td><td></td></tr>
+<tr><td>Button: Everyone › Label</td><td><p>Everyone</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Label</td><td><p>Facilities</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Map legend: school</td><td><p>School</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Map legend: hospital</td><td><p>Hospital</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Map legend: clinic</td><td><p>Clinic</p>
+</td><td></td></tr>
+<tr><td>Info box</td><td><p>We lay a population map over the wind zone. Everyone living in a grid cell (about 100 × 100 m) inside the zone counts as exposed.</p>
+<p>The population maps are projections for <strong>2030</strong> (WorldPop). “Facilities” are schools, hospitals and health centres from OpenStreetMap.</p>
+</td><td></td></tr>
+<tr><td>Map legend title</td><td><p>Wind zone (34 kt or more)</p>
+</td><td></td></tr>
+<tr><td>Map legend subtitle</td><td><p>Strongest storm that reached the place, by Saffir-Simpson category</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 1 › Label</td><td><p>Intensity 1</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 1 › Map legend entry</td><td><p>Intensity 1: Category 1 storm</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 2 › Label</td><td><p>Intensity 2</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 2 › Map legend entry</td><td><p>Intensity 2: Category 2–3 storms</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 3 › Label</td><td><p>Intensity 3</p>
+</td><td></td></tr>
+<tr><td>Second row button: Intensity 3 › Map legend entry</td><td><p>Intensity 3: Category 4–5 storms</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 4: Aggregate to districts</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Aggregate to districts</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Intensity 3 cyclones (Saffir-Simpson Categories 4–5). Choose what to count.</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Label</td><td><p>Children under 5</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Legend title</td><td><p>Exposed children under 5</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Legend entry 1</td><td><p>None</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Legend entry 2</td><td><p>Up to 25,000</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Legend entry 3</td><td><p>25,000–100,000</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Legend entry 4</td><td><p>More than 100,000</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Results box title</td><td><p>Example results (ADM2)</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Results box unit</td><td><p>children under 5 exposed</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Results box link</td><td><p>View in dashboard</p>
+</td><td></td></tr>
+<tr><td>Button: Children under 5 › Info box</td><td><p>We add up all exposed children in the grid cells inside each district (see below). That gives one number per district: the value you see in the dashboard.</p>
+<p>In Myanmar, about <strong>1.9 million children under 5</strong> live in places that Category 4–5 storms reached since 2004, almost <strong>1 in 2</strong>. 36 of 80 districts have such places.</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Label</td><td><p>Facilities</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Legend title</td><td><p>Exposed facilities</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Legend entry 1</td><td><p>None</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Legend entry 2</td><td><p>1–50</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Legend entry 3</td><td><p>51–200</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Legend entry 4</td><td><p>More than 200</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Results box title</td><td><p>Example results (ADM2)</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Results box unit</td><td><p>facilities exposed</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Results box link</td><td><p>View in dashboard</p>
+</td><td></td></tr>
+<tr><td>Button: Facilities › Info box</td><td><p>Schools, hospitals and health centres come from OpenStreetMap as <strong>points</strong>, not as a grid. A facility counts as exposed if it lies inside the wind zone.</p>
+<p>We count the exposed facilities in each district. In Myanmar, about <strong>5,550 facilities</strong> lie in places that Category 4–5 storms reached since 2004.</p>
+</td><td></td></tr>
+<tr><td>Info box</td><td><p>We add up all exposed children in the grid cells inside each district (see below). That gives one number per district: the value you see in the dashboard.</p>
+<p>In Myanmar, about <strong>1.9 million children under 5</strong> live in places that Category 4–5 storms reached since 2004, almost <strong>1 in 2</strong>. 36 of 80 districts have such places.</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 4 graphic</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>People: first panel title</td><td><p>Children per grid cell, wind zone edge in purple</p>
+</td><td></td></tr>
+<tr><td>People: note under the first panel</td><td><p>Raster data (WorldPop): every ~100 m cell holds a number. A cell counts if its centre lies in the wind zone.</p>
+</td><td></td></tr>
+<tr><td>People: totals title</td><td><p>Cells in the wind zone added up per district</p>
+</td><td></td></tr>
+<tr><td>Facilities: first panel title</td><td><p>Facilities as points, wind zone in purple</p>
+</td><td></td></tr>
+<tr><td>Facilities: note under the first panel</td><td><p>Vector data (OpenStreetMap): each facility is a point. Red = inside the wind zone.</p>
+</td><td></td></tr>
+<tr><td>Facilities: totals title</td><td><p>Exposed facilities counted per district</p>
+</td><td></td></tr>
+<tr><td>Key under the graphic: solid line</td><td><p>34 kt edge</p>
+</td><td></td></tr>
+<tr><td>Key under the graphic: dashed line</td><td><p>storm track</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 5: From count to colour</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>From count to colour</p>
+</td><td></td></tr>
+<tr><td>Info box</td><td><p><strong>Score:</strong> each district gets a value from <strong>0 to 1</strong> within the country: 0 for the lowest district, 1 for the highest. The dashboard averages these scores over all active indicators, using your weights.</p>
+<p><strong>Colour:</strong> the districts are split at the quartiles into four groups. Cyclone winds reach only part of the country, so here <strong>44 of 80 districts</strong> have the value 0 and all fall into the lowest group; the “Moderate” group stays empty. Colours rank districts <strong>within one country</strong> and can't be compared between countries.</p>
+</td><td></td></tr>
+<tr><td>Button: Open in the dashboard › Label</td><td><p>Open in the dashboard</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>The dashboard doesn't map raw counts. It turns them into scores, and the scores into four colours.</p>
+</td><td></td></tr>
+<tr><td>Chart unit</td><td><p>exposed children under 5 (Myanmar districts)</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Step 6: Decode any cyclone exposure indicator</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><p>Decode any cyclone exposure indicator</p>
+</td><td></td></tr>
+<tr><td>Subtitle</td><td><p>Every cyclone exposure indicator in the dashboard follows the same pattern.</p>
+</td><td></td></tr>
+<tr><td>Label of the first dropdown</td><td><p>Cyclone</p>
+</td><td></td></tr>
+<tr><td>Dropdown 1 option: Intensity 1 › Label</td><td><p>Intensity 1</p>
+</td><td></td></tr>
+<tr><td>Dropdown 1 option: Intensity 2 › Label</td><td><p>Intensity 2</p>
+</td><td></td></tr>
+<tr><td>Dropdown 1 option: Intensity 3 › Label</td><td><p>Intensity 3</p>
+</td><td></td></tr>
+<tr><td>Label of the second dropdown</td><td><p>Who or what</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Children under 5 › Label</td><td><p>Children under 5</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Children under 15 › Label</td><td><p>Children under 15</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Older people (65+) › Label</td><td><p>Older people (65+)</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Women › Label</td><td><p>Women</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Women of reproductive age › Label</td><td><p>Women of reproductive age</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Everyone › Label</td><td><p>Everyone</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Dependency ratio › Label</td><td><p>Dependency ratio</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Schools › Label</td><td><p>Schools</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Schools › Third dropdown option</td><td><p>Number</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Schools › Third dropdown option</td><td><p>Share (%)</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Hospitals › Label</td><td><p>Hospitals</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Hospitals › Third dropdown option</td><td><p>Number</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Hospitals › Third dropdown option</td><td><p>Share (%)</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Primary healthcare › Label</td><td><p>Primary healthcare</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Primary healthcare › Third dropdown option</td><td><p>Number</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Primary healthcare › Third dropdown option</td><td><p>Share (%)</p>
+</td><td></td></tr>
+<tr><td>Dropdown 2 option: Cropland (km²) › Label</td><td><p>Cropland (km²)</p>
+</td><td></td></tr>
+<tr><td>Label of the third dropdown</td><td><p>Measure</p>
+</td><td></td></tr>
+<tr><td>Where to find it in the dashboard</td><td><p>Indicators tab → Exposure</p>
+</td><td></td></tr>
+</tbody>
+</table>
+
+<h2>Footer boxes</h2>
+<table>
+<thead><tr><th style="width:28%">Where on the page</th><th>Text</th><th style="width:9%">Since last version</th></tr></thead>
+<tbody>
+<tr><td>Green box: title</td><td><p>What this indicator tells us</p>
+</td><td></td></tr>
+<tr><td>Green box: list</td><td><ul>
+<li>where many people live in places that strong cyclone winds have reached</li>
+<li>which districts to look at first, compared with others in the same country</li>
+<li>how the picture changes for different groups and cyclone intensities</li>
+</ul>
+</td><td></td></tr>
+<tr><td>Orange box: title</td><td><p>What this indicator does not tell us</p>
+</td><td></td></tr>
+<tr><td>Orange box: list</td><td><ul>
+<li>whether or when a cyclone will hit; it is a footprint of 6 past storms (2004–2023), not a forecast</li>
+<li>how often a place is hit: a place hit five times counts the same as a place hit once</li>
+<li>how many people will be harmed or need help</li>
+<li>the effect of building quality, shelters or early warning</li>
+<li>storm surge and heavy rain; the indicator covers wind only</li>
+<li>storms whose track stayed just outside the country, even if their winds reached it</li>
+<li>anything precise about a single village: wind fields are drawn as simple corridors and results are district totals</li>
+</ul>
+</td><td></td></tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -78,10 +78,10 @@ Decode any indicator
 ### Text {body}
 Try other combinations.
 
-## Title {aside.title}
+## About box: title {aside.title}
 About this story map
 
-## Text {aside.body}
+## About box: text {aside.body}
 Exposure shows who has been in the path of strong cyclone winds since 2004, not who will be affected or who needs help. Example: Myanmar.
 
 # Header {storyMap.header}
@@ -223,10 +223,10 @@ Intensity 3: Category 4–5 storms
 ### Key figure text {stat.label}
 people, about half of Myanmar, live where a Saffir-Simpson Category 4 or 5 storm reached, e.g. cyclones Nargis (2008) or Mocha (2023). This is the zone in our example.
 
-## Title {map.stackLegend.title}
+## Map legend title {map.stackLegend.title}
 Wind zone (34 kt or more)
 
-## Subtitle {map.stackLegend.subtitle}
+## Map legend subtitle {map.stackLegend.subtitle}
 Strongest storm that reached the place, by Saffir-Simpson category
 
 ## Graphic caption {explainer.caption}
@@ -343,10 +343,10 @@ We lay a population map over the wind zone. Everyone living in a grid cell (abou
 
 The population maps are projections for **2030** (WorldPop). “Facilities” are schools, hospitals and health centres from OpenStreetMap.
 
-## Title {map.stackLegend.title}
+## Map legend title {map.stackLegend.title}
 Wind zone (34 kt or more)
 
-## Subtitle {map.stackLegend.subtitle}
+## Map legend subtitle {map.stackLegend.subtitle}
 Strongest storm that reached the place, by Saffir-Simpson category
 
 ## Second row button: Intensity 1 {baseControl.options.1}
@@ -570,10 +570,10 @@ Dependency ratio
 ### Label {label}
 Schools
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.perc.label}
+### Third dropdown option {measures.perc.label}
 Share (%)
 
 ## Dropdown 2 option: Hospitals {decoder.subjects.hospitals}
@@ -581,10 +581,10 @@ Share (%)
 ### Label {label}
 Hospitals
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.perc.label}
+### Third dropdown option {measures.perc.label}
 Share (%)
 
 ## Dropdown 2 option: Primary healthcare {decoder.subjects.primary_healthcare}
@@ -592,10 +592,10 @@ Share (%)
 ### Label {label}
 Primary healthcare
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.perc.label}
+### Third dropdown option {measures.perc.label}
 Share (%)
 
 ## Dropdown 2 option: Cropland (km²) {decoder.subjects.crops}
@@ -611,18 +611,18 @@ Indicators tab → Exposure
 
 # Footer boxes {footer.callouts}
 
-## Title {positive.title}
+## Green box: title {positive.title}
 What this indicator tells us
 
-## List {positive.items}
+## Green box: list {positive.items}
 - where many people live in places that strong cyclone winds have reached
 - which districts to look at first, compared with others in the same country
 - how the picture changes for different groups and cyclone intensities
 
-## Title {warning.title}
+## Orange box: title {warning.title}
 What this indicator does not tell us
 
-## List {warning.items}
+## Orange box: list {warning.items}
 - whether or when a cyclone will hit; it is a footprint of 6 past storms (2004–2023), not a forecast
 - how often a place is hit: a place hit five times counts the same as a place hit once
 - how many people will be harmed or need help

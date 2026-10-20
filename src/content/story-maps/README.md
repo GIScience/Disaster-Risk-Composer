@@ -76,3 +76,10 @@ when the data changes.
   blocks in `text.md` (`# Step 2 graphic: wind scene {ui.wind}`). The components read it with
   `useStoryText()`.
 - The full field reference is in `docs/story-maps.md` and `src/types/story-map.ts`.
+
+## Feedback via Confluence
+
+Colleagues review the texts on Confluence. **Confluence does not update itself:** after
+changing a `text.md`, run `npm run review-export` and paste the regenerated page into
+Confluence by hand. The full workflow, with an example, is in
+[docs/story-map-review/README.md](../../../docs/story-map-review/README.md).

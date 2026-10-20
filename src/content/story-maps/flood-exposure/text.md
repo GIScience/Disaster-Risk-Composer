@@ -78,10 +78,10 @@ Decode any indicator
 ### Text {body}
 Try other combinations.
 
-## Title {aside.title}
+## About box: title {aside.title}
 About this story map
 
-## Text {aside.body}
+## About box: text {aside.body}
 Exposure shows who could be affected in a modelled flood, not who will be affected or who needs help. Example: Myanmar.
 
 # Header {storyMap.header}
@@ -528,10 +528,10 @@ Dependency ratio
 ### Label {label}
 Schools
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.pct.label}
+### Third dropdown option {measures.pct.label}
 Share (%)
 
 ## Dropdown 2 option: Hospitals {decoder.subjects.hospitals}
@@ -539,10 +539,10 @@ Share (%)
 ### Label {label}
 Hospitals
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.pct.label}
+### Third dropdown option {measures.pct.label}
 Share (%)
 
 ## Dropdown 2 option: Primary healthcare {decoder.subjects.primary_healthcare}
@@ -550,10 +550,10 @@ Share (%)
 ### Label {label}
 Primary healthcare
 
-### Label {measures.count.label}
+### Third dropdown option {measures.count.label}
 Number
 
-### Label {measures.pct.label}
+### Third dropdown option {measures.pct.label}
 Share (%)
 
 ## Dropdown 2 option: Cropland {decoder.subjects.crops}
@@ -561,13 +561,13 @@ Share (%)
 ### Label {label}
 Cropland
 
-### Label {measures.km2.label}
+### Third dropdown option {measures.km2.label}
 Area (km²)
 
-### Label {measures.croppct.label}
+### Third dropdown option {measures.croppct.label}
 % of cropland
 
-### Label {measures.areapct.label}
+### Third dropdown option {measures.areapct.label}
 % of district area
 
 ## Label of the third dropdown {decoder.measureLabel}
@@ -578,18 +578,18 @@ Indicators tab → Exposure
 
 # Footer boxes {footer.callouts}
 
-## Title {positive.title}
+## Green box: title {positive.title}
 What this indicator tells us
 
-## List {positive.items}
+## Green box: list {positive.items}
 - where many people could be in harm's way in a given flood scenario
 - which districts to look at first, compared with others in the same country
 - how the picture changes for different groups and flood sizes
 
-## Title {warning.title}
+## Orange box: title {warning.title}
 What this indicator does not tell us
 
-## List {warning.items}
+## Orange box: list {warning.items}
 - whether or when a flood will happen; it is not a forecast
 - how many people will be harmed or need help
 - the effect of local protection, building quality or early warning
