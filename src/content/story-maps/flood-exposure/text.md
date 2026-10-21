@@ -99,7 +99,7 @@ Exposure shows who could be affected in a modelled river flood, not who will be 
 # Header {storyMap.header}
 
 ## Description {description}
-It estimates how many children under 5 live in areas that could be flooded with more than 30 cm of water during a river flood with a 2% chance of happening in any given year. Only river floods are covered, not flash floods from heavy rain, coastal floods or storm surge. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
+It estimates how many children under 5 live in areas that could be flooded with more than 30 cm of water during a river flood with a 2% chance of happening in any given year. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
 
 # Header question and cards {storyMap.anatomy}
 
@@ -219,9 +219,9 @@ Bigger, rarer floods reach further. The dashboard has indicators for all four sc
 Apply the flood-depth threshold
 
 ## Info box {note.body}
-Only places where the water is **deeper than 30 cm** count as exposed.
+Only places where the water is **deeper than 30 cm** count as exposed. HeiGIT chose this value because at that depth, water can knock people off their feet, stop vehicles and enter the ground floor of most homes.
 
-At that depth, water can knock people off their feet, stop vehicles and enter the ground floor of most homes. Set the flood depth to see what it means for different people.
+The threshold is fixed: it was set when the indicators were calculated and can't be changed in the dashboard. The slider only illustrates it. Change the water depth to see when a place counts.
 
 ## Subtitle {subtitle}
 Not every wet place is dangerous. A depth threshold splits the flooded area into two parts: places that are considered in the indicator, and places that are left out.
@@ -329,11 +329,6 @@ Aggregate to districts
 ## Subtitle {subtitle}
 1-in-50-year river flood. Choose what to count.
 
-## Info box {note.body}
-We add up all exposed children in the grid cells inside each district (see below). That gives one number per district: the value you see in the dashboard.
-
-In Myanmar, about **980,000 children under 5** would be exposed in this scenario, roughly **1 in 4**.
-
 ## Button: Children under 5 {control.options.children_u5}
 
 ### Label {label}
@@ -398,17 +393,15 @@ facilities exposed
 View in dashboard
 
 ### Info box {note.body}
-Schools, hospitals and health centres come from OpenStreetMap as **points**, not as a grid. A facility counts as exposed if it lies where the water is deeper than 30 cm.
-
 We count the flooded facilities in each district. In Myanmar, about **1,040 facilities** would be in the water in this scenario.
 
 # Step 4 graphic {ui.aggregation}
 
 ## People: first panel title {raster.caption}
-Children per grid cell, flood deeper than 30 cm in blue
+Children per grid cell, flood deeper than 30 cm inside the blue polygon
 
 ## People: note under the first panel {raster.note}
-Raster data (WorldPop): every ~100 m cell holds a number. A cell counts if the water there is deeper than 30 cm.
+Raster data (WorldPop): every ~100 m cell holds a number.
 
 ## People: totals title {raster.totals}
 Flooded cells added up per district

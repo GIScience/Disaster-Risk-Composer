@@ -90,7 +90,7 @@ Exposure shows who has been in the path of strong cyclone winds since 2004, not 
 # Header {storyMap.header}
 
 ## Description {description}
-It estimates how many children under 5 live in places that the strongest storms since 2004, Saffir-Simpson Categories 4 and 5, reached with winds of at least 34 knots (about 63 km/h). The dashboard groups the five storm categories into three intensities: intensity 1 = Category 1, intensity 2 = Categories 2–3, intensity 3 = Categories 4–5. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
+It estimates how many children under 5 live in places that the strongest storms since 2004, Saffir-Simpson Categories 4 and 5, reached with winds of at least 34 knots (about 63 km/h). Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
 
 # Header question and cards {storyMap.anatomy}
 
@@ -242,7 +242,7 @@ Not every windy place is dangerous. A wind-speed threshold splits the area into 
 ## Info box {note.body}
 Only places with winds of **at least 34 knots** (63 km/h) count as exposed. From this speed on, branches break, loose objects fly around and walking becomes dangerous. Set the wind speed to see what it means.
 
-For every piece of the storm track, the track data reports how far 34-knot winds reached (the mean of four directions). The corridor along the track is the wind zone. Every place inside then gets one intensity (step 1). Inside the zone, the wind is only known to be at least 34 knots.
+For every piece of the storm track, the track data reports how far 34-knot winds reached (the mean of four directions). The corridor along the track is the wind zone. Inside the zone, the wind is only known to be at least 34 knots.
 
 # Step 2 graphic: wind scene {ui.wind}
 
@@ -270,7 +270,7 @@ Not counted (below 34 kt)
 Cat {n}
 
 ## Note under the scale {scaleNote}
-Cat 1–5: where the Saffir-Simpson categories start. They measure a storm's peak wind near its centre; the wind zone reaches out to where the wind drops to 34 kt.
+Cat 1–5: where the Saffir-Simpson categories start. The wind zone reaches out to where the wind drops to 34 kt.
 
 ## Slider label {setSpeed}
 Set the wind speed
@@ -424,14 +424,7 @@ facilities exposed
 View in dashboard
 
 ### Info box {note.body}
-Schools, hospitals and health centres come from OpenStreetMap as **points**, not as a grid. A facility counts as exposed if it lies inside the wind zone.
-
 We count the exposed facilities in each district. In Myanmar, about **5,550 facilities** lie in places that Category 4–5 storms reached since 2004.
-
-## Info box {note.body}
-We add up all exposed children in the grid cells inside each district (see below). That gives one number per district: the value you see in the dashboard.
-
-In Myanmar, about **1.9 million children under 5** live in places that Category 4–5 storms reached since 2004, almost **1 in 2**. 36 of 80 districts have such places.
 
 # Step 4 graphic {ui.aggregation}
 
