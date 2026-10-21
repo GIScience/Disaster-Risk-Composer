@@ -23,7 +23,7 @@ OUT = Path(__file__).resolve().parent.parent / "public" / "data" / "world-labels
 
 # Natural Earth ADM0_A3 code -> label: OCHA's preferred term for the country's ISO code
 # (Kosovo: OCHA code XKX), except the short names chosen for Bolivia, Iran, Laos, Micronesia,
-# Netherlands, Russia, Taiwan, Tanzania, United Kingdom and Venezuela. Somaliland and Northern Cyprus are not in OCHA's list and get no
+# Netherlands, North Korea, Russia, South Korea, Taiwan, Tanzania, United Kingdom and Venezuela. Somaliland and Northern Cyprus are not in OCHA's list and get no
 # label of their own.
 NAMES = {
     "AFG": "Afghanistan",
@@ -69,7 +69,7 @@ NAMES = {
     "CYP": "Cyprus",
     "CZE": "Czechia",
     "CIV": "Côte d'Ivoire",
-    "PRK": "Democratic People's Republic of Korea",
+    "PRK": "North Korea",
     "COD": "Democratic Republic of the Congo",
     "DNK": "Denmark",
     "DJI": "Djibouti",
@@ -162,7 +162,7 @@ NAMES = {
     "PRT": "Portugal",
     "PRI": "Puerto Rico",
     "QAT": "Qatar",
-    "KOR": "Republic of Korea",
+    "KOR": "South Korea",
     "MDA": "Republic of Moldova",
     "ROU": "Romania",
     "RUS": "Russia",

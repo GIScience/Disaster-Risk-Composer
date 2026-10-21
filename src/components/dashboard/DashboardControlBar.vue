@@ -149,9 +149,10 @@ function formatDisaster(col: string) {
               </svg>
             </button>
 
-            <!-- Country Search Dropdown -->
+            <!-- Country Search Dropdown: from md on the field grows with the name, so long names
+                 (e.g. "Saint Vincent and the Grenadines") always fit -->
             <div
-              class="relative w-full md:max-w-72 md:flex-1 text-left short:flex short:items-center short:gap-2"
+              class="relative w-full md:w-auto md:flex-none text-left short:flex short:items-center short:gap-2"
               ref="dropdownRef"
             >
               <label
@@ -160,7 +161,7 @@ function formatDisaster(col: string) {
               >
               <div
                 @click="toggleDropdown"
-                class="w-full bg-slate-50 border border-slate-200 hover:border-heigit-red rounded-lg px-4 py-1.5 text-sm cursor-pointer flex justify-between items-center text-slate-700 shadow-sm transition-all"
+                class="w-full md:w-auto md:min-w-48 gap-3 bg-slate-50 border border-slate-200 hover:border-heigit-red rounded-lg px-4 py-1.5 text-sm cursor-pointer flex justify-between items-center text-slate-700 shadow-sm transition-all"
               >
                 <span class="truncate font-medium">{{
                   selectedCountryLabel
