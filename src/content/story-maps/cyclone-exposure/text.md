@@ -14,7 +14,10 @@
 # Overview card (story map list) {storyMap.hero}
 
 ## Image description {alt}
-Storm over a settlement
+Satellite image of Cyclone Nargis over the Bay of Bengal and Myanmar, 3 May 2008
+
+## Image credit {imageCredit}
+Image: NASA Earth Observatory
 
 ## Title {title}
 Cyclone Exposure Story Map

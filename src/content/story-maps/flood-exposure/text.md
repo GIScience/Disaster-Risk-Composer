@@ -14,7 +14,19 @@
 # Overview card (story map list) {storyMap.hero}
 
 ## Image description {alt}
-Flooded settlement
+Satellite image of the flooded Irrawaddy River in Myanmar, 3 August 2015; floodwater shown in blue
+
+## Image credit {imageCredit}
+Image: NASA Earth Observatory
+
+## Image description, before the flood {compareAlt}
+Satellite image of the Irrawaddy River in Myanmar at a normal level, 29 August 2013
+
+## Image label, flood {imageLabel}
+3 Aug 2015 · flood
+
+## Image label, before the flood {compareLabel}
+29 Aug 2013 · normal
 
 ## Title {title}
 River Flood Exposure Story Map

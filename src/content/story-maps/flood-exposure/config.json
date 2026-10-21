@@ -10,7 +10,8 @@
   },
   "storyMap": {
     "hero": {
-      "image": "/floods.jpeg"
+      "image": "/river-flood-irrawaddy.jpg",
+      "compareImage": "/river-flood-irrawaddy-2013.jpg"
     },
     "sidebar": {
       "icon": "mdi-home-flood",

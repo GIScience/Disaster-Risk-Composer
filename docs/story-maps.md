@@ -59,13 +59,23 @@ manifest to update.
 Shown at the top of the detail page and used for the card image/title on the listing page.
 ```json
 "hero": {
-  "image": "/floods.jpeg",
+  "image": "/river-flood-irrawaddy.jpg",
   "alt": "Flood hazard illustration",
   "title": "Flood Exposure For Myanmar, Thailand",
-  "subtitle": "One or two sentences of framing copy."
+  "subtitle": "One or two sentences of framing copy.",
+  "imageCredit": "Image: NASA Earth Observatory",
+  "compareImage": "/river-flood-irrawaddy-2013.jpg",
+  "compareAlt": "The same area before the flood",
+  "compareLabel": "29 Aug 2013 · normal",
+  "imageLabel": "3 Aug 2015 · flood"
 }
 ```
 `image` is resolved relative to `public/` (put the file in `public/`, reference it as `/filename.ext`).
+
+`imageCredit` is shown in the image's bottom-right corner. With `compareImage` (same area, same
+crop) the overview card shows a before/after slider: `compareImage` left of the divider, `image`
+right of it. Texts (`alt`, `imageCredit`, `compareAlt`, the labels) go in the hazard's `text.md`;
+image sources are listed in `public/IMAGE_CREDITS.md`.
 
 ### `storyMap.sidebar`
 The sticky left-hand nav with numbered steps.

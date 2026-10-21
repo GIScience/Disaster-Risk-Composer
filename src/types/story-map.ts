@@ -92,6 +92,17 @@ export interface HeroConfig {
   alt: string;
   title: string;
   subtitle: string;
+  /** Credit line shown on the image, e.g. "Image: NASA Earth Observatory" (see public/IMAGE_CREDITS.md). */
+  imageCredit?: string;
+  /**
+   * Optional "before" image of the same area and crop. The card then shows a slider: `compareImage`
+   * left of the divider, `image` right of it.
+   */
+  compareImage?: string;
+  compareAlt?: string;
+  /** Labels in the image corners, e.g. "29 Aug 2013 · normal" (compareImage) and "3 Aug 2015 · flood" (image). */
+  compareLabel?: string;
+  imageLabel?: string;
 }
 export interface LinkRef {
   label: string;

@@ -6,6 +6,7 @@
  "ui.map.opacity": "Opacity",
  "ui.legend.low": "Low",
  "ui.legend.high": "High",
+ "ui.aggregation.toggle": "Further details about aggregation",
  "ui.aggregation.borders": "District borders laid over",
  "ui.aggregation.district": "District {id}",
  "ui.aggregation.raster.hoverHint": "Hover a district to see its cells. This total is the number the dashboard shows for the district.",
