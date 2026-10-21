@@ -12,6 +12,7 @@ import { useRouter } from "vue-router";
 import { useRiskLogic } from "@/composables/useRiskLogic";
 import { useIndicatorColumns } from "@/composables/useIndicatorColumns";
 import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
+import { useCycloneStorms } from "@/composables/useCycloneStorms";
 
 const router = useRouter();
 
@@ -55,6 +56,9 @@ const { customDimensionKeys } = useIndicatorColumns(
     customIndicatorsReplaced,
   }),
 );
+
+// How many past storms the cyclone indicators of the country are built from
+const { label: stormsLabel, intro: stormsIntro, storms } = useCycloneStorms(selectedCountry);
 
 const mapRef = ref<InstanceType<typeof RiskMap> | null>(null);
 const showMetadataModal = ref(false);
@@ -197,7 +201,7 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
               >
                 Analysis
               </h2>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span
                   class="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-bold text-heigit-red uppercase tracking-wider"
                 >
@@ -210,6 +214,41 @@ function handleUpload(payload: Parameters<typeof mergeCustomIndicators>[0]) {
                 <span class="text-slate-500 text-sm font-medium"
                   >| {{ selectedCountryName || "Distribution" }}</span
                 >
+                <span
+                  v-if="selectedDisaster === 'risk_cyclone' && stormsLabel"
+                  class="inline-flex items-center gap-1 text-slate-500 text-sm"
+                >
+                  · {{ stormsLabel }}
+                  <!-- Click opens the explanation and the list of storms -->
+                  <v-menu location="bottom start" :close-on-content-click="false" max-width="360">
+                    <template #activator="{ props: menuProps }">
+                      <button
+                        v-bind="menuProps"
+                        type="button"
+                        class="inline-flex rounded-full text-slate-400 transition-colors hover:text-heigit-red"
+                        aria-label="Which cyclones?"
+                      >
+                        <v-icon icon="mdi-information-outline" size="16" />
+                      </button>
+                    </template>
+                    <div class="rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600 shadow-xl">
+                      <p class="m-0 leading-snug">{{ stormsIntro }}</p>
+                      <ul
+                        v-if="storms.length"
+                        class="m-0 mt-2 max-h-56 list-none overflow-y-auto border-t border-slate-100 p-0 pt-1"
+                      >
+                        <li
+                          v-for="(s, i) in storms"
+                          :key="i"
+                          class="flex justify-between gap-3 py-0.5"
+                        >
+                          <span class="font-medium text-slate-800">{{ s.name ?? "Unnamed" }}</span>
+                          <span class="tabular-nums text-slate-500">{{ s.year }} · Cat {{ s.category }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </v-menu>
+                </span>
               </div>
             </header>
 

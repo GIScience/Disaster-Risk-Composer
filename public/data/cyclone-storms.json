@@ -1,0 +1,3718 @@
+{
+ "until": "2026-10-14",
+ "countries": {
+  "ATG": {
+   "storms": 3,
+   "from": 2014,
+   "to": 2023,
+   "list": [
+    {
+     "name": "Gonzalo",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Irma",
+     "year": 2017,
+     "category": 5
+    },
+    {
+     "name": "Tammy",
+     "year": 2023,
+     "category": 1
+    }
+   ]
+  },
+  "BGD": {
+   "storms": 7,
+   "from": 2007,
+   "to": 2023,
+   "list": [
+    {
+     "name": "Akash",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Sidr",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Aila",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Mora",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Bulbul:Matmo",
+     "year": 2019,
+     "category": 3
+    },
+    {
+     "name": "Amphan",
+     "year": 2020,
+     "category": 2
+    },
+    {
+     "name": "Hamoon",
+     "year": 2023,
+     "category": 2
+    }
+   ]
+  },
+  "BHS": {
+   "storms": 22,
+   "from": 2001,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Michelle",
+     "year": 2001,
+     "category": 1
+    },
+    {
+     "name": "Frances",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Jeanne",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Dennis",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Katrina",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Rita",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Wilma",
+     "year": 2005,
+     "category": 3
+    },
+    {
+     "name": "Noel",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Hanna",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Ike",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Earl",
+     "year": 2010,
+     "category": 4
+    },
+    {
+     "name": "Irene",
+     "year": 2011,
+     "category": 3
+    },
+    {
+     "name": "Sandy",
+     "year": 2012,
+     "category": 2
+    },
+    {
+     "name": "Joaquin",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Matthew",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Irma",
+     "year": 2017,
+     "category": 5
+    },
+    {
+     "name": "Dorian",
+     "year": 2019,
+     "category": 5
+    },
+    {
+     "name": "Isaias",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Nicole",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Oscar",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Erin",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Melissa",
+     "year": 2025,
+     "category": 2
+    }
+   ]
+  },
+  "BLZ": {
+   "storms": 4,
+   "from": 2010,
+   "to": 2022,
+   "list": [
+    {
+     "name": "Richard",
+     "year": 2010,
+     "category": 2
+    },
+    {
+     "name": "Earl",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Nana",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Lisa",
+     "year": 2022,
+     "category": 1
+    }
+   ]
+  },
+  "BRA": {
+   "storms": 1,
+   "from": 2004,
+   "to": 2004,
+   "list": [
+    {
+     "name": null,
+     "year": 2004,
+     "category": 1
+    }
+   ]
+  },
+  "CHN": {
+   "storms": 130,
+   "from": 2001,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Haiyan",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Lekima",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Nari",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Toraji",
+     "year": 2001,
+     "category": 3
+    },
+    {
+     "name": "Yutu",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Rammasun",
+     "year": 2002,
+     "category": 3
+    },
+    {
+     "name": "Sinlaku",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Dujuan",
+     "year": 2003,
+     "category": 4
+    },
+    {
+     "name": "Imbudo",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Koni",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Krovanh",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Morakot",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Nepartak",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Soudelor",
+     "year": 2003,
+     "category": 3
+    },
+    {
+     "name": "Aere",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Conson",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Mindulle",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Nock-Ten",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Rananim",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Damrey",
+     "year": 2005,
+     "category": 2
+    },
+    {
+     "name": "Haitang",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Khanun",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Longwang",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Matsa",
+     "year": 2005,
+     "category": 2
+    },
+    {
+     "name": "Sanvu",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Talim",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Chanchu",
+     "year": 2006,
+     "category": 3
+    },
+    {
+     "name": "Prapiroon",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Saomai",
+     "year": 2006,
+     "category": 5
+    },
+    {
+     "name": "Shanshan",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Krosa",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Pabuk",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Sepat",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Wipha",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Fung-Wong",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Hagupit",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Jangmi",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Neoguri",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Nuri",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Sinlaku",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Koppu",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Linfa",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Molave",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Morakot",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Chanthu",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Conson",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Fanapi",
+     "year": 2010,
+     "category": 3
+    },
+    {
+     "name": "Megi",
+     "year": 2010,
+     "category": 3
+    },
+    {
+     "name": "Meranti",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Muifa",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Nanmadol",
+     "year": 2011,
+     "category": 3
+    },
+    {
+     "name": "Nesat",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Songda",
+     "year": 2011,
+     "category": 4
+    },
+    {
+     "name": "Damrey",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Haikui",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Jelawat",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Kai-Tak",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Saola",
+     "year": 2012,
+     "category": 2
+    },
+    {
+     "name": "Son-Tinh",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Tembin",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Vicente",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Fitow",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Haiyan",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Krosa",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Rumbia",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Soulik",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Trami",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Usagi",
+     "year": 2013,
+     "category": 4
+    },
+    {
+     "name": "Utor",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Matmo",
+     "year": 2014,
+     "category": 2
+    },
+    {
+     "name": "Rammasun",
+     "year": 2014,
+     "category": 5
+    },
+    {
+     "name": "Chan-Hom",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Dujuan",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Goni",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Linfa",
+     "year": 2015,
+     "category": 1
+    },
+    {
+     "name": "Mujigae",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Noul",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Soudelor",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Haima",
+     "year": 2016,
+     "category": 2
+    },
+    {
+     "name": "Malakas",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Megi",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Meranti",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Nepartak",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Nida",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Sarika",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Hato",
+     "year": 2017,
+     "category": 3
+    },
+    {
+     "name": "Khanun",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Nesat",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Talim",
+     "year": 2017,
+     "category": 4
+    },
+    {
+     "name": "Kong-Rey",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Mangkhut",
+     "year": 2018,
+     "category": 4
+    },
+    {
+     "name": "Maria",
+     "year": 2018,
+     "category": 3
+    },
+    {
+     "name": "Lekima",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Lingling",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Mitag",
+     "year": 2019,
+     "category": 2
+    },
+    {
+     "name": "Tapah",
+     "year": 2019,
+     "category": 1
+    },
+    {
+     "name": "Hagupit",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Mekkhala",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Cempaka",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Chanthu",
+     "year": 2021,
+     "category": 5
+    },
+    {
+     "name": "In-Fa",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Chaba",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Hinnamnor",
+     "year": 2022,
+     "category": 3
+    },
+    {
+     "name": "Muifa",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Doksuri",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Haikui",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Khanun",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Koinu",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Saola",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Talim",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Bebinca",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Gaemi",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Kong-Rey",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Krathon",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Yagi",
+     "year": 2024,
+     "category": 5
+    },
+    {
+     "name": "Danas",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Fung-Wong",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Kajiki",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Matmo",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Podul",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Ragasa",
+     "year": 2025,
+     "category": 5
+    },
+    {
+     "name": "Tapah",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Wipha",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Wutip",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Bavi",
+     "year": 2026,
+     "category": 2
+    },
+    {
+     "name": "Dolphin",
+     "year": 2026,
+     "category": 1
+    },
+    {
+     "name": "Noul",
+     "year": 2026,
+     "category": 2
+    },
+    {
+     "name": "Saudel",
+     "year": 2026,
+     "category": 1
+    }
+   ]
+  },
+  "COL": {
+   "storms": 2,
+   "from": 2007,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Felix",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Iota",
+     "year": 2020,
+     "category": 3
+    }
+   ]
+  },
+  "CPV": {
+   "storms": 1,
+   "from": 2015,
+   "to": 2015,
+   "list": [
+    {
+     "name": "Fred",
+     "year": 2015,
+     "category": 1
+    }
+   ]
+  },
+  "CRI": {
+   "storms": 1,
+   "from": 2016,
+   "to": 2016,
+   "list": [
+    {
+     "name": "Otto",
+     "year": 2016,
+     "category": 3
+    }
+   ]
+  },
+  "CUB": {
+   "storms": 22,
+   "from": 2001,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Michelle",
+     "year": 2001,
+     "category": 4
+    },
+    {
+     "name": "Isidore",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Lili",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Charley",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Ivan",
+     "year": 2004,
+     "category": 5
+    },
+    {
+     "name": "Dennis",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Gustav",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Ike",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Paloma",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Paula",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Irene",
+     "year": 2011,
+     "category": 3
+    },
+    {
+     "name": "Sandy",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Joaquin",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Matthew",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Irma",
+     "year": 2017,
+     "category": 5
+    },
+    {
+     "name": "Isaias",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Ida",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Ian",
+     "year": 2022,
+     "category": 3
+    },
+    {
+     "name": "Idalia",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Oscar",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Rafael",
+     "year": 2024,
+     "category": 3
+    },
+    {
+     "name": "Melissa",
+     "year": 2025,
+     "category": 3
+    }
+   ]
+  },
+  "DMA": {
+   "storms": 1,
+   "from": 2017,
+   "to": 2017,
+   "list": [
+    {
+     "name": "Maria",
+     "year": 2017,
+     "category": 5
+    }
+   ]
+  },
+  "DOM": {
+   "storms": 6,
+   "from": 2004,
+   "to": 2022,
+   "list": [
+    {
+     "name": "Jeanne",
+     "year": 2004,
+     "category": 1
+    },
+    {
+     "name": "Irene",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Irma",
+     "year": 2017,
+     "category": 5
+    },
+    {
+     "name": "Maria",
+     "year": 2017,
+     "category": 3
+    },
+    {
+     "name": "Isaias",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Fiona",
+     "year": 2022,
+     "category": 2
+    }
+   ]
+  },
+  "FSM": {
+   "storms": 17,
+   "from": 2002,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Chataan",
+     "year": 2002,
+     "category": 1
+    },
+    {
+     "name": "Mitag",
+     "year": 2002,
+     "category": 3
+    },
+    {
+     "name": "Pongsona",
+     "year": 2002,
+     "category": 1
+    },
+    {
+     "name": "Lupit",
+     "year": 2003,
+     "category": 3
+    },
+    {
+     "name": "Nanmadol",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Nock-Ten",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Sudal",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Nida",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Haiyan",
+     "year": 2013,
+     "category": 4
+    },
+    {
+     "name": "Hagupit",
+     "year": 2014,
+     "category": 3
+    },
+    {
+     "name": "In-Fa",
+     "year": 2015,
+     "category": 2
+    },
+    {
+     "name": "Maysak",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Noul",
+     "year": 2015,
+     "category": 1
+    },
+    {
+     "name": "Man-Yi",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Wutip",
+     "year": 2019,
+     "category": 3
+    },
+    {
+     "name": "Mawar",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Sinlaku",
+     "year": 2026,
+     "category": 3
+    }
+   ]
+  },
+  "GRD": {
+   "storms": 2,
+   "from": 2005,
+   "to": 2024,
+   "list": [
+    {
+     "name": "Emily",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Beryl",
+     "year": 2024,
+     "category": 4
+    }
+   ]
+  },
+  "GTM": {
+   "storms": 4,
+   "from": 2010,
+   "to": 2022,
+   "list": [
+    {
+     "name": "Richard",
+     "year": 2010,
+     "category": 2
+    },
+    {
+     "name": "Earl",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Nana",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Lisa",
+     "year": 2022,
+     "category": 1
+    }
+   ]
+  },
+  "HND": {
+   "storms": 5,
+   "from": 2007,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Felix",
+     "year": 2007,
+     "category": 5
+    },
+    {
+     "name": "Paula",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Richard",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Eta",
+     "year": 2020,
+     "category": 4
+    },
+    {
+     "name": "Iota",
+     "year": 2020,
+     "category": 4
+    }
+   ]
+  },
+  "HTI": {
+   "storms": 4,
+   "from": 2008,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Gustav",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Tomas",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Matthew",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Isaias",
+     "year": 2020,
+     "category": 1
+    }
+   ]
+  },
+  "IDN": {
+   "storms": 1,
+   "from": 2001,
+   "to": 2001,
+   "list": [
+    {
+     "name": "Vamei",
+     "year": 2001,
+     "category": 1
+    }
+   ]
+  },
+  "JAM": {
+   "storms": 3,
+   "from": 2012,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Sandy",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Beryl",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Melissa",
+     "year": 2025,
+     "category": 5
+    }
+   ]
+  },
+  "LAO": {
+   "storms": 12,
+   "from": 2006,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Xangsane",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Lekima",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Son-Tinh",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Wutip",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Mirinae",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Doksuri",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Vamco",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Noru",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Yagi",
+     "year": 2024,
+     "category": 3
+    },
+    {
+     "name": "Bualoi",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Kajiki",
+     "year": 2025,
+     "category": 2
+    }
+   ]
+  },
+  "MDG": {
+   "storms": 35,
+   "from": 2002,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Hary",
+     "year": 2002,
+     "category": 5
+    },
+    {
+     "name": "Kesiny",
+     "year": 2002,
+     "category": 1
+    },
+    {
+     "name": "Manou",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Elita",
+     "year": 2004,
+     "category": 1
+    },
+    {
+     "name": "Gafilo",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Ernest",
+     "year": 2005,
+     "category": 3
+    },
+    {
+     "name": "Boloetse",
+     "year": 2006,
+     "category": 2
+    },
+    {
+     "name": "Bondo",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Clovis",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Indlala",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Jaya",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Fame",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Ivan",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Jokwe",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Fanele",
+     "year": 2009,
+     "category": 3
+    },
+    {
+     "name": "Jade",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Bingiza",
+     "year": 2011,
+     "category": 2
+    },
+    {
+     "name": "Giovanna",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Haruna",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Hellen",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Enawo",
+     "year": 2017,
+     "category": 4
+    },
+    {
+     "name": "Ava",
+     "year": 2018,
+     "category": 2
+    },
+    {
+     "name": "Eliakim",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Idai",
+     "year": 2019,
+     "category": 2
+    },
+    {
+     "name": "Belna",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Batsirai",
+     "year": 2022,
+     "category": 3
+    },
+    {
+     "name": "Emnati",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Cheneso",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Freddy",
+     "year": 2023,
+     "category": 2
+    },
+    {
+     "name": "Alvaro",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Gamane",
+     "year": 2024,
+     "category": 2
+    },
+    {
+     "name": "Chido",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Dikeledi",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Fytia",
+     "year": 2026,
+     "category": 3
+    },
+    {
+     "name": "Gezani",
+     "year": 2026,
+     "category": 3
+    }
+   ]
+  },
+  "MEX": {
+   "storms": 120,
+   "from": 2001,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Flossie",
+     "year": 2001,
+     "category": 1
+    },
+    {
+     "name": "Juliette",
+     "year": 2001,
+     "category": 3
+    },
+    {
+     "name": "Alma",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Douglas",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Hernan",
+     "year": 2002,
+     "category": 5
+    },
+    {
+     "name": "Isidore",
+     "year": 2002,
+     "category": 3
+    },
+    {
+     "name": "Kenna",
+     "year": 2002,
+     "category": 5
+    },
+    {
+     "name": "Lili",
+     "year": 2002,
+     "category": 2
+    },
+    {
+     "name": "Erika",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Ignacio",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Marty",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Nora",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Howard",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Ivan",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Javier",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Emily",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Hilary",
+     "year": 2005,
+     "category": 2
+    },
+    {
+     "name": "Stan",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Wilma",
+     "year": 2005,
+     "category": 4
+    },
+    {
+     "name": "Carlotta",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Ileana",
+     "year": 2006,
+     "category": 3
+    },
+    {
+     "name": "John",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Lane",
+     "year": 2006,
+     "category": 3
+    },
+    {
+     "name": "Paul",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Dean",
+     "year": 2007,
+     "category": 5
+    },
+    {
+     "name": "Henriette",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Lorenzo",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Dolly",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Fausto",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Norbert",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Andres",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Ida",
+     "year": 2009,
+     "category": 2
+    },
+    {
+     "name": "Jimena",
+     "year": 2009,
+     "category": 4
+    },
+    {
+     "name": "Rick",
+     "year": 2009,
+     "category": 4
+    },
+    {
+     "name": "Alex",
+     "year": 2010,
+     "category": 2
+    },
+    {
+     "name": "Frank",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Karl",
+     "year": 2010,
+     "category": 3
+    },
+    {
+     "name": "Richard",
+     "year": 2010,
+     "category": 2
+    },
+    {
+     "name": "Beatriz",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Dora",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Greg",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Jova",
+     "year": 2011,
+     "category": 2
+    },
+    {
+     "name": "Nate",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Rina",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Bud",
+     "year": 2012,
+     "category": 2
+    },
+    {
+     "name": "Carlotta",
+     "year": 2012,
+     "category": 2
+    },
+    {
+     "name": "Ernesto",
+     "year": 2012,
+     "category": 2
+    },
+    {
+     "name": "Miriam",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Paul",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Barbara",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Cosme",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Erick",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Ingrid",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Manuel",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Cristina",
+     "year": 2014,
+     "category": 2
+    },
+    {
+     "name": "Hernan",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Marie",
+     "year": 2014,
+     "category": 5
+    },
+    {
+     "name": "Norbert",
+     "year": 2014,
+     "category": 3
+    },
+    {
+     "name": "Odile",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Simon",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Vance",
+     "year": 2014,
+     "category": 2
+    },
+    {
+     "name": "Blanca",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Carlos",
+     "year": 2015,
+     "category": 1
+    },
+    {
+     "name": "Dolores",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Linda",
+     "year": 2015,
+     "category": 2
+    },
+    {
+     "name": "Patricia",
+     "year": 2015,
+     "category": 5
+    },
+    {
+     "name": "Sandra",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Earl",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Newton",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Dora",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Franklin",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Harvey",
+     "year": 2017,
+     "category": 3
+    },
+    {
+     "name": "Hilary",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Katia",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Max",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Norma",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "John",
+     "year": 2018,
+     "category": 2
+    },
+    {
+     "name": "Willa",
+     "year": 2018,
+     "category": 4
+    },
+    {
+     "name": "Juliette",
+     "year": 2019,
+     "category": 3
+    },
+    {
+     "name": "Lorena",
+     "year": 2019,
+     "category": 1
+    },
+    {
+     "name": "Delta",
+     "year": 2020,
+     "category": 2
+    },
+    {
+     "name": "Elida",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Gamma",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Genevieve",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Hanna",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Zeta",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Enrique",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Grace",
+     "year": 2021,
+     "category": 3
+    },
+    {
+     "name": "Linda",
+     "year": 2021,
+     "category": 4
+    },
+    {
+     "name": "Nora",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Olaf",
+     "year": 2021,
+     "category": 2
+    },
+    {
+     "name": "Pamela",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Rick",
+     "year": 2021,
+     "category": 2
+    },
+    {
+     "name": "Agatha",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Blas",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Bonnie",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Estelle",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Kay",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Lisa",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Orlene",
+     "year": 2022,
+     "category": 3
+    },
+    {
+     "name": "Roslyn",
+     "year": 2022,
+     "category": 4
+    },
+    {
+     "name": "Adrian",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Beatriz",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Hilary",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Jova",
+     "year": 2023,
+     "category": 5
+    },
+    {
+     "name": "Lidia",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Norma",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Otis",
+     "year": 2023,
+     "category": 5
+    },
+    {
+     "name": "Beryl",
+     "year": 2024,
+     "category": 2
+    },
+    {
+     "name": "Carlotta",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "John",
+     "year": 2024,
+     "category": 3
+    },
+    {
+     "name": "Milton",
+     "year": 2024,
+     "category": 5
+    },
+    {
+     "name": "Erick",
+     "year": 2025,
+     "category": 4
+    },
+    {
+     "name": "Flossie",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Priscilla",
+     "year": 2025,
+     "category": 3
+    },
+    {
+     "name": "Genevieve",
+     "year": 2026,
+     "category": 4
+    },
+    {
+     "name": "Marie",
+     "year": 2026,
+     "category": 2
+    },
+    {
+     "name": "Polo",
+     "year": 2026,
+     "category": 5
+    },
+    {
+     "name": "Rachel",
+     "year": 2026,
+     "category": 3
+    },
+    {
+     "name": "Simon",
+     "year": 2026,
+     "category": 4
+    }
+   ]
+  },
+  "MMR": {
+   "storms": 6,
+   "from": 2004,
+   "to": 2023,
+   "list": [
+    {
+     "name": null,
+     "year": 2004,
+     "category": 1
+    },
+    {
+     "name": "Mala",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Akash",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Nargis",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Giri",
+     "year": 2010,
+     "category": 4
+    },
+    {
+     "name": "Mocha",
+     "year": 2023,
+     "category": 5
+    }
+   ]
+  },
+  "MOZ": {
+   "storms": 16,
+   "from": 2003,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Japhet",
+     "year": 2003,
+     "category": 4
+    },
+    {
+     "name": "Favio",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Jokwe",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Funso",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Dineo",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Idai",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Kenneth",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Chalane",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Eloise",
+     "year": 2021,
+     "category": 2
+    },
+    {
+     "name": "Guambe",
+     "year": 2021,
+     "category": 2
+    },
+    {
+     "name": "Gombe",
+     "year": 2022,
+     "category": 3
+    },
+    {
+     "name": "Freddy",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Chido",
+     "year": 2025,
+     "category": 4
+    },
+    {
+     "name": "Dikeledi",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Jude",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Gezani",
+     "year": 2026,
+     "category": 2
+    }
+   ]
+  },
+  "MUS": {
+   "storms": 25,
+   "from": 2002,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Dina",
+     "year": 2002,
+     "category": 4
+    },
+    {
+     "name": "Guillaume",
+     "year": 2002,
+     "category": 4
+    },
+    {
+     "name": "Hary",
+     "year": 2002,
+     "category": 1
+    },
+    {
+     "name": "Boura",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Crystal",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Gerry",
+     "year": 2003,
+     "category": 3
+    },
+    {
+     "name": "Gafilo",
+     "year": 2004,
+     "category": 1
+    },
+    {
+     "name": "Hennie",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Bondo",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Gamede",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Jaya",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Gula",
+     "year": 2008,
+     "category": 2
+    },
+    {
+     "name": "Giovanna",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Imelda",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Bansi",
+     "year": 2015,
+     "category": 5
+    },
+    {
+     "name": "Fantala",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Berguitta",
+     "year": 2018,
+     "category": 3
+    },
+    {
+     "name": "Cilida",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Gelena",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Joaninha",
+     "year": 2019,
+     "category": 3
+    },
+    {
+     "name": "Herold",
+     "year": 2020,
+     "category": 2
+    },
+    {
+     "name": "Batsirai",
+     "year": 2022,
+     "category": 4
+    },
+    {
+     "name": "Emnati",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Freddy",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Chido",
+     "year": 2025,
+     "category": 4
+    }
+   ]
+  },
+  "MYS": {
+   "storms": 1,
+   "from": 2001,
+   "to": 2001,
+   "list": [
+    {
+     "name": "Vamei",
+     "year": 2001,
+     "category": 1
+    }
+   ]
+  },
+  "NIC": {
+   "storms": 7,
+   "from": 2005,
+   "to": 2022,
+   "list": [
+    {
+     "name": "Beta",
+     "year": 2005,
+     "category": 3
+    },
+    {
+     "name": "Felix",
+     "year": 2007,
+     "category": 5
+    },
+    {
+     "name": "Ida",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Otto",
+     "year": 2016,
+     "category": 3
+    },
+    {
+     "name": "Eta",
+     "year": 2020,
+     "category": 4
+    },
+    {
+     "name": "Iota",
+     "year": 2020,
+     "category": 4
+    },
+    {
+     "name": "Julia",
+     "year": 2022,
+     "category": 1
+    }
+   ]
+  },
+  "OMN": {
+   "storms": 5,
+   "from": 2007,
+   "to": 2021,
+   "list": [
+    {
+     "name": "Gonu",
+     "year": 2007,
+     "category": 3
+    },
+    {
+     "name": "Phet",
+     "year": 2010,
+     "category": 4
+    },
+    {
+     "name": "Mekunu",
+     "year": 2018,
+     "category": 3
+    },
+    {
+     "name": "Hikaa:Hikka",
+     "year": 2019,
+     "category": 2
+    },
+    {
+     "name": "Gulab:Shaheen-Gu",
+     "year": 2021,
+     "category": 1
+    }
+   ]
+  },
+  "PAK": {
+   "storms": 1,
+   "from": 2021,
+   "to": 2021,
+   "list": [
+    {
+     "name": "Gulab:Shaheen-Gu",
+     "year": 2021,
+     "category": 1
+    }
+   ]
+  },
+  "PHL": {
+   "storms": 105,
+   "from": 2001,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Lekima",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Lingling",
+     "year": 2001,
+     "category": 4
+    },
+    {
+     "name": "Toraji",
+     "year": 2001,
+     "category": 2
+    },
+    {
+     "name": "Dujuan",
+     "year": 2003,
+     "category": 4
+    },
+    {
+     "name": "Imbudo",
+     "year": 2003,
+     "category": 4
+    },
+    {
+     "name": "Krovanh",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Kujira",
+     "year": 2003,
+     "category": 3
+    },
+    {
+     "name": "Melor",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Soudelor",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Conson",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Mindulle",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Muifa",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Nanmadol",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Nida",
+     "year": 2004,
+     "category": 5
+    },
+    {
+     "name": "Nock-Ten",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Roke",
+     "year": 2005,
+     "category": 1
+    },
+    {
+     "name": "Chanchu",
+     "year": 2006,
+     "category": 2
+    },
+    {
+     "name": "Chebi",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Cimaron",
+     "year": 2006,
+     "category": 5
+    },
+    {
+     "name": "Durian",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Shanshan",
+     "year": 2006,
+     "category": 3
+    },
+    {
+     "name": "Utor",
+     "year": 2006,
+     "category": 3
+    },
+    {
+     "name": "Xangsane",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Krosa",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Mitag",
+     "year": 2007,
+     "category": 2
+    },
+    {
+     "name": "Peipah",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Sepat",
+     "year": 2007,
+     "category": 5
+    },
+    {
+     "name": "Fengshen",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Hagupit",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Halong",
+     "year": 2008,
+     "category": 1
+    },
+    {
+     "name": "Jangmi",
+     "year": 2008,
+     "category": 5
+    },
+    {
+     "name": "Nuri",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Sinlaku",
+     "year": 2008,
+     "category": 4
+    },
+    {
+     "name": "Chan-Hom",
+     "year": 2009,
+     "category": 2
+    },
+    {
+     "name": "Lupit",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Mirinae",
+     "year": 2009,
+     "category": 2
+    },
+    {
+     "name": "Parma",
+     "year": 2009,
+     "category": 3
+    },
+    {
+     "name": "Conson",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Megi",
+     "year": 2010,
+     "category": 5
+    },
+    {
+     "name": "Nalgae",
+     "year": 2011,
+     "category": 4
+    },
+    {
+     "name": "Nanmadol",
+     "year": 2011,
+     "category": 5
+    },
+    {
+     "name": "Nesat",
+     "year": 2011,
+     "category": 4
+    },
+    {
+     "name": "Nock-Ten",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Songda",
+     "year": 2011,
+     "category": 5
+    },
+    {
+     "name": "Bopha",
+     "year": 2012,
+     "category": 5
+    },
+    {
+     "name": "Jelawat",
+     "year": 2012,
+     "category": 4
+    },
+    {
+     "name": "Tembin",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Haiyan",
+     "year": 2013,
+     "category": 5
+    },
+    {
+     "name": "Krosa",
+     "year": 2013,
+     "category": 2
+    },
+    {
+     "name": "Nari",
+     "year": 2013,
+     "category": 3
+    },
+    {
+     "name": "Usagi",
+     "year": 2013,
+     "category": 4
+    },
+    {
+     "name": "Utor",
+     "year": 2013,
+     "category": 4
+    },
+    {
+     "name": "Hagupit",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Matmo",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Rammasun",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Goni",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Koppu",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Mekkhala",
+     "year": 2015,
+     "category": 1
+    },
+    {
+     "name": "Melor",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Noul",
+     "year": 2015,
+     "category": 5
+    },
+    {
+     "name": "Haima",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Malakas",
+     "year": 2016,
+     "category": 3
+    },
+    {
+     "name": "Meranti",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Nepartak",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Nida",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Nock-Ten",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Sarika",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Tokage",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Nesat",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Tembin",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Mangkhut",
+     "year": 2018,
+     "category": 5
+    },
+    {
+     "name": "Yutu",
+     "year": 2018,
+     "category": 4
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2019,
+     "category": 2
+    },
+    {
+     "name": "Kammuri",
+     "year": 2019,
+     "category": 4
+    },
+    {
+     "name": "Mitag",
+     "year": 2019,
+     "category": 1
+    },
+    {
+     "name": "Phanfone",
+     "year": 2019,
+     "category": 3
+    },
+    {
+     "name": "Goni",
+     "year": 2020,
+     "category": 5
+    },
+    {
+     "name": "Molave",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Vamco",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Vongfong",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Chanthu",
+     "year": 2021,
+     "category": 5
+    },
+    {
+     "name": "Conson",
+     "year": 2021,
+     "category": 1
+    },
+    {
+     "name": "Rai",
+     "year": 2021,
+     "category": 5
+    },
+    {
+     "name": "Surigae",
+     "year": 2021,
+     "category": 4
+    },
+    {
+     "name": "Ma-On",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Nalgae",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Nesat",
+     "year": 2022,
+     "category": 1
+    },
+    {
+     "name": "Noru",
+     "year": 2022,
+     "category": 5
+    },
+    {
+     "name": "Doksuri",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Mawar",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Saola",
+     "year": 2023,
+     "category": 5
+    },
+    {
+     "name": "Ewiniar",
+     "year": 2024,
+     "category": 2
+    },
+    {
+     "name": "Kong-Rey",
+     "year": 2024,
+     "category": 5
+    },
+    {
+     "name": "Krathon",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Man-Yi",
+     "year": 2024,
+     "category": 5
+    },
+    {
+     "name": "Toraji",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Usagi",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Yinxing",
+     "year": 2024,
+     "category": 4
+    },
+    {
+     "name": "Co-May",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Fung-Wong",
+     "year": 2025,
+     "category": 4
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Koto",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Matmo",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Ragasa",
+     "year": 2025,
+     "category": 5
+    }
+   ]
+  },
+  "PNG": {
+   "storms": 2,
+   "from": 2014,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Ita",
+     "year": 2014,
+     "category": 2
+    },
+    {
+     "name": "Maila",
+     "year": 2026,
+     "category": 4
+    }
+   ]
+  },
+  "PRK": {
+   "storms": 6,
+   "from": 2003,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Maemi",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Kompasu",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Lingling",
+     "year": 2019,
+     "category": 1
+    },
+    {
+     "name": "Bavi",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Haishen",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Maysak",
+     "year": 2020,
+     "category": 1
+    }
+   ]
+  },
+  "PRT": {
+   "storms": 6,
+   "from": 2006,
+   "to": 2019,
+   "list": [
+    {
+     "name": "Gordon",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Gordon",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Alex",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Ophelia",
+     "year": 2017,
+     "category": 3
+    },
+    {
+     "name": "Leslie",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Lorenzo",
+     "year": 2019,
+     "category": 1
+    }
+   ]
+  },
+  "SAU": {
+   "storms": 1,
+   "from": 2018,
+   "to": 2018,
+   "list": [
+    {
+     "name": "Mekunu",
+     "year": 2018,
+     "category": 2
+    }
+   ]
+  },
+  "SLB": {
+   "storms": 6,
+   "from": 2003,
+   "to": 2026,
+   "list": [
+    {
+     "name": "Zoe",
+     "year": 2003,
+     "category": 5
+    },
+    {
+     "name": "Xavier",
+     "year": 2007,
+     "category": 2
+    },
+    {
+     "name": "Pam",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Rita",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Lola",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Maila",
+     "year": 2026,
+     "category": 4
+    }
+   ]
+  },
+  "SOM": {
+   "storms": 2,
+   "from": 2018,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Sagar",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Gati",
+     "year": 2020,
+     "category": 2
+    }
+   ]
+  },
+  "SYC": {
+   "storms": 3,
+   "from": 2007,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Bondo",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Fantala",
+     "year": 2016,
+     "category": 5
+    },
+    {
+     "name": "Belna",
+     "year": 2020,
+     "category": 3
+    }
+   ]
+  },
+  "THA": {
+   "storms": 2,
+   "from": 2013,
+   "to": 2017,
+   "list": [
+    {
+     "name": "Wutip",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Doksuri",
+     "year": 2017,
+     "category": 1
+    }
+   ]
+  },
+  "TON": {
+   "storms": 8,
+   "from": 2002,
+   "to": 2020,
+   "list": [
+    {
+     "name": "Waka",
+     "year": 2002,
+     "category": 3
+    },
+    {
+     "name": "Rene",
+     "year": 2010,
+     "category": 2
+    },
+    {
+     "name": "Wilma",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Ian",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Ula",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Winston",
+     "year": 2016,
+     "category": 4
+    },
+    {
+     "name": "Gita",
+     "year": 2018,
+     "category": 4
+    },
+    {
+     "name": "Tino",
+     "year": 2020,
+     "category": 2
+    }
+   ]
+  },
+  "VCT": {
+   "storms": 1,
+   "from": 2010,
+   "to": 2010,
+   "list": [
+    {
+     "name": "Tomas",
+     "year": 2010,
+     "category": 1
+    }
+   ]
+  },
+  "VEN": {
+   "storms": 2,
+   "from": 2004,
+   "to": 2005,
+   "list": [
+    {
+     "name": "Ivan",
+     "year": 2004,
+     "category": 4
+    },
+    {
+     "name": "Emily",
+     "year": 2005,
+     "category": 2
+    }
+   ]
+  },
+  "VNM": {
+   "storms": 55,
+   "from": 2001,
+   "to": 2025,
+   "list": [
+    {
+     "name": "Lingling",
+     "year": 2001,
+     "category": 4
+    },
+    {
+     "name": "Koni",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Krovanh",
+     "year": 2003,
+     "category": 2
+    },
+    {
+     "name": "Nepartak",
+     "year": 2003,
+     "category": 1
+    },
+    {
+     "name": "Chanthu",
+     "year": 2004,
+     "category": 1
+    },
+    {
+     "name": "Muifa",
+     "year": 2004,
+     "category": 2
+    },
+    {
+     "name": "Damrey",
+     "year": 2005,
+     "category": 2
+    },
+    {
+     "name": "Kai-Tak",
+     "year": 2005,
+     "category": 2
+    },
+    {
+     "name": "Chanchu",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Durian",
+     "year": 2006,
+     "category": 1
+    },
+    {
+     "name": "Utor",
+     "year": 2006,
+     "category": 2
+    },
+    {
+     "name": "Xangsane",
+     "year": 2006,
+     "category": 4
+    },
+    {
+     "name": "Hagibis",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Lekima",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Hagupit",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Neoguri",
+     "year": 2008,
+     "category": 3
+    },
+    {
+     "name": "Ketsana",
+     "year": 2009,
+     "category": 2
+    },
+    {
+     "name": "Mirinae",
+     "year": 2009,
+     "category": 1
+    },
+    {
+     "name": "Conson",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Mindulle",
+     "year": 2010,
+     "category": 1
+    },
+    {
+     "name": "Nesat",
+     "year": 2011,
+     "category": 1
+    },
+    {
+     "name": "Bopha",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Kai-Tak",
+     "year": 2012,
+     "category": 1
+    },
+    {
+     "name": "Son-Tinh",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Haiyan",
+     "year": 2013,
+     "category": 4
+    },
+    {
+     "name": "Nari",
+     "year": 2013,
+     "category": 1
+    },
+    {
+     "name": "Wutip",
+     "year": 2013,
+     "category": 3
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2014,
+     "category": 1
+    },
+    {
+     "name": "Rammasun",
+     "year": 2014,
+     "category": 4
+    },
+    {
+     "name": "Mujigae",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Mirinae",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Sarika",
+     "year": 2016,
+     "category": 1
+    },
+    {
+     "name": "Damrey",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Doksuri",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Tembin",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Mangkhut",
+     "year": 2018,
+     "category": 1
+    },
+    {
+     "name": "Usagi",
+     "year": 2018,
+     "category": 2
+    },
+    {
+     "name": "Nakri",
+     "year": 2019,
+     "category": 1
+    },
+    {
+     "name": "Molave",
+     "year": 2020,
+     "category": 3
+    },
+    {
+     "name": "Saudel",
+     "year": 2020,
+     "category": 1
+    },
+    {
+     "name": "Vamco",
+     "year": 2020,
+     "category": 4
+    },
+    {
+     "name": "Rai",
+     "year": 2021,
+     "category": 5
+    },
+    {
+     "name": "Nesat",
+     "year": 2022,
+     "category": 2
+    },
+    {
+     "name": "Noru",
+     "year": 2022,
+     "category": 4
+    },
+    {
+     "name": "Talim",
+     "year": 2023,
+     "category": 1
+    },
+    {
+     "name": "Trami",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Yagi",
+     "year": 2024,
+     "category": 5
+    },
+    {
+     "name": "Yinxing",
+     "year": 2024,
+     "category": 1
+    },
+    {
+     "name": "Bualoi",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Kajiki",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Kalmaegi",
+     "year": 2025,
+     "category": 3
+    },
+    {
+     "name": "Koto",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Matmo",
+     "year": 2025,
+     "category": 2
+    },
+    {
+     "name": "Ragasa",
+     "year": 2025,
+     "category": 1
+    },
+    {
+     "name": "Wutip",
+     "year": 2025,
+     "category": 1
+    }
+   ]
+  },
+  "VUT": {
+   "storms": 14,
+   "from": 2003,
+   "to": 2024,
+   "list": [
+    {
+     "name": "Beni",
+     "year": 2003,
+     "category": 4
+    },
+    {
+     "name": "Ivy",
+     "year": 2004,
+     "category": 3
+    },
+    {
+     "name": "Becky",
+     "year": 2007,
+     "category": 1
+    },
+    {
+     "name": "Xavier",
+     "year": 2007,
+     "category": 4
+    },
+    {
+     "name": "Atu",
+     "year": 2011,
+     "category": 4
+    },
+    {
+     "name": "Jasmine",
+     "year": 2012,
+     "category": 3
+    },
+    {
+     "name": "Pam",
+     "year": 2015,
+     "category": 5
+    },
+    {
+     "name": "Cook",
+     "year": 2017,
+     "category": 1
+    },
+    {
+     "name": "Donna",
+     "year": 2017,
+     "category": 2
+    },
+    {
+     "name": "Hola",
+     "year": 2018,
+     "category": 2
+    },
+    {
+     "name": "Harold",
+     "year": 2020,
+     "category": 5
+    },
+    {
+     "name": "Judy",
+     "year": 2023,
+     "category": 3
+    },
+    {
+     "name": "Kevin",
+     "year": 2023,
+     "category": 4
+    },
+    {
+     "name": "Lola",
+     "year": 2024,
+     "category": 4
+    }
+   ]
+  },
+  "YEM": {
+   "storms": 4,
+   "from": 2015,
+   "to": 2023,
+   "list": [
+    {
+     "name": "Chapala",
+     "year": 2015,
+     "category": 4
+    },
+    {
+     "name": "Megh",
+     "year": 2015,
+     "category": 3
+    },
+    {
+     "name": "Mekunu",
+     "year": 2018,
+     "category": 3
+    },
+    {
+     "name": "Tej",
+     "year": 2023,
+     "category": 3
+    }
+   ]
+  }
+ }
+}

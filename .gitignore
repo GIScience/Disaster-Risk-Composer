@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 dist-dev
+
+# Downloads of scripts (e.g. IBTrACS for generate_cyclone_storms.py)
+scripts/.cache/
+scripts/__pycache__/

@@ -7,6 +7,7 @@ import FloatingLogo from "@/components/FloatingLogo.vue";
 import Footer from "@/components/Footer.vue";
 import CustomDataInfo from "@/components/dashboard/modals/CustomDataInfo.vue";
 import { useRiskLogic } from "@/composables/useRiskLogic";
+import { useCycloneStorms } from "@/composables/useCycloneStorms";
 import logo from "@/assets/DIRC-Logo.svg";
 
 const {
@@ -33,6 +34,9 @@ const {
   discardCustomData,
   customIndicatorsReplaced,
 } = useRiskLogic();
+
+// How many past storms the cyclone indicators of the country are built from
+const { label: stormsLabel } = useCycloneStorms(selectedCountry);
 
 const mapRef = ref<InstanceType<typeof RiskMap> | null>(null);
 const isDrawerOpen = ref(false);
@@ -139,6 +143,9 @@ function selectDisaster(disaster: string) {
               </h2>
               <p class="text-[10px] text-slate-500 font-medium">
                 {{ formatDisaster(selectedDisaster) }}
+                <template v-if="selectedDisaster === 'risk_cyclone' && stormsLabel">
+                  · {{ stormsLabel }}
+                </template>
               </p>
             </div>
             <button
