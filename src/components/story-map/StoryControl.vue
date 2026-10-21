@@ -48,7 +48,8 @@ function handleSegChange(value: string) {
 
 <template>
   <!-- segmented -->
-  <div v-if="control.type === 'segmented'">
+  <!-- button groups sit centred in the text column -->
+  <div v-if="control.type === 'segmented'" :class="control.variant === 'cards' ? '' : 'flex justify-center'">
     <!-- card variant (icon options) -->
     <div v-if="control.variant === 'cards'" class="grid grid-cols-4 gap-2">
       <button
@@ -76,7 +77,7 @@ function handleSegChange(value: string) {
     <!-- pill variant -->
     <div
       v-else
-      class="inline-flex max-w-full flex-wrap gap-0.5 rounded-lg border border-gray-200 bg-gray-50 p-1"
+      class="inline-flex max-w-full flex-wrap justify-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 p-1"
     >
       <button
         v-for="opt in control.options"

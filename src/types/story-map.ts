@@ -123,7 +123,7 @@ export interface Header {
   /** Shown only when the story map has no `anatomy` question. */
   title?: string;
   description: string;
-  equation: { terms: EquationTerm[] };
+  equation?: { terms: EquationTerm[] };
 }
 export type EquationTerm =
   | {
@@ -270,6 +270,16 @@ export interface Dataset {
   icon: string;
   title: string;
   source: string;
+  /**
+   * Address of the source. Shown as a link only while it works (checked in the browser, see
+   * useLinkCheck); otherwise the source stays plain text.
+   */
+  url?: string;
+  /**
+   * `false`: show the link without checking it. Only for sites that can't be checked from the
+   * browser (e.g. JRC: no CORS, and bot protection answers "OK" even for missing pages).
+   */
+  checkUrl?: boolean;
 }
 
 export interface Legend {

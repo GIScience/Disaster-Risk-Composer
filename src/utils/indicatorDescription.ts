@@ -3,7 +3,7 @@
  * column that follows the pipeline's naming convention gets a description without a
  * hand-maintained per-column list (e.g. "exp_flo_RP100_children_u5_30cm" ->
  * "Number of children under 5 exposed to flood water of 30 cm or deeper in a 1-in-100-year
- * flood (1% chance each year)."). Returns null for columns it doesn't recognize.
+ * river flood (1% chance each year)."). Returns null for columns it doesn't recognize.
  */
 
 const POPULATION_GROUPS: Record<string, string> = {
@@ -47,7 +47,7 @@ const FACILITY_PATTERN = Object.keys(FACILITIES).join("|");
 function floodEvent(returnPeriod: string): string {
   const years = Number(returnPeriod);
   const chance = +(100 / years).toFixed(1);
-  return `a 1-in-${years}-year flood (${chance}% chance each year)`;
+  return `a 1-in-${years}-year river flood (${chance}% chance each year)`;
 }
 
 // GAIA's three cyclone classes ("cat1-3" in the column names) group the five Saffir-Simpson

@@ -36,6 +36,9 @@ Low
 ## Maps: legend, high end {legend.high}
 High
 
+## Step 4: button that opens the graphic {aggregation.toggle}
+Further details about aggregation
+
 ## Step 4 graphic: second panel {aggregation.borders}
 District borders laid over
 

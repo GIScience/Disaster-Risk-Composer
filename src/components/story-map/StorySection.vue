@@ -8,6 +8,8 @@ import type {
   EquationTerm,
 } from "@/types/story-map";
 import { useReveal } from "@/composables/useReveal";
+import { useLinkCheck } from "@/composables/useLinkCheck";
+import { useStoryText } from "@/composables/useStoryText";
 import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
 import StoryMapFigure from "./StoryMapFigure.vue";
@@ -24,6 +26,16 @@ import RichText from "./RichText.vue";
 import type { layerConfigType, StackLayer } from "@/types/story-map";
 
 const props = defineProps<{ section: Section }>();
+const { t } = useStoryText();
+// Dataset source: a link only while its address works, plain text otherwise
+const sourceLinkChecked = useLinkCheck(() =>
+  props.section.dataset?.checkUrl === false ? undefined : props.section.dataset?.url,
+);
+const sourceLinkOk = computed(
+  () => !!props.section.dataset?.url && (props.section.dataset.checkUrl === false || sourceLinkChecked.value),
+);
+// Section 4: the aggregation graphic is folded away until the reader asks for it
+const showAggregation = ref(false);
 // The selected option can override the legend, the map's results box and the aggregation data type.
 const activeLegend = computed(() => overlaySelected.value?.legend ?? props.section.legend);
 const activeMap = computed(() =>
@@ -289,7 +301,26 @@ const baseLayerLabel = computed(() => {
         <StoryCallouts v-if="section.callouts" :callouts="section.callouts" />
         <StoryIndicatorDecoder v-if="section.decoder" :decoder="section.decoder" />
 
-        <div v-if="section.links?.length" class="flex flex-wrap gap-2">
+        <!-- Unfolds the aggregation graphic below the section -->
+        <div v-if="section.visual === 'aggregation'" class="flex justify-center">
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-solid border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-heigit-red hover:text-heigit-red"
+            :aria-expanded="showAggregation"
+            :aria-controls="`${section.id}-aggregation`"
+            @click="showAggregation = !showAggregation"
+          >
+            {{ t("aggregation.toggle") }}
+            <v-icon
+              icon="mdi-chevron-down"
+              size="20"
+              class="transition-transform duration-200"
+              :class="showAggregation ? 'rotate-180' : ''"
+            />
+          </button>
+        </div>
+
+        <div v-if="section.links?.length" class="flex flex-wrap justify-center gap-2">
           <a
             v-for="link in section.links"
             :key="link.href"
@@ -310,7 +341,16 @@ const baseLayerLabel = computed(() => {
           <v-icon :icon="section.dataset.icon" size="18" class="text-gray-400" />
           <div>
             <div class="font-medium text-gray-700">{{ section.dataset.title }}</div>
-            <div class="text-gray-400">{{ section.dataset.source }}</div>
+            <a
+              v-if="sourceLinkOk"
+              :href="section.dataset.url"
+              target="_blank"
+              rel="noopener"
+              class="text-gray-500 underline decoration-gray-300 underline-offset-2 hover:text-heigit-red"
+            >
+              {{ section.dataset.source }}
+            </a>
+            <div v-else class="text-gray-400">{{ section.dataset.source }}</div>
           </div>
         </div>
       </div>
@@ -362,8 +402,12 @@ const baseLayerLabel = computed(() => {
       </div>
     </div>
 
-    <!-- Full-width visual below the row -->
-    <div v-if="section.visual === 'aggregation'" class="border-t border-gray-200 bg-gray-50 px-5 py-5">
+    <!-- Full-width visual below the row, only once unfolded with the button in the text column -->
+    <div
+      v-if="section.visual === 'aggregation' && showAggregation"
+      :id="`${section.id}-aggregation`"
+      class="border-t border-gray-200 bg-gray-50 px-5 py-5"
+    >
       <StoryAggregation :kind="aggregationKind" :hazard="section.visualHazard" />
     </div>
   </section>

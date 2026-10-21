@@ -47,6 +47,14 @@ Numbers that also appear in the text (e.g. "about 1.9 million children" in a not
 legend entry "Up to 25,000") are written in `text.md` and have to be updated there by hand
 when the data changes.
 
+## I want to link a data source
+
+Add `"url"` to the section's `dataset` in the hazard's `config.json` (e.g. step 1 of the cyclone
+story map links IBTrACS). The page checks the address once in the browser and shows the source
+as a link only while it works; if the provider moves the page, it falls back to plain text. The
+check needs the other site to allow it (CORS). The JRC flood page doesn't, so it can't be linked
+this way: its link is set with `"checkUrl": false` and shown without a check.
+
 ## I want to add a story map for a new hazard
 
 1. Copy a hazard folder, e.g. `cyclone-exposure/` → `drought-exposure/`. The folder name is

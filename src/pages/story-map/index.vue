@@ -2,10 +2,21 @@
 import { ref, computed, onMounted } from "vue";
 import PageLayout from "@/layout/PageLayout.vue";
 import StoryMapPreviewCard from "@/components/story-map/StoryMapPreviewCard.vue";
+import StoryEquation from "@/components/story-map/StoryEquation.vue";
+import type { EquationTerm } from "@/types/story-map";
 import { cn } from "@/utils/cn";
 import { fetchCountries, type Country } from "@/services/dataService";
 
 import { storyMaps as storyMapConfigs } from "@/content/story-maps";
+
+// What every story map explains, for all hazards
+const EXPOSURE_EQUATION: EquationTerm[] = [
+  { kind: "operand", icon: "mdi-weather-lightning-rainy", label: "Hazard", sublabel: "where river floods or cyclone winds reach" },
+  { kind: "operator", symbol: "+" },
+  { kind: "operand", icon: "mdi-account-group", label: "People & Places", sublabel: "who or what is there" },
+  { kind: "operator", symbol: "=" },
+  { kind: "result", icon: "mdi-home-alert", label: "Exposure", sublabel: "who or what is in harm's way" },
+];
 
 const countries = ref<Country[]>([]);
 
@@ -67,14 +78,15 @@ const filteredStoryMaps = computed(() => {
         <h1
           class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
         >
-          Understand how we estimate risk
+          Understand how we estimate exposure
           <span class="text-heigit-red">from different hazards</span>
         </h1>
         <p class="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
           Interactive walkthroughs of how the Disaster Risk Composer
-          quantifies humanitarian risk. Explore the data, the methodology, and
-          the result.
+          estimates exposure: who and what lies in the reach of a hazard.
+          Explore the data, the methodology, and the result.
         </p>
+        <StoryEquation class="mt-8" :terms="EXPOSURE_EQUATION" />
       </div>
     </div>
 

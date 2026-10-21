@@ -17,7 +17,7 @@
 Storm over a settlement
 
 ## Title {title}
-Cyclone exposure, explained
+Cyclone Exposure Story Map
 
 ## Subtitle {subtitle}
 What does “children under 5 exposed to intensity 3 cyclone winds” actually mean? This page takes one dashboard indicator apart, step by step.
@@ -88,30 +88,6 @@ Exposure shows who has been in the path of strong cyclone winds since 2004, not 
 
 ## Description {description}
 It estimates how many children under 5 live in places that the strongest storms since 2004, Saffir-Simpson Categories 4 and 5, reached with winds of at least 34 knots (about 63 km/h). The dashboard groups the five storm categories into three intensities: intensity 1 = Category 1, intensity 2 = Categories 2–3, intensity 3 = Categories 4–5. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
-
-## Equation: Cyclone winds {equation.terms.cyclone-winds}
-
-### Label {label}
-Cyclone winds
-
-### Small text {sublabel}
-where strong winds reach
-
-## Equation: People & places {equation.terms.people-places}
-
-### Label {label}
-People & places
-
-### Small text {sublabel}
-who or what is there
-
-## Equation: Exposure {equation.terms.exposure}
-
-### Label {label}
-Exposure
-
-### Small text {sublabel}
-who is in the wind zone
 
 # Header question and cards {storyMap.anatomy}
 

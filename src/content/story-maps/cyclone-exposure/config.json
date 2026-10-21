@@ -37,35 +37,7 @@
         }
       ]
     },
-    "header": {
-      "equation": {
-        "terms": [
-          {
-            "kind": "operand",
-            "icon": "mdi-weather-windy",
-            "key": "cyclone-winds"
-          },
-          {
-            "kind": "operator",
-            "symbol": "+"
-          },
-          {
-            "kind": "operand",
-            "icon": "mdi-account-group",
-            "key": "people-places"
-          },
-          {
-            "kind": "operator",
-            "symbol": "="
-          },
-          {
-            "kind": "result",
-            "icon": "mdi-weather-hurricane",
-            "key": "exposure"
-          }
-        ]
-      }
-    },
+    "header": {},
     "anatomy": {
       "parts": [
         {
@@ -104,7 +76,8 @@
           "icon": "mdi-information"
         },
         "dataset": {
-          "icon": "mdi-database-outline"
+          "icon": "mdi-database-outline",
+          "url": "https://www.ncei.noaa.gov/products/international-best-track-archive"
         },
         "control": {
           "type": "segmented",

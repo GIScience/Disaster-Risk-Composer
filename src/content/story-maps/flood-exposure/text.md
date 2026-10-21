@@ -17,18 +17,18 @@
 Flooded settlement
 
 ## Title {title}
-Flood exposure, explained
+River Flood Exposure Story Map
 
 ## Subtitle {subtitle}
-What does “children under 5 exposed to a 1-in-50-year flood above 30 cm” actually mean? This page takes one dashboard indicator apart, step by step.
+What does “children under 5 exposed to a 1-in-50-year river flood above 30 cm” actually mean? This page takes one dashboard indicator apart, step by step.
 
 # Sidebar {storyMap.sidebar}
 
 ## Title {title}
-Flood Exposure Story Map
+River Flood Exposure Story Map
 
 ## Subtitle {subtitle}
-Understand how flood exposure indicators are produced and what they mean.
+Understand how river flood exposure indicators are produced and what they mean.
 
 ## Sidebar step: Choose a flood scenario {steps.sec-flood}
 
@@ -82,36 +82,12 @@ Try other combinations.
 About this story map
 
 ## About box: text {aside.body}
-Exposure shows who could be affected in a modelled flood, not who will be affected or who needs help. Example: Myanmar.
+Exposure shows who could be affected in a modelled river flood, not who will be affected or who needs help. Example: Myanmar.
 
 # Header {storyMap.header}
 
 ## Description {description}
-It estimates how many children under 5 live in areas that could be flooded with more than 30 cm of water during a flood with a 2% chance of happening in any given year. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
-
-## Equation: Flood {equation.terms.flood}
-
-### Label {label}
-Flood
-
-### Small text {sublabel}
-where the water goes
-
-## Equation: People & places {equation.terms.people-places}
-
-### Label {label}
-People & places
-
-### Small text {sublabel}
-who or what is there
-
-## Equation: Exposure {equation.terms.exposure}
-
-### Label {label}
-Exposure
-
-### Small text {sublabel}
-who is in the water
+It estimates how many children under 5 live in areas that could be flooded with more than 30 cm of water during a river flood with a 2% chance of happening in any given year. Only river floods are covered, not flash floods from heavy rain, coastal floods or storm surge. Exposure is one of three parts of risk, next to vulnerability and lack of coping capacity.
 
 # Header question and cards {storyMap.anatomy}
 
@@ -131,10 +107,10 @@ exposed to a
 ## Question part: 1-in-50-year flood {parts.sec-flood}
 
 ### Words in the question {text}
-1-in-50-year flood
+1-in-50-year river flood
 
 ### Hint {hint}
-A flood with a 2% chance in any given year.
+A river flood with a 2% chance in any given year.
 
 ## Question part: deeper than {parts.deeper-than}
 
@@ -168,7 +144,7 @@ All exposed children in a district added up.
 Choose a flood scenario
 
 ## Subtitle {subtitle}
-Floods are described by how likely they are. Switch the scenario to see how far the water reaches.
+River floods are described by how likely they are. Switch the scenario to see how far the water reaches.
 
 ## Button: 1-in-10 {control.options.10}
 
@@ -218,9 +194,11 @@ chance in any given year. Rare, but very large.
 Modelled river floods
 
 ## Dataset source {dataset.source}
-JRC Global Flood Hazard Maps
+JRC Global River Flood Hazard Maps
 
 ## Info box {note.body}
+The maps show **river floods only**: rivers overflowing their banks. Flash floods from heavy local rain, coastal floods and storm surge are not included.
+
 Bigger, rarer floods reach further. The dashboard has indicators for all four scenarios.
 
 # Step 2: Apply the flood-depth threshold {storyMap.sections.sec-depth}
@@ -337,7 +315,7 @@ The population maps are projections for **2030** (WorldPop). “Facilities” ar
 Aggregate to districts
 
 ## Subtitle {subtitle}
-1-in-50-year flood. Choose what to count.
+1-in-50-year river flood. Choose what to count.
 
 ## Info box {note.body}
 We add up all exposed children in the grid cells inside each district (see below). That gives one number per district: the value you see in the dashboard.
@@ -593,5 +571,5 @@ What this indicator does not tell us
 - whether or when a flood will happen; it is not a forecast
 - how many people will be harmed or need help
 - the effect of local protection, building quality or early warning
-- floods from heavy local rain or the sea; the model covers river floods
+- flash floods from heavy local rain, coastal floods or storm surge; the maps cover river floods only
 - anything precise about a single village: results are district totals from models

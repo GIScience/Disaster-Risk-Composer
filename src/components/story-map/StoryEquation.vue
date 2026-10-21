@@ -24,7 +24,7 @@ defineProps<{ terms: EquationTerm[]; compact?: boolean }>();
         <v-icon
           v-if="term.icon"
           :icon="term.icon"
-          :class="compact ? 'h-6 w-6' : 'h-14 w-14'"
+          :size="compact ? 24 : 40"
           class="text-gray-500"
         />
         <img
