@@ -204,270 +204,278 @@ function labelPos(id: string) {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-3">
+  <!-- From sm on, the figures share two rows (caption / graphic with its note), so the graphics
+       start at the same height even when one caption wraps onto two lines -->
+  <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-3 sm:grid-rows-[auto_auto] sm:gap-y-0">
     <!-- 1. input data -->
-    <figure class="m-0">
+    <figure class="m-0 sm:row-span-2 sm:grid sm:grid-rows-subgrid">
       <figcaption class="mb-2 text-xs font-semibold text-gray-700">
         <span class="text-heigit-red">1.</span>
         {{ t(`aggregation.${kind}.caption`) }}
       </figcaption>
-      <svg
-        :viewBox="`0 0 ${COLS * CELL} ${ROWS * CELL + 24}`"
-        class="w-full rounded"
-      >
-        <template v-if="kind === 'points'">
-          <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#f8fafc" />
-          <rect
-            v-for="cell in cells.filter((c) => hazard !== 'cyclone' && DEPTH[c.r][c.c] > 0)"
-            :key="`f-${cell.r}-${cell.c}`"
-            :x="cell.c * CELL"
-            :y="cell.r * CELL"
-            :width="CELL + 0.5"
-            :height="CELL + 0.5"
-            :fill="FLOODED[cell.r][cell.c] ? zone.fill : '#dbeafe'"
-          />
-          <!-- wind zone: one corridor per track segment, edges at the 34-knot radius -->
-          <g v-if="hazard === 'cyclone'" fill="none" stroke-linecap="round">
-            <path v-for="(g, i) in SEGMENTS" :key="`e${i}`" :d="g.d" stroke="#8b5cf6" :stroke-width="g.r * 2 + 3" />
-            <path v-for="(g, i) in SEGMENTS" :key="`z${i}`" :d="g.d" :stroke="zone.fill" :stroke-width="g.r * 2" />
-            <path :d="trackPath" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" stroke-linejoin="round" />
-          </g>
-          <line
-            v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
-            :key="`pe-${i}`"
-            v-bind="e"
-            stroke="#2563eb"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          />
-          <g v-for="(f, i) in facilities" :key="i" :transform="`translate(${f.x} ${f.y})`">
-            <circle r="6.5" :fill="exposed(f) ? '#cc0130' : '#94a3b8'" stroke="white" stroke-width="1.5" />
-            <path v-if="f.type === 'hospital'" d="M-3 0 H3 M0 -3 V3" stroke="white" stroke-width="1.8" />
-            <rect v-else-if="f.type === 'school'" x="-2.5" y="-2.5" width="5" height="5" fill="white" />
-            <circle v-else r="2.2" fill="white" />
-          </g>
-          <!-- flood: outline of the water deeper than 30 cm, drawn under the points' halo -->
-          <template v-if="hazard !== 'cyclone'">
-            <!-- key under the grid -->
-            <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
-              <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
-              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
-              <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
-              <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+      <div>
+        <svg
+          :viewBox="`0 0 ${COLS * CELL} ${ROWS * CELL + 24}`"
+          class="w-full rounded"
+        >
+          <template v-if="kind === 'points'">
+            <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#f8fafc" />
+            <rect
+              v-for="cell in cells.filter((c) => hazard !== 'cyclone' && DEPTH[c.r][c.c] > 0)"
+              :key="`f-${cell.r}-${cell.c}`"
+              :x="cell.c * CELL"
+              :y="cell.r * CELL"
+              :width="CELL + 0.5"
+              :height="CELL + 0.5"
+              :fill="FLOODED[cell.r][cell.c] ? zone.fill : '#dbeafe'"
+            />
+            <!-- wind zone: one corridor per track segment, edges at the 34-knot radius -->
+            <g v-if="hazard === 'cyclone'" fill="none" stroke-linecap="round">
+              <path v-for="(g, i) in SEGMENTS" :key="`e${i}`" :d="g.d" stroke="#8b5cf6" :stroke-width="g.r * 2 + 3" />
+              <path v-for="(g, i) in SEGMENTS" :key="`z${i}`" :d="g.d" :stroke="zone.fill" :stroke-width="g.r * 2" />
+              <path :d="trackPath" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" stroke-linejoin="round" />
             </g>
+            <line
+              v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
+              :key="`pe-${i}`"
+              v-bind="e"
+              stroke="#2563eb"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+            <g v-for="(f, i) in facilities" :key="i" :transform="`translate(${f.x} ${f.y})`">
+              <circle r="6.5" :fill="exposed(f) ? '#cc0130' : '#94a3b8'" stroke="white" stroke-width="1.5" />
+              <path v-if="f.type === 'hospital'" d="M-3 0 H3 M0 -3 V3" stroke="white" stroke-width="1.8" />
+              <rect v-else-if="f.type === 'school'" x="-2.5" y="-2.5" width="5" height="5" fill="white" />
+              <circle v-else r="2.2" fill="white" />
+            </g>
+            <!-- flood: outline of the water deeper than 30 cm, drawn under the points' halo -->
+            <template v-if="hazard !== 'cyclone'">
+              <!-- key under the grid -->
+              <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
+                <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
+                <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
+                <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
+                <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+              </g>
+            </template>
+            <template v-else>
+              <!-- key under the grid -->
+              <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
+                <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
+                <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
+                <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
+                <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+              </g>
+            </template>
           </template>
           <template v-else>
-            <!-- key under the grid -->
-            <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
-              <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
-              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
-              <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
-              <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+            <g v-for="cell in cells" :key="`${cell.r}-${cell.c}`">
+              <rect
+                :x="cell.c * CELL + 1"
+                :y="cell.r * CELL + 1"
+                :width="CELL - 2"
+                :height="CELL - 2"
+                rx="3"
+                :fill="cellColor(cell.value, cell.counted, cell.shallow)"
+              />
+              <text
+                v-if="cell.value"
+                :x="cell.c * CELL + CELL / 2"
+                :y="cell.r * CELL + CELL / 2 + 4"
+                text-anchor="middle"
+                class="text-[11px] font-semibold"
+                :class="!cell.counted ? 'fill-slate-400' : cell.value >= 12 ? 'fill-white' : 'fill-slate-700'"
+              >
+                {{ cell.value }}
+              </text>
             </g>
+            <!-- flood over the grid: outline of the water deeper than 30 cm -->
+            <template v-if="hazard !== 'cyclone'">
+              <line
+                v-for="(e, i) in floodEdges"
+                :key="`fe-${i}`"
+                v-bind="e"
+                stroke="#2563eb"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                class="pointer-events-none"
+              />
+              <!-- key under the grid -->
+              <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
+                <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
+                <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
+                <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
+                <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+              </g>
+            </template>
+            <!-- wind zone over the grid: its 34-knot edge and the storm track -->
+            <template v-if="hazard === 'cyclone'">
+              <mask :id="`ring-a-${uid}`">
+                <g fill="none" stroke-linecap="round">
+                  <path v-for="(g, i) in SEGMENTS" :key="`w${i}`" :d="g.d" stroke="white" :stroke-width="g.r * 2 + 3" />
+                  <path v-for="(g, i) in SEGMENTS" :key="`b${i}`" :d="g.d" stroke="black" :stroke-width="g.r * 2" />
+                </g>
+              </mask>
+              <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#7c3aed" :mask="`url(#ring-a-${uid})`" class="pointer-events-none" />
+              <path :d="trackPath" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" class="pointer-events-none" />
+              <!-- key under the grid -->
+              <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
+                <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
+                <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
+                <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
+                <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
+              </g>
+            </template>
           </template>
-        </template>
-        <template v-else>
-          <g v-for="cell in cells" :key="`${cell.r}-${cell.c}`">
+        </svg>
+        <p class="mt-1.5 text-[11px] leading-snug text-gray-500">
+          {{ t(`aggregation.${kind}.note`) }}
+        </p>
+      </div>
+    </figure>
+
+    <!-- 2. borders -->
+    <figure class="m-0 sm:row-span-2 sm:grid sm:grid-rows-subgrid">
+      <figcaption class="mb-2 text-xs font-semibold text-gray-700">
+        <span class="text-heigit-red">2.</span> {{ t("aggregation.borders") }}
+      </figcaption>
+      <div>
+        <svg :viewBox="`-2 -2 ${COLS * CELL + 4} ${ROWS * CELL + 4}`" class="w-full rounded">
+          <template v-if="kind === 'points'">
+            <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#f8fafc" />
             <rect
+              v-for="cell in cells.filter((c) => hazard !== 'cyclone' && DEPTH[c.r][c.c] > 0)"
+              :key="`f-${cell.r}-${cell.c}`"
+              :x="cell.c * CELL"
+              :y="cell.r * CELL"
+              :width="CELL + 0.5"
+              :height="CELL + 0.5"
+              :fill="FLOODED[cell.r][cell.c] ? zone.fill : '#dbeafe'"
+              :opacity="hovered && hovered !== cell.district ? 0.3 : 1"
+            />
+            <g
+              v-if="hazard === 'cyclone'"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              :opacity="hovered ? 0.6 : 1"
+            >
+              <path v-for="(g, i) in SEGMENTS" :key="`e${i}`" :d="g.d" stroke="#8b5cf6" :stroke-width="g.r * 2 + 3" />
+              <path v-for="(g, i) in SEGMENTS" :key="`z${i}`" :d="g.d" :stroke="zone.fill" :stroke-width="g.r * 2" />
+            </g>
+            <line
+              v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
+              :key="`pe-${i}`"
+              v-bind="e"
+              stroke="#2563eb"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              :opacity="hovered ? 0.5 : 1"
+            />
+            <circle
+              v-for="(f, i) in facilities"
+              :key="i"
+              :cx="f.x"
+              :cy="f.y"
+              r="6"
+              :fill="exposed(f) ? '#cc0130' : '#94a3b8'"
+              stroke="white"
+              stroke-width="1.5"
+              class="transition-opacity duration-200"
+              :opacity="hovered && hovered !== f.district ? 0.15 : 1"
+            />
+          </template>
+          <template v-else>
+            <rect
+              v-for="cell in cells"
+              :key="`${cell.r}-${cell.c}`"
               :x="cell.c * CELL + 1"
               :y="cell.r * CELL + 1"
               :width="CELL - 2"
               :height="CELL - 2"
               rx="3"
               :fill="cellColor(cell.value, cell.counted, cell.shallow)"
+              class="transition-opacity duration-200"
+              :opacity="hovered && hovered !== cell.district ? 0.2 : 1"
             />
-            <text
-              v-if="cell.value"
-              :x="cell.c * CELL + CELL / 2"
-              :y="cell.r * CELL + CELL / 2 + 4"
-              text-anchor="middle"
-              class="text-[11px] font-semibold"
-              :class="!cell.counted ? 'fill-slate-400' : cell.value >= 12 ? 'fill-white' : 'fill-slate-700'"
-            >
-              {{ cell.value }}
-            </text>
-          </g>
-          <!-- flood over the grid: outline of the water deeper than 30 cm -->
-          <template v-if="hazard !== 'cyclone'">
             <line
-              v-for="(e, i) in floodEdges"
+              v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
               :key="`fe-${i}`"
               v-bind="e"
               stroke="#2563eb"
               stroke-width="2.5"
               stroke-linecap="round"
               class="pointer-events-none"
+              :opacity="hovered ? 0.5 : 1"
             />
-            <!-- key under the grid -->
-            <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
-              <line x1="2" x2="22" y1="0" y2="0" stroke="#2563eb" stroke-width="2.5" />
-              <text x="27" y="4" class="fill-blue-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
-              <rect x="128" y="-6" width="12" height="12" rx="2" fill="#dbeafe" />
-              <text x="145" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
-            </g>
+            <template v-if="hazard === 'cyclone'">
+              <mask :id="`ring-b-${uid}`">
+                <g fill="none" stroke-linecap="round">
+                  <path v-for="(g, i) in SEGMENTS" :key="`w${i}`" :d="g.d" stroke="white" :stroke-width="g.r * 2 + 3" />
+                  <path v-for="(g, i) in SEGMENTS" :key="`b${i}`" :d="g.d" stroke="black" :stroke-width="g.r * 2" />
+                </g>
+              </mask>
+              <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#7c3aed" :mask="`url(#ring-b-${uid})`" class="pointer-events-none" />
+            </template>
           </template>
-          <!-- wind zone over the grid: its 34-knot edge and the storm track -->
-          <template v-if="hazard === 'cyclone'">
-            <mask :id="`ring-a-${uid}`">
-              <g fill="none" stroke-linecap="round">
-                <path v-for="(g, i) in SEGMENTS" :key="`w${i}`" :d="g.d" stroke="white" :stroke-width="g.r * 2 + 3" />
-                <path v-for="(g, i) in SEGMENTS" :key="`b${i}`" :d="g.d" stroke="black" :stroke-width="g.r * 2" />
-              </g>
-            </mask>
-            <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#7c3aed" :mask="`url(#ring-a-${uid})`" class="pointer-events-none" />
-            <path :d="trackPath" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" class="pointer-events-none" />
-            <!-- key under the grid -->
-            <g :transform="`translate(0 ${ROWS * CELL + 14})`" class="pointer-events-none">
-              <line x1="2" x2="22" y1="0" y2="0" stroke="#7c3aed" stroke-width="2" />
-              <text x="27" y="4" class="fill-violet-700 text-[10px] font-bold">{{ t("aggregation.key.area") }}</text>
-              <line x1="110" x2="130" y1="0" y2="0" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" />
-              <text x="135" y="4" class="fill-slate-500 text-[10px]">{{ t("aggregation.key.other") }}</text>
-            </g>
-          </template>
-        </template>
-      </svg>
-      <p class="mt-1.5 text-[11px] leading-snug text-gray-500">
-        {{ t(`aggregation.${kind}.note`) }}
-      </p>
-    </figure>
-
-    <!-- 2. borders -->
-    <figure class="m-0">
-      <figcaption class="mb-2 text-xs font-semibold text-gray-700">
-        <span class="text-heigit-red">2.</span> {{ t("aggregation.borders") }}
-      </figcaption>
-      <svg :viewBox="`-2 -2 ${COLS * CELL + 4} ${ROWS * CELL + 4}`" class="w-full rounded">
-        <template v-if="kind === 'points'">
-          <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#f8fafc" />
-          <rect
-            v-for="cell in cells.filter((c) => hazard !== 'cyclone' && DEPTH[c.r][c.c] > 0)"
-            :key="`f-${cell.r}-${cell.c}`"
-            :x="cell.c * CELL"
-            :y="cell.r * CELL"
-            :width="CELL + 0.5"
-            :height="CELL + 0.5"
-            :fill="FLOODED[cell.r][cell.c] ? zone.fill : '#dbeafe'"
-            :opacity="hovered && hovered !== cell.district ? 0.3 : 1"
-          />
-          <g
-            v-if="hazard === 'cyclone'"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            :opacity="hovered ? 0.6 : 1"
-          >
-            <path v-for="(g, i) in SEGMENTS" :key="`e${i}`" :d="g.d" stroke="#8b5cf6" :stroke-width="g.r * 2 + 3" />
-            <path v-for="(g, i) in SEGMENTS" :key="`z${i}`" :d="g.d" :stroke="zone.fill" :stroke-width="g.r * 2" />
-          </g>
           <line
-            v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
-            :key="`pe-${i}`"
-            v-bind="e"
-            stroke="#2563eb"
+            v-for="(s, i) in borders"
+            :key="`b-${i}`"
+            v-bind="s"
+            stroke="#1f2937"
             stroke-width="2.5"
             stroke-linecap="round"
-            :opacity="hovered ? 0.5 : 1"
           />
-          <circle
-            v-for="(f, i) in facilities"
-            :key="i"
-            :cx="f.x"
-            :cy="f.y"
-            r="6"
-            :fill="exposed(f) ? '#cc0130' : '#94a3b8'"
+          <text
+            v-for="d in DISTRICTS"
+            :key="d.id"
+            :x="labelPos(d.id).x"
+            :y="labelPos(d.id).y + 5"
+            text-anchor="middle"
+            class="pointer-events-none fill-slate-900 text-[15px] font-black"
             stroke="white"
-            stroke-width="1.5"
-            class="transition-opacity duration-200"
-            :opacity="hovered && hovered !== f.district ? 0.15 : 1"
-          />
-        </template>
-        <template v-else>
-          <rect
-            v-for="cell in cells"
-            :key="`${cell.r}-${cell.c}`"
-            :x="cell.c * CELL + 1"
-            :y="cell.r * CELL + 1"
-            :width="CELL - 2"
-            :height="CELL - 2"
-            rx="3"
-            :fill="cellColor(cell.value, cell.counted, cell.shallow)"
-            class="transition-opacity duration-200"
-            :opacity="hovered && hovered !== cell.district ? 0.2 : 1"
-          />
-          <line
-            v-for="(e, i) in hazard !== 'cyclone' ? floodEdges : []"
-            :key="`fe-${i}`"
-            v-bind="e"
-            stroke="#2563eb"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            class="pointer-events-none"
-            :opacity="hovered ? 0.5 : 1"
-          />
-          <template v-if="hazard === 'cyclone'">
-            <mask :id="`ring-b-${uid}`">
-              <g fill="none" stroke-linecap="round">
-                <path v-for="(g, i) in SEGMENTS" :key="`w${i}`" :d="g.d" stroke="white" :stroke-width="g.r * 2 + 3" />
-                <path v-for="(g, i) in SEGMENTS" :key="`b${i}`" :d="g.d" stroke="black" :stroke-width="g.r * 2" />
-              </g>
-            </mask>
-            <rect :width="COLS * CELL" :height="ROWS * CELL" fill="#7c3aed" :mask="`url(#ring-b-${uid})`" class="pointer-events-none" />
-          </template>
-        </template>
-        <line
-          v-for="(s, i) in borders"
-          :key="`b-${i}`"
-          v-bind="s"
-          stroke="#1f2937"
-          stroke-width="2.5"
-          stroke-linecap="round"
-        />
-        <text
-          v-for="d in DISTRICTS"
-          :key="d.id"
-          :x="labelPos(d.id).x"
-          :y="labelPos(d.id).y + 5"
-          text-anchor="middle"
-          class="pointer-events-none fill-slate-900 text-[15px] font-black"
-          stroke="white"
-          stroke-width="3"
-          paint-order="stroke"
-        >
-          {{ d.id }}
-        </text>
-      </svg>
+            stroke-width="3"
+            paint-order="stroke"
+          >
+            {{ d.id }}
+          </text>
+        </svg>
+      </div>
     </figure>
 
     <!-- 3. totals -->
-    <figure class="m-0">
+    <figure class="m-0 sm:row-span-2 sm:grid sm:grid-rows-subgrid">
       <figcaption class="mb-2 text-xs font-semibold text-gray-700">
         <span class="text-heigit-red">3.</span>
         {{ t(`aggregation.${kind}.totals`) }}
       </figcaption>
-      <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
-        <li
-          v-for="t in totals"
-          :key="t.id"
-          class="cursor-default rounded-md px-2 py-1.5 transition-colors"
-          :class="hovered === t.id ? 'bg-red-50' : ''"
-          @mouseenter="hovered = t.id"
-          @mouseleave="hovered = null"
-        >
-          <div class="flex items-baseline justify-between text-xs">
-            <span class="font-semibold text-gray-700">{{ t.name }}</span>
-            <span class="text-base font-black tabular-nums text-gray-900">{{ t.total }}</span>
-          </div>
-          <div class="mt-1 h-2 rounded-full bg-gray-100">
-            <div
-              class="h-2 rounded-full bg-heigit-red"
-              :style="{ width: `${(t.total / maxTotal) * 100}%` }"
-            />
-          </div>
-        </li>
-      </ul>
-      <p class="mt-3 text-[11px] leading-snug text-gray-500">
-        {{ t(`aggregation.${kind}.hoverHint`) }}
-      </p>
+      <div>
+        <ul class="m-0 flex list-none flex-col gap-2.5 p-0">
+          <li
+            v-for="t in totals"
+            :key="t.id"
+            class="cursor-default rounded-md px-2 py-1.5 transition-colors"
+            :class="hovered === t.id ? 'bg-red-50' : ''"
+            @mouseenter="hovered = t.id"
+            @mouseleave="hovered = null"
+          >
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="font-semibold text-gray-700">{{ t.name }}</span>
+              <span class="text-base font-black tabular-nums text-gray-900">{{ t.total }}</span>
+            </div>
+            <div class="mt-1 h-2 rounded-full bg-gray-100">
+              <div
+                class="h-2 rounded-full bg-heigit-red"
+                :style="{ width: `${(t.total / maxTotal) * 100}%` }"
+              />
+            </div>
+          </li>
+        </ul>
+        <p class="mt-3 text-[11px] leading-snug text-gray-500">
+          {{ t(`aggregation.${kind}.hoverHint`) }}
+        </p>
+      </div>
     </figure>
   </div>
 </template>
