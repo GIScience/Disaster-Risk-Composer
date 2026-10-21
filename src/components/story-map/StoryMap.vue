@@ -5,6 +5,7 @@ import { provideStoryText } from "@/composables/useStoryText";
 import { uiText } from "@/utils/story-map-content";
 import type { StoryMapConfig } from "@/types/story-map";
 import { useScrollSpy } from "@/composables/useScrollSpy";
+import { collectCogUrls } from "@/utils/cogUrls";
 import StoryMapNavbar from "./StoryMapNavbar.vue";
 import StorySection from "./StorySection.vue";
 import StoryCallouts from "./StoryCallouts.vue";
@@ -20,19 +21,12 @@ const sm = computed(() => props.config.storyMap);
 // Before the first tile of a Cloud-Optimized GeoTIFF can load, the COG library reads the file's
 // internal directory level by level - many small requests, strictly one after another. Doing that
 // in the background as soon as the page opens (the library caches it per file URL) means the maps
-// only have to fetch the tiles themselves when the reader reaches them.
-function collectCogUrls(value: unknown, urls: Set<string>) {
-  if (Array.isArray(value)) value.forEach((v) => collectCogUrls(v, urls));
-  else if (value && typeof value === "object") {
-    const v = value as Record<string, unknown>;
-    if (typeof v.sourceUrl === "string" && /\.tiff?$/i.test(v.sourceUrl)) urls.add(v.sourceUrl);
-    Object.values(v).forEach((child) => collectCogUrls(child, urls));
-  }
-}
+// only have to fetch the tiles themselves. The tiles of all layers are then preloaded by each map
+// (see StoryMapCanvas).
 onMounted(() => {
-  const urls = new Set<string>();
-  collectCogUrls(props.config.storyMap.sections, urls);
-  urls.forEach((url) => getCogMetadata(url).catch(() => {}));
+  collectCogUrls(props.config.storyMap.sections).forEach((url) =>
+    getCogMetadata(url).catch(() => {}),
+  );
 });
 
 const { activeId, scrollTo } = useScrollSpy(

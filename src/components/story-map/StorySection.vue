@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { collectCogUrls } from "@/utils/cogUrls";
 import { computed, ref, watch } from "vue";
 import type {
   Section,
@@ -192,6 +193,9 @@ function toStack(control: Section["control"], selected: SegmentedOption | undefi
       active: o.value === selected?.value,
     }));
 }
+// Every raster layer the reader can switch to in this step; the map preloads them in the background.
+const preloadUrls = [...collectCogUrls(props.section)];
+
 const stackLayers = computed<StackLayer[] | undefined>(() =>
   props.section.map?.stackOptions ? toStack(props.section.control, overlaySelected.value) : undefined,
 );
@@ -366,6 +370,7 @@ const baseLayerLabel = computed(() => {
         :base-layer-label="baseLayerLabel"
         :stack-layers="stackLayers"
         :base-stack-layers="baseStackLayers"
+        :preload-urls="preloadUrls"
         :visible="nearView"
       >
         <template v-if="$slots.map" #default="{ layerId }">

@@ -14,6 +14,8 @@ defineProps<{
   stackLayers?: StackLayer[];
   /** Stacked layers replacing the base layer (the primary layer is still drawn on top). */
   baseStackLayers?: StackLayer[];
+  /** All raster layers of the step, preloaded by the map so switching is fast. */
+  preloadUrls?: string[];
 }>();
 </script>
 
@@ -63,6 +65,7 @@ defineProps<{
       :choroplethUnit="layer.unit"
       :showOpacityControl="control?.showOpacityControl"
       :visible="visible"
+      :preloadUrls="preloadUrls"
     />
 
     <StoryLegend

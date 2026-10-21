@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type maplibregl from "maplibre-gl";
+import { getCogMetadata } from "@geomatico/maplibre-cog-protocol";
 import Map from "@/components/map/map.vue";
 import COGLayer from "@/components/map/COGLayer.vue";
 import VectorLayer from "@/components/map/VectorLayer.vue";
@@ -46,6 +47,8 @@ const props = withDefaults(
     baseRasterSwatch?: { value: number; label?: string };
     stackLayers?: StackLayer[];
     stackLegend?: { title: string; subtitle?: string };
+    /** Raster layers to load in the background once the map is ready, so switching to them is fast. */
+    preloadUrls?: string[];
     layerLabel?: string;
     baseLayerLabel?: string;
   }>(),
@@ -64,6 +67,8 @@ const props = withDefaults(
 const { t } = useStoryText();
 const el = ref<HTMLElement | null>(null);
 const isVisible = ref(false);
+// The map is created when it comes into view, or shortly after the page has loaded (to preload).
+const shouldMount = ref(false);
 const isLoaded = ref(false);
 const layerOpacity = ref(1);
 
@@ -125,8 +130,119 @@ const legendLayers = computed<MapLegendLayer[]>(() => [
 
 const baseLayerAnchorId = "story-map-base-layer-anchor";
 
+// Background preloading: the COG library keeps the raw data of every tile it read for an hour
+// (per file and tile, whatever the colours). Switching back to a layer seen before is therefore
+// fast; the first time it has to fetch all tiles of the view. So once the map shows its first
+// layer, it draws each other layer of the step once, invisibly and one after another, at the same
+// view, then removes it again. This is repeated whenever the reader zooms or pans, so a layer
+// they switch to later finds its tiles for the current view in the cache.
+const PRELOAD_PREFIX = "story-map-preload";
+// Wait this long after the map stopped moving, so zooming in several steps preloads only once
+const PRELOAD_AFTER_MOVE_MS = 600;
+let unmounted = false;
+let preloadRun = 0; // a new run (after the view changed) stops the previous one
+let preloading: Promise<void> = Promise.resolve();
+let moveTimer: ReturnType<typeof setTimeout> | undefined;
+let cancelWait: (() => void) | undefined; // ends the wait for the hidden layer being loaded
+
+const shownUrls = () =>
+  new Set(
+    [props.rasterUrl, props.baseRasterUrl, ...(props.stackLayers ?? []).map((l) => l.sourceUrl)].filter(
+      (u): u is string => !!u,
+    ),
+  );
+
+// Resolves once the map has loaded every tile of the current view
+function whenIdle(map: maplibregl.Map) {
+  return new Promise<void>((resolve) => {
+    if (map.loaded() && map.areTilesLoaded()) resolve();
+    else map.once("idle", () => resolve());
+  });
+}
+
+// Resolves once the visible raster layer has been added (it waits for its file's metadata first)
+function whenRasterShown(map: maplibregl.Map) {
+  const hasCog = () =>
+    Object.entries(map.getStyle().sources).some(
+      ([id, src]) => !id.startsWith(PRELOAD_PREFIX) && "url" in src && src.url?.startsWith("cog://"),
+    );
+  return new Promise<void>((resolve) => {
+    if (hasCog()) return resolve();
+    const check = () => {
+      if (!hasCog()) return;
+      map.off("sourcedata", check);
+      resolve();
+    };
+    map.on("sourcedata", check);
+  });
+}
+
+// Draws every other layer of the step once at the current view, invisibly, one after another
+async function preloadView(map: maplibregl.Map, run: number) {
+  for (const url of props.preloadUrls ?? []) {
+    if (unmounted || run !== preloadRun) return;
+    if (shownUrls().has(url)) continue;
+    const id = `${PRELOAD_PREFIX}-${run}-${url}`;
+    try {
+      const meta = await getCogMetadata(url);
+      const zooms = meta.images.filter((i) => !i.isMask).map((i) => i.zoom);
+      if (unmounted || run !== preloadRun) return;
+      map.addSource(id, {
+        type: "raster",
+        // Any colour ramp: only the tiles' raw data is cached
+        url: `cog://${url}#color:BrewerBlues9,0,1,c`,
+        tileSize: 256,
+        minzoom: Math.max(0, Math.floor(Math.min(...zooms))),
+        maxzoom: Math.ceil(Math.max(...zooms)),
+      });
+      // Opacity 0 (not visibility "none"): the map still loads the tiles, but nothing is seen
+      map.addLayer(
+        { id, type: "raster", source: id, paint: { "raster-opacity": 0, "raster-fade-duration": 0 } },
+        map.getStyle().layers[1]?.id,
+      );
+      // Wait until its tiles are loaded, or until the run is stopped
+      await Promise.race([whenIdle(map), new Promise<void>((r) => (cancelWait = r))]);
+    } catch {
+      // A layer that fails here simply loads when it's selected
+    } finally {
+      if (!unmounted && map.getLayer(id)) map.removeLayer(id);
+      if (!unmounted && map.getSource(id)) map.removeSource(id);
+    }
+  }
+}
+
+// Starts a new run for the current view once the previous one has stopped
+function schedulePreload(map: maplibregl.Map) {
+  const run = ++preloadRun;
+  preloading = preloading.then(async () => {
+    if (run !== preloadRun) return;
+    await whenIdle(map);
+    await preloadView(map, run);
+  });
+}
+
+async function startPreloading(map: maplibregl.Map) {
+  // Let the visible layer and the initial fit to its extent come first
+  await whenRasterShown(map);
+  await whenIdle(map);
+  await new Promise((r) => setTimeout(r, 300));
+  if (unmounted) return;
+  schedulePreload(map);
+  // After zooming or panning, and when the reader switches layers (the selected layer loads
+  // first), stop the current run right away and start a new one after a short pause
+  const restart = () => {
+    clearTimeout(moveTimer);
+    preloadRun++;
+    cancelWait?.(); // removes the hidden layer now, so its tiles stop competing
+    moveTimer = setTimeout(() => !unmounted && schedulePreload(map), PRELOAD_AFTER_MOVE_MS);
+  };
+  map.on("moveend", restart);
+  watch(() => [...shownUrls()].join(" "), restart);
+}
+
 function handleMapLoad(map: maplibregl.Map) {
   isLoaded.value = true;
+  if (props.preloadUrls?.length) startPreloading(map);
   if (!map.getLayer(baseLayerAnchorId)) {
     map.addLayer({
       id: baseLayerAnchorId,
@@ -137,6 +253,13 @@ function handleMapLoad(map: maplibregl.Map) {
 }
 
 onMounted(() => {
+  // Create maps with layers to preload soon after the page has loaded, even if further down
+  if (props.preloadUrls?.length) {
+    const start = () => (shouldMount.value = true);
+    if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 2000 });
+    else setTimeout(start, 1000);
+  }
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     isVisible.value = true;
     return;
@@ -162,6 +285,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  unmounted = true;
+  clearTimeout(moveTimer);
   intersectionObserver?.disconnect();
 });
 </script>
@@ -205,7 +330,7 @@ onBeforeUnmount(() => {
       <!-- Legend -->
       <MapLegend :layers="legendLayers" />
       <Map
-        v-if="isVisible"
+        v-if="isVisible || shouldMount"
         :map-style="mapStyle"
         :center="center"
         :zoom="zoom"
