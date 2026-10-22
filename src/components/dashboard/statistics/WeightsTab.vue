@@ -3,6 +3,7 @@ import { ref } from "vue";
 import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import type { PendingWeightUpload } from "@/composables/useIndicatorWeights";
 import WeightUploadModal from "@/components/dashboard/modals/WeightUploadModal.vue";
+import WeightInput from "@/components/dashboard/statistics/WeightInput.vue";
 
 const props = defineProps<{
   isMobile?: boolean;
@@ -194,10 +195,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
                       )
                   "
                 />
-                <span
-                  class="text-[10px] font-bold tabular-nums min-w-[20px] text-right"
-                  >{{ getWeight(col).toFixed(2) }}</span
-                >
+                <WeightInput :value="getWeight(col)" @update="(v) => setWeight(col, v)" />
               </div>
             </div>
             <div

@@ -4,6 +4,7 @@ import type { DimensionGroup } from "@/composables/useIndicatorColumns";
 import { useRiskMapStore } from "@/store/riskMapStore";
 import { describeIndicator } from "@/utils/indicatorDescription";
 import ConfirmDialog from "@/components/dashboard/modals/ConfirmDialog.vue";
+import WeightInput from "@/components/dashboard/statistics/WeightInput.vue";
 
 const riskMapStore = useRiskMapStore();
 
@@ -11,6 +12,8 @@ defineProps<{
   dimensionGroups: DimensionGroup[];
   getWeight: (col: string) => number;
   setWeight: (col: string, val: number) => void;
+  getGroupWeight: (cols: string[]) => number | null;
+  setGroupWeight: (cols: string[], val: number) => void;
   isSubIndicatorActive: (col: string) => boolean;
   toggleSubIndicator: (col: string) => void;
   isGroupActive: (columns: string[]) => boolean;
@@ -97,12 +100,27 @@ function getTooltipInfo(col: string): string {
           :style="{ backgroundColor: dim.tintColor }"
         >
           <span class="text-sm font-bold text-slate-800">{{ dim.label }}</span>
-          <span class="text-[10px] text-slate-400 font-medium"
-            >{{ dim.cols.filter((c) => isSubIndicatorActive(c)).length }}/{{
-              dim.cols.length
-            }}
-            active</span
-          >
+          <span class="flex items-center gap-3">
+            <!-- One weight for every indicator of the dimension -->
+            <span
+              v-if="dim.cols.length"
+              class="flex items-center gap-1.5 text-[10px] font-medium text-slate-400"
+            >
+              All weights
+              <WeightInput
+                :value="getGroupWeight(dim.cols)"
+                placeholder="mixed"
+                :label="`Weight for all ${dim.label} indicators`"
+                @update="(v) => setGroupWeight(dim.cols, v)"
+              />
+            </span>
+            <span class="text-[10px] text-slate-400 font-medium"
+              >{{ dim.cols.filter((c) => isSubIndicatorActive(c)).length }}/{{
+                dim.cols.length
+              }}
+              active</span
+            >
+          </span>
         </div>
         <div class="p-2 flex flex-col gap-3">
           <div
@@ -142,11 +160,23 @@ function getTooltipInfo(col: string): string {
                 class="text-[10px] font-bold uppercase tracking-wider text-slate-500"
                 >{{ group.label }}</span
               >
-              <span class="text-[9px] text-slate-400 font-medium ml-auto"
-                >{{
-                  group.columns.filter((c) => isSubIndicatorActive(c)).length
-                }}/{{ group.columns.length }}</span
-              >
+              <span class="ml-auto flex items-center gap-2">
+                <!-- One weight for every indicator of the group -->
+                <!-- Styled like the group name, a shade lighter so the name stays the most prominent -->
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">All weights</span>
+                <WeightInput
+                  :value="getGroupWeight(group.columns)"
+                  placeholder="mixed"
+                  :label="`Weight for all ${group.label} indicators`"
+                  :disabled="!group.columns.some((c) => isSubIndicatorActive(c))"
+                  @update="(v) => setGroupWeight(group.columns, v)"
+                />
+                <span class="text-[9px] text-slate-400 font-medium"
+                  >{{
+                    group.columns.filter((c) => isSubIndicatorActive(c)).length
+                  }}/{{ group.columns.length }}</span
+                >
+              </span>
             </div>
             <div
               v-for="col in group.columns"
@@ -200,11 +230,11 @@ function getTooltipInfo(col: string): string {
                     </template>
                   </v-tooltip>
                 </span>
-                <span
-                  class="text-[10px] font-bold tabular-nums min-w-[20px] text-right"
-                  :class="{ 'text-slate-300': !isSubIndicatorActive(col) }"
-                  >{{ getWeight(col).toFixed(2) }}</span
-                >
+                <WeightInput
+                  :value="getWeight(col)"
+                  :disabled="!isSubIndicatorActive(col)"
+                  @update="(v) => setWeight(col, v)"
+                />
                 <input
                   type="range"
                   class="w-16 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"

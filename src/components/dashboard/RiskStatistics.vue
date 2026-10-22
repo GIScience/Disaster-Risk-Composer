@@ -88,6 +88,8 @@ const hasCustomUpload = computed(
 const {
   getWeight,
   setWeight,
+  setGroupWeight,
+  getGroupWeight,
   isSubIndicatorActive,
   toggleSubIndicator,
   isGroupActive,
@@ -186,6 +188,8 @@ const {
         :dimension-groups="indicatorDimensionGroups"
         :get-weight="getWeight"
         :set-weight="setWeight"
+        :get-group-weight="getGroupWeight"
+        :set-group-weight="setGroupWeight"
         :is-sub-indicator-active="isSubIndicatorActive"
         :toggle-sub-indicator="toggleSubIndicator"
         :is-group-active="isGroupActive"

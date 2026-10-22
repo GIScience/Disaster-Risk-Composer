@@ -131,6 +131,23 @@ export function useIndicatorWeights(
     emit("update:indicatorWeights", { ...localWeights.value });
   }
 
+  // One weight for a whole group (dimension or sub-group). Switched-off indicators keep weight 0
+  // and get the value when they're switched on again. Emits once, so the scores are recomputed once.
+  function setGroupWeight(columns: string[], val: number) {
+    for (const col of columns) {
+      if (disabledIndicators.value.has(col)) savedSliderValues.value[col] = val;
+      else localWeights.value[col] = val;
+    }
+    emit("update:indicatorWeights", { ...localWeights.value });
+  }
+
+  // The weight all active indicators of a group share, or null if they differ (or none is active)
+  function getGroupWeight(columns: string[]): number | null {
+    const weights = columns.filter((c) => isSubIndicatorActive(c)).map((c) => getWeight(c));
+    if (!weights.length) return null;
+    return weights.every((w) => w === weights[0]) ? weights[0] : null;
+  }
+
   function isGroupActive(columns: string[]) {
     return (
       columns.length === 0 || columns.every((c) => isSubIndicatorActive(c))
@@ -306,6 +323,8 @@ export function useIndicatorWeights(
   return {
     getWeight,
     setWeight,
+    setGroupWeight,
+    getGroupWeight,
     isSubIndicatorActive,
     toggleSubIndicator,
     isGroupActive,
