@@ -206,15 +206,12 @@ export function useRiskLogic() {
         parquetUrl = `https://hot.storage.heigit.org/heigit-hdx-public/risk_assessment_inputs/${folder}/${countryCode}_ADM1_risk.parquet`;
       }
 
-      // DuckDB-WASM is only needed once a country is opened, so keep it out of the initial bundle.
-      const { loadParquetData } = await import("../utils/duckdb");
+      // The parquet reader is only needed once a country is opened, so keep it out of the initial bundle.
+      const { loadParquetData } = await import("../utils/parquet");
       const data = await loadParquetData(parquetUrl);
 
-      const parsed = JSON.parse(
-        JSON.stringify(data, (_, value) =>
-          typeof value === "bigint" ? Number(value) : value,
-        ),
-      );
+      // Through JSON as before with DuckDB (NaN becomes null), so the data is exactly the same
+      const parsed = JSON.parse(JSON.stringify(data));
 
       // OCHA countries use "<LEVEL>_PCODE", NUTS (EU) countries "NUTS<n>_CODE" - see regionId.ts.
       const idField = detectRegionIdColumn(Object.keys(parsed[0] || {}), level);
