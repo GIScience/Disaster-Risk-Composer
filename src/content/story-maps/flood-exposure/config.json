@@ -133,8 +133,7 @@
         },
         "dataset": {
           "icon": "mdi-database-outline",
-          "url": "https://data.jrc.ec.europa.eu/dataset/jrc-floods-floodmapgl_rp50y-tif",
-          "checkUrl": false
+          "url": "https://data.jrc.ec.europa.eu/dataset/jrc-floods-floodmapgl_rp50y-tif"
         },
         "map": {
           "controls": [

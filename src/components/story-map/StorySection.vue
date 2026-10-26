@@ -9,7 +9,6 @@ import type {
   EquationTerm,
 } from "@/types/story-map";
 import { useReveal } from "@/composables/useReveal";
-import { useLinkCheck } from "@/composables/useLinkCheck";
 import { useStoryText } from "@/composables/useStoryText";
 import StoryControl from "./StoryControl.vue";
 import StoryMapPanel from "./StoryMapPanel.vue";
@@ -28,13 +27,9 @@ import type { layerConfigType, StackLayer } from "@/types/story-map";
 
 const props = defineProps<{ section: Section }>();
 const { t } = useStoryText();
-// Dataset source: a link only while its address works, plain text otherwise
-const sourceLinkChecked = useLinkCheck(() =>
-  props.section.dataset?.checkUrl === false ? undefined : props.section.dataset?.url,
-);
-const sourceLinkOk = computed(
-  () => !!props.section.dataset?.url && (props.section.dataset.checkUrl === false || sourceLinkChecked.value),
-);
+// Dataset source: a link when it has an address (not checked in the browser, so opening the page
+// sends no request to the provider)
+const sourceLinkOk = computed(() => !!props.section.dataset?.url);
 // Section 4: the aggregation graphic is folded away until the reader asks for it
 const showAggregation = ref(false);
 // The selected option can override the legend, the map's results box and the aggregation data type.

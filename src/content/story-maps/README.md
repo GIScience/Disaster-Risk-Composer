@@ -50,10 +50,9 @@ when the data changes.
 ## I want to link a data source
 
 Add `"url"` to the section's `dataset` in the hazard's `config.json` (e.g. step 1 of the cyclone
-story map links IBTrACS). The page checks the address once in the browser and shows the source
-as a link only while it works; if the provider moves the page, it falls back to plain text. The
-check needs the other site to allow it (CORS). The JRC flood page doesn't, so it can't be linked
-this way: its link is set with `"checkUrl": false` and shown without a check.
+story map links IBTrACS). The source is then shown as a link. The page doesn't check the address
+(so opening a story map sends no request to the provider): check the link by hand now and then,
+especially when a provider reorganises its website.
 
 ## I want to add a story map for a new hazard
 

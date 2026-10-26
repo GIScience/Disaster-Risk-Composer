@@ -281,16 +281,8 @@ export interface Dataset {
   icon: string;
   title: string;
   source: string;
-  /**
-   * Address of the source. Shown as a link only while it works (checked in the browser, see
-   * useLinkCheck); otherwise the source stays plain text.
-   */
+  /** Address of the source; the source is then shown as a link. */
   url?: string;
-  /**
-   * `false`: show the link without checking it. Only for sites that can't be checked from the
-   * browser (e.g. JRC: no CORS, and bot protection answers "OK" even for missing pages).
-   */
-  checkUrl?: boolean;
 }
 
 export interface Legend {
