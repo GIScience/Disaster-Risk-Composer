@@ -70,7 +70,7 @@ Other inputs:
 Each indicator is min-max normalised within the country. Coping columns are inverted (more
 coping = less risk), except the ones that already measure a lack of coping (evacuation time,
 pixels at risk, dependency ratio). A dimension is the weighted mean of its indicators;
-susceptibility is the geometric mean of vulnerability, coping and any extra dimensions; risk is
+susceptibility is the geometric mean of vulnerability and  coping capacity; risk is
 `sqrt(exposure × susceptibility)`. The map colours are quartiles within the country, so colours
 can't be compared between countries.
 
